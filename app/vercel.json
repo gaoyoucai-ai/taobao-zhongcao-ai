@@ -1,8 +1,9 @@
 {
   "version": 2,
+  "outputDirectory": "app",
   "builds": [
     {
-      "src": "index.html",
+      "src": "app/index.html",
       "use": "@vercel/static"
     }
   ],
