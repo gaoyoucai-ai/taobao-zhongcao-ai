@@ -33,7 +33,7 @@
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px solid #e5e6eb; }
     .card-header h2 { color: #1d2129; font-size: 1rem; }
     .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; }
-    .module-card { background: white; border: 1px solid #e5e6eb; border-radius: 6px; padding: 1.2rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .module-card { background: white; border: 1px solid #e5e6eb; border-radius: 6px; padding: 1.2rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
     .module-card:hover { border-color: #1d39c4; box-shadow: 0 2px 8px rgba(29,57,196,0.1); transform: translateY(-1px); }
     .module-icon { font-size: 2rem; margin-bottom: 0.4rem; }
     .module-card h3 { color: #1d2129; font-size: 0.9rem; margin-bottom: 0.2rem; }
@@ -53,23 +53,15 @@
     .btn-primary:hover { background: #162da8; }
     .btn-success { background: #00b42a; color: white; }
     .btn-success:hover { background: #009a29; }
+    .btn-warning { background: #ff7d00; color: white; }
+    .btn-warning:hover { background: #e66f00; }
+    .btn-danger { background: #f53f3f; color: white; }
+    .btn-danger:hover { background: #d63434; }
     .btn-outline { background: white; color: #1d39c4; border: 1px solid #1d39c4; }
     .btn-outline:hover { background: #f2f3ff; }
     .btn-link { background: none; border: none; color: #165dff; cursor: pointer; font-size: 0.8rem; }
     .btn-link:hover { text-decoration: underline; }
     .action-bar { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1rem; }
-    .select-yes { background: #e8ffea; color: #00b42a; padding: 0.25rem 0.6rem; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 0.75rem; }
-    .select-no { background: #ffece8; color: #f53f3f; padding: 0.25rem 0.6rem; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 0.75rem; }
-    .select-yes.selected { background: #00b42a; color: white; }
-    .select-no.selected { background: #f53f3f; color: white; }
-    .dropdown { position: relative; display: inline-block; }
-    .dropdown-btn { background: #1d39c4; color: white; padding: 0.25rem 0.6rem; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75rem; }
-    .dropdown-content { display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #e5e6eb; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 100; min-width: 140px; }
-    .dropdown-content.show { display: block; }
-    .dropdown-content a { display: block; padding: 0.5rem 0.8rem; color: #1d2129; text-decoration: none; font-size: 0.8rem; }
-    .dropdown-content a:hover { background: #f7f8fa; }
-    .audit-content-full { background: #f7f8fa; border-radius: 6px; padding: 1rem; margin-top: 0.8rem; }
-    .audit-content-full h4 { color: #1d2129; margin-bottom: 0.8rem; font-size: 0.95rem; }
     .progress-bar { width: 100%; height: 5px; background: #e5e6eb; border-radius: 2px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
     .progress-fill.success { background: #00b42a; }
@@ -82,20 +74,6 @@
     .loading-box { background: white; padding: 1.5rem; border-radius: 6px; text-align: center; }
     .spinner { width: 32px; height: 32px; border: 2px solid #e5e6eb; border-top-color: #1d39c4; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 0.8rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .brand-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; }
-    .brand-card { background: white; border: 1px solid #e5e6eb; border-radius: 6px; padding: 1.2rem; text-align: center; cursor: pointer; transition: all 0.2s; }
-    .brand-card:hover, .brand-card.selected { border-color: #1d39c4; background: #f2f3ff; }
-    .brand-card .logo { font-size: 1.5rem; margin-bottom: 0.4rem; }
-    .review-deck { background: #f7f8fa; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem; }
-    .review-deck h4 { color: #1d2129; margin-bottom: 0.2rem; font-size: 0.95rem; }
-    .review-deck .meta { color: #86909c; font-size: 0.75rem; margin-bottom: 0.6rem; }
-    .review-stats { display: flex; gap: 0.8rem; }
-    .review-stats .stat { background: white; padding: 0.5rem; border-radius: 3px; flex: 1; text-align: center; }
-    .review-stats .stat .value { font-size: 1rem; font-weight: bold; color: #1d2129; }
-    .review-stats .stat .label { font-size: 0.7rem; color: #86909c; }
-    .editor-container { border: 1px solid #e5e6eb; border-radius: 4px; padding: 0.8rem; min-height: 150px; background: white; font-size: 0.85rem; }
-    .error-text { background: #ffece8; text-decoration: line-through; color: #f53f3f; cursor: pointer; padding: 0 3px; border-radius: 2px; }
-    .correct-text { background: #e8ffea; color: #00b42a; padding: 0 3px; border-radius: 2px; }
     .form-group { margin-bottom: 0.8rem; }
     .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.85rem; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem; border: 1px solid #e5e6eb; border-radius: 4px; font-size: 0.85rem; }
@@ -107,19 +85,15 @@
     .empty-state { text-align: center; padding: 2rem; color: #86909c; }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
     .todo-badge { position: absolute; top: -5px; right: -5px; background: #f53f3f; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
-    .module-card { position: relative; }
     .nav-badge { background: #f53f3f; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 8px; margin-left: 0.3rem; }
-    
-    /* 直管模块样式 */
-    .supervisor-module:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .modal-option-card:hover { border-color: #00b42a !important; background: #f0f5ff !important; }
-    .industry-card:hover { border-color: #722ed1 !important; background: #f5e8ff !important; }
-    .brand-card-supervisor { background: white; border: 1px solid #e5e6eb; border-radius: 8px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.2s; }
-    .brand-card-supervisor:hover { border-color: #165dff; background: #e8f3ff; }
-    .brief-todo-item { background: #f7f8fa; border-left: 3px solid #1d39c4; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem; cursor: pointer; transition: all 0.2s; }
-    .brief-todo-item:hover { background: #f0f5ff; border-left-color: #00b42a; }
-    .brief-todo-item.unread { background: #f0f5ff; border-left-color: #f53f3f; }
-    
+    .approval-item { background: #f7f8fa; border-left: 4px solid #1d39c4; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; }
+    .approval-item:hover { background: #f0f5ff; }
+    .approval-item.pending { border-left-color: #ff7d00; background: #fff7e8; }
+    .approval-item.approved { border-left-color: #00b42a; background: #e8ffea; }
+    .approval-item.rejected { border-left-color: #f53f3f; background: #ffece8; }
+    .approval-actions { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+    .reject-reason-box { margin-top: 0.8rem; padding: 0.8rem; background: white; border-radius: 4px; display: none; }
+    .reject-reason-box textarea { width: 100%; padding: 0.5rem; border: 1px solid #e5e6eb; border-radius: 4px; min-height: 60px; resize: vertical; }
     @media (max-width: 768px) { .top-nav { flex-direction: column; gap: 0.4rem; } .module-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -138,9 +112,9 @@
       </div>
       <div class="form-group">
         <label>角色</label>
-        <select id="login-role" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e6eb; border-radius: 4px;">
-          <option value="downstream">下行内容</option>
-          <option value="supervisor">直管执行</option>
+        <select id="login-role">
+          <option value="supervisor">直管执行（上传/解析/提交）</option>
+          <option value="downstream">下行内容（审批/确认/打回）</option>
         </select>
       </div>
       <button class="btn btn-primary" onclick="handleLogin()">登录</button>
@@ -165,7 +139,7 @@
       <div id="page-home" class="page">
         <div class="page-header"><h1>👋 欢迎使用淘宝种草 AI 协作平台</h1><p>选择你的工作台</p></div>
         <div class="module-grid">
-          <div class="module-card" onclick="navigateTo('supervisor-dashboard')" style="position: relative; border-color: #00b42a;">
+          <div class="module-card" onclick="navigateTo('supervisor-dashboard')" style="border-color: #00b42a;">
             <div class="module-icon" style="color: #00b42a;">✅</div>
             <h3 style="color: #00b42a;">直管执行工作台</h3>
             <p>上传 Brief / 智能选号 / 内容审核 / 发布监测</p>
@@ -179,440 +153,235 @@
         </div>
       </div>
 
-      <!-- 下行内容 - 品牌工作台 -->
-      <div id="page-downstream-workspace" class="page">
-        <div class="page-header" style="background: linear-gradient(135deg, #1d39c4 0%, #162da8 100%); color: white;">
-          <h1 id="downstream-brand-title" style="color: white;">📤 下行内容审批台</h1>
-          <p style="color: rgba(255,255,255,0.85);">审批直管提交的工作并确认</p>
-        </div>
-        <div class="module-grid">
-          <div class="module-card" onclick="navigateTo('downstream-brief')" style="border-color: #1d39c4; position: relative;"><div class="module-icon" style="color: #1d39c4;">📋</div><h3 style="color: #1d39c4;">1. Brief 审批</h3><p>审批直管提交的 Brief</p><span class="todo-badge" id="downstream-brief-badge" style="display: none;">0</span></div>
-          <div class="module-card" onclick="navigateTo('downstream-kol')" style="border-color: #722ed1; position: relative;"><div class="module-icon" style="color: #722ed1;">🎯</div><h3 style="color: #722ed1;">2. 选号确认</h3><p>确认直管推荐的达人</p><span class="todo-badge" id="downstream-kol-badge" style="display: none;">0</span></div>
-          <div class="module-card" onclick="navigateTo('downstream-audit')" style="border-color: #ff7d00; position: relative;"><div class="module-icon" style="color: #ff7d00;">✅</div><h3 style="color: #ff7d00;">3. 内容审核</h3><p>审批直管提交的内容</p><span class="todo-badge" id="downstream-audit-badge" style="display: none;">0</span></div>
-          <div class="module-card" onclick="navigateTo('downstream-monitor')" style="border-color: #165dff; position: relative;"><div class="module-icon" style="color: #165dff;">📊</div><h3 style="color: #165dff;">4. 投流确认</h3><p>确认推荐的投流笔记</p><span class="todo-badge" id="downstream-monitor-badge" style="display: none;">0</span></div>
-          <div class="module-card" onclick="navigateTo('downstream-review')" style="border-color: #f53f3f;"><div class="module-icon" style="color: #f53f3f;">🔄</div><h3 style="color: #f53f3f;">5. 投后复盘</h3><p>分析投放效果（仅下行）</p></div>
-        </div>
-      </div>
-
-      <!-- 直管执行看板 -->
+      <!-- ==================== 直管执行工作台 ==================== -->
       <div id="page-supervisor-dashboard" class="page">
         <div class="page-header" style="background: linear-gradient(135deg, #00b42a 0%, #009a29 100%); color: white;">
           <h1 style="color: white;">✅ 直管执行工作台</h1>
           <p style="color: rgba(255,255,255,0.85);">上传、解析、修改并提交给下行审批</p>
         </div>
         <div class="module-grid">
-          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-brief')" style="border-color: #00b42a; position: relative;">
+          <div class="module-card" onclick="navigateTo('supervisor-brief')" style="border-color: #00b42a;">
             <div class="module-icon" style="color: #00b42a;">📋</div>
             <h3 style="color: #00b42a;">1. Brief 评估</h3>
             <p>上传 Brief → AI 解析 → 提交审批</p>
-            <span class="todo-badge" id="supervisor-brief-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-kol')" style="border-color: #722ed1; position: relative;">
+          <div class="module-card" onclick="navigateTo('supervisor-kol')" style="border-color: #722ed1;">
             <div class="module-icon" style="color: #722ed1;">🎯</div>
             <h3 style="color: #722ed1;">2. 智能选号</h3>
             <p>AI 推荐 → 筛选 → 提交确认</p>
-            <span class="todo-badge" id="supervisor-kol-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-audit')" style="border-color: #ff7d00; position: relative;">
+          <div class="module-card" onclick="navigateTo('supervisor-audit')" style="border-color: #ff7d00;">
             <div class="module-icon" style="color: #ff7d00;">✅</div>
             <h3 style="color: #ff7d00;">3. 内容审核</h3>
             <p>上传稿件 → AI 检查 → 提交审批</p>
-            <span class="todo-badge" id="supervisor-audit-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-monitor')" style="border-color: #165dff; position: relative;">
+          <div class="module-card" onclick="navigateTo('supervisor-monitor')" style="border-color: #165dff;">
             <div class="module-icon" style="color: #165dff;">📊</div>
             <h3 style="color: #165dff;">4. 发布&投流监测</h3>
             <p>上传数据 → 推荐投流 → 提交确认</p>
-            <span class="todo-badge" id="supervisor-monitor-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="showToast('🔄 执行复盘 5月上线')" style="border-color: #f53f3f;">
+          <div class="module-card" onclick="showToast('🔄 执行复盘 5月上线')" style="border-color: #f53f3f;">
             <div class="module-icon" style="color: #f53f3f;">🔄</div>
             <h3 style="color: #f53f3f;">5. 执行复盘</h3>
             <p>执行效率分析（5月开放）</p>
           </div>
         </div>
       </div>
-      
-      <!-- 直管 - Brief 评估上传页 -->
+
+      <!-- 直管 - Brief 评估 -->
       <div id="page-supervisor-brief" class="page">
         <div class="page-header"><h1>📋 Brief 评估与上传</h1><p>上传 Word Brief，AI 自动解析后提交给下行审批</p></div>
-
-        <!-- 已提交Brief状态 -->
-        <div class="card" id="supervisor-brief-status-section" style="display: none;">
-          <div class="card-header"><h2>📊 Brief 审批状态</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
-          <div id="supervisor-brief-status-content"></div>
-        </div>
-
-        <!-- Brief 上传区域 -->
-        <div class="card" id="supervisor-brief-upload-section">
+        <div class="card" id="supervisor-brief-upload-card">
           <div class="card-header"><h2>📤 上传 Brief</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
-          
-          <div style="border: 2px dashed #00b42a; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('supervisor-brief-file').click()">
+          <div style="border: 2px dashed #00b42a; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('sv-brief-file').click()">
             <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
             <p style="color: #00b42a; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传 Word Brief 文档</p>
             <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，AI 将自动解析品牌、产品、卖点等信息</p>
-            <input type="file" id="supervisor-brief-file" accept=".docx" style="display: none;" onchange="handleSupervisorBriefUpload(this)">
+            <input type="file" id="sv-brief-file" accept=".docx" style="display: none;" onchange="handleSupervisorBriefUpload(this)">
           </div>
-          <p id="supervisor-brief-file-name" style="font-size: 0.85rem; color: #00b42a; margin-top: 0.8rem; display: none;"></p>
-          
-          <!-- 解析结果预览 -->
-          <div id="supervisor-brief-parse-preview" style="display: none; margin-top: 1.5rem; background: #e8ffea; padding: 1rem; border-radius: 6px; border: 1px solid #b7f5c8;">
+          <p id="sv-brief-file-name" style="font-size: 0.85rem; color: #00b42a; margin-top: 0.8rem; display: none;"></p>
+          <div id="sv-brief-parse-preview" style="display: none; margin-top: 1.5rem; background: #e8ffea; padding: 1rem; border-radius: 6px; border: 1px solid #b7f5c8;">
             <h4 style="margin-bottom: 0.8rem; color: #00b42a;">📋 AI 解析结果（请检查并修正）</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group">
-                <label>品牌名称</label>
-                <input type="text" id="supervisor-brief-brand" placeholder="AI 自动解析">
-              </div>
-              <div class="form-group">
-                <label>产品名称</label>
-                <input type="text" id="supervisor-brief-product" placeholder="AI 自动解析">
-              </div>
+              <div class="form-group"><label>品牌名称</label><input type="text" id="sv-brief-brand"></div>
+              <div class="form-group"><label>产品名称</label><input type="text" id="sv-brief-product"></div>
             </div>
-            <div class="form-group">
-              <label>核心卖点</label>
-              <textarea id="supervisor-brief-selling-points" placeholder="AI 自动解析"></textarea>
-            </div>
-            <div class="form-group">
-              <label>目标人群</label>
-              <textarea id="supervisor-brief-target-audience" placeholder="AI 自动解析"></textarea>
-            </div>
+            <div class="form-group"><label>核心卖点</label><textarea id="sv-brief-selling-points"></textarea></div>
+            <div class="form-group"><label>目标人群</label><textarea id="sv-brief-target-audience"></textarea></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group">
-                <label>CPUV 目标（元）</label>
-                <input type="number" id="supervisor-brief-cpuv-target" placeholder="AI 自动解析">
-              </div>
-              <div class="form-group">
-                <label>进店率目标（%）</label>
-                <input type="number" id="supervisor-brief-shop-rate-target" step="0.01" placeholder="AI 自动解析">
-              </div>
+              <div class="form-group"><label>CPUV 目标（元）</label><input type="number" id="sv-brief-cpuv-target"></div>
+              <div class="form-group"><label>进店率目标（%）</label><input type="number" id="sv-brief-shop-rate-target" step="0.01"></div>
             </div>
-            <div class="form-group">
-              <label>内容方向要求</label>
-              <textarea id="supervisor-brief-content-direction" placeholder="AI 自动解析"></textarea>
-            </div>
+            <div class="form-group"><label>内容方向要求</label><textarea id="sv-brief-content-direction"></textarea></div>
           </div>
-          
           <div class="action-bar">
             <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
-            <button class="btn btn-success" onclick="submitSupervisorBrief()" id="supervisor-brief-submit-btn" style="display: none;">📤 提交给下行审批</button>
+            <button class="btn btn-success" onclick="submitSupervisorBrief()" id="sv-brief-submit-btn" style="display: none;">📤 提交给下行审批</button>
           </div>
         </div>
-      </div>
-      
-      <!-- 直管查看Brief详情 -->
-      <div id="page-supervisor-brief-detail" class="page">
-        <div class="page-header"><h1>📋 Brief 详情</h1><p>查看下行下发的 Brief 和 AI 评估报告</p></div>
-        <div class="card" id="supervisor-brief-detail-content"></div>
-      </div>
-
-      <!-- 下行 - Brief 评估 -->
-      <div id="page-downstream-brief" class="page">
-        <div class="page-header"><h1>📋 Brief 评估</h1><p>查看商家 Brief 并进行评估</p></div>
-
-        <!-- Brief 上传区域 -->
-        <div class="card" id="brief-upload-section">
-          <div class="card-header"><h2>📤 上传 Brief</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
-          
-          <!-- Word 文档上传 -->
-          <div style="border: 2px dashed #1d39c4; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('brief-file').click()">
-            <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
-            <p style="color: #1d39c4; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传 Word Brief 文档</p>
-            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，系统将自动解析品牌、产品、卖点等信息</p>
-            <input type="file" id="brief-file" accept=".docx" style="display: none;" onchange="handleBriefWordUpload(this)">
-          </div>
-          <p id="brief-file-name" style="font-size: 0.85rem; color: #00b42a; margin-top: 0.8rem; display: none;"></p>
-          
-          <!-- 解析结果预览 -->
-          <div id="brief-parse-preview" style="display: none; margin-top: 1.5rem; background: #f0f5ff; padding: 1rem; border-radius: 6px; border: 1px solid #d6e4ff;">
-            <h4 style="margin-bottom: 0.8rem; color: #1d39c4;">📋 解析结果预览（可编辑修正）</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group">
-                <label>品牌名称</label>
-                <input type="text" id="brief-brand" placeholder="自动解析">
-              </div>
-              <div class="form-group">
-                <label>产品名称</label>
-                <input type="text" id="brief-product" placeholder="自动解析">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>核心卖点</label>
-              <textarea id="brief-selling-points" placeholder="自动解析"></textarea>
-            </div>
-            <div class="form-group">
-              <label>目标人群</label>
-              <textarea id="brief-target-audience" placeholder="自动解析"></textarea>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group">
-                <label>CPUV 目标（元）</label>
-                <input type="number" id="brief-cpuv-target" placeholder="自动解析">
-              </div>
-              <div class="form-group">
-                <label>进店率目标（%）</label>
-                <input type="number" id="brief-shop-rate-target" step="0.01" placeholder="自动解析">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>内容方向要求</label>
-              <textarea id="brief-content-direction" placeholder="自动解析"></textarea>
-            </div>
-          </div>
-          
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
-            <button class="btn btn-primary" onclick="saveBrief()" id="brief-save-btn" style="display: none;">💾 确认保存</button>
-          </div>
-        </div>
-
-        <!-- Brief 展示与评估区域 -->
-        <div class="card" id="brief-display-section" style="display: none;">
-          <div class="card-header">
-            <h2 id="brief-display-title">商家 Brief</h2>
-            <div>
-              <button class="btn btn-outline" onclick="editBrief()">✏️ 编辑</button>
-              <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
-            </div>
-          </div>
-          <table id="brief-display-table">
-            <tr><th style="width: 120px;">品牌</th><td id="display-brand"></td></tr>
-            <tr><th>产品</th><td id="display-product"></td></tr>
-            <tr><th>核心卖点</th><td id="display-selling-points"></td></tr>
-            <tr><th>目标人群</th><td id="display-target-audience"></td></tr>
-            <tr><th>CPUV 目标</th><td id="display-cpuv-target"></td></tr>
-            <tr><th>进店率目标</th><td id="display-shop-rate-target"></td></tr>
-            <tr><th>内容方向</th><td id="display-content-direction"></td></tr>
-          </table>
-          <div class="action-bar">
-            <button class="btn btn-primary" onclick="evaluateBrief()">🤖 AI 评估 Brief</button>
-            <button class="btn btn-success" onclick="dispatchBrief()">📤 下发 Brief</button>
-          </div>
-        </div>
-
-        <!-- AI 评估报告 -->
-        <div class="card" id="brief-eval-result" style="display: none;">
-          <div class="card-header"><h2>🤖 AI Brief 评估报告</h2></div>
-          <table>
-            <thead><tr><th>评估维度</th><th>状态</th><th>评估说明</th><th>建议</th></tr></thead>
-            <tbody id="brief-eval-tbody">
-            </tbody>
-          </table>
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
-            <button class="btn btn-danger" onclick="returnBrief()">📤 退回 Brief 给上行</button>
-            <button class="btn btn-success" onclick="dispatchBrief()">📤 下发 Brief 给直管</button>
-          </div>
+        <div class="card" id="supervisor-brief-submitted-card" style="display: none;">
+          <div class="card-header"><h2>📊 Brief 审批状态</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+          <div id="sv-brief-status-content"></div>
         </div>
       </div>
 
-      <!-- 下行 - 智能选号 -->
-      <div id="page-downstream-kol" class="page">
-        <div class="page-header"><h1>🎯 智能选号</h1><p>AI 基于 Brief 推荐的优质达人 List</p></div>
+      <!-- 直管 - 智能选号 -->
+      <div id="page-supervisor-kol" class="page">
+        <div class="page-header"><h1>🎯 智能选号</h1><p>上传达人数据，AI 推荐优质达人后提交给下行确认</p></div>
         <div class="card">
-          <div class="card-header"><h2>推荐达人 List</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+          <div class="card-header"><h2>📤 上传达人数据</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+          <div style="border: 2px dashed #722ed1; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('sv-kol-file').click()">
+            <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📊</p>
+            <p style="color: #722ed1; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传达人 Excel/CSV</p>
+            <p style="font-size: 0.8rem; color: #86909c;">AI 将自动分析并推荐优质达人</p>
+            <input type="file" id="sv-kol-file" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleSupervisorKolUpload(this)">
+          </div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
+            <button class="btn btn-success" onclick="submitSupervisorKol()" id="sv-kol-submit-btn" style="display: none;">📤 提交给下行确认</button>
+          </div>
+        </div>
+        <div class="card" id="sv-kol-recommended-card" style="display: none;">
+          <div class="card-header"><h2>🤖 AI 推荐达人</h2></div>
           <table>
-            <thead>
-              <tr>
-                <th>KOL 名称</th>
-                <th>平台</th>
-                <th>主页链接</th>
-                <th>CPM</th>
-                <th>CPE</th>
-                <th>过往 CPUV</th>
-                <th>推荐</th>
-                <th>达人属性</th>
-                <th>下一步</th>
-              </tr>
-            </thead>
-            <tbody id="kol-table-body"></tbody>
+            <thead><tr><th>KOL 名称</th><th>平台</th><th>CPM</th><th>CPE</th><th>CPUV</th><th>推荐等级</th><th>选择</th></tr></thead>
+            <tbody id="sv-kol-table-body"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- 直管 - 内容审核 -->
+      <div id="page-supervisor-audit" class="page">
+        <div class="page-header"><h1>✅ 内容审核</h1><p>上传达人稿件，AI 自动检查后提交给下行审批</p></div>
+        <div class="card" id="sv-audit-upload-card">
+          <div class="card-header"><h2>📤 上传达人稿件</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+          <div style="border: 2px dashed #ff7d00; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('sv-audit-file').click()">
+            <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
+            <p style="color: #ff7d00; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传达人稿件 Word 文档</p>
+            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，AI 将自动检查内容合规性</p>
+            <input type="file" id="sv-audit-file" accept=".docx" style="display: none;" onchange="handleSupervisorAuditUpload(this)">
+          </div>
+          <p id="sv-audit-file-name" style="font-size: 0.85rem; color: #ff7d00; margin-top: 0.8rem; display: none;"></p>
+          <div id="sv-audit-parse-preview" style="display: none; margin-top: 1.5rem;">
+            <h4 style="margin-bottom: 0.8rem;">📋 AI 审核结果（请检查并修正）</h4>
+            <div class="form-group"><label>达人名称</label><input type="text" id="sv-audit-creator"></div>
+            <div class="form-group"><label>稿件内容</label><textarea id="sv-audit-content" style="min-height: 150px;"></textarea></div>
+            <div id="sv-audit-issues" style="background: #fff7e8; padding: 1rem; border-radius: 6px; margin-top: 0.8rem;"></div>
+          </div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
+            <button class="btn btn-success" onclick="submitSupervisorAudit()" id="sv-audit-submit-btn" style="display: none;">📤 提交给下行审批</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 直管 - 发布&投流监测 -->
+      <div id="page-supervisor-monitor" class="page">
+        <div class="page-header"><h1>📊 发布&投流监测</h1><p>上传 KOL 发布数据，推荐投流笔记提交给下行确认</p></div>
+        <div class="card">
+          <div class="card-header"><h2>📤 上传发布数据</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+          <div style="border: 2px dashed #165dff; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('sv-monitor-file').click()">
+            <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📊</p>
+            <p style="color: #165dff; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传 KOL 发布数据 Excel</p>
+            <p style="font-size: 0.8rem; color: #86909c;">包含达人名称、发布时间、链接、CPUV 等信息</p>
+            <input type="file" id="sv-monitor-file" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleSupervisorMonitorUpload(this)">
+          </div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
+            <button class="btn btn-success" onclick="submitSupervisorMonitor()" id="sv-monitor-submit-btn" style="display: none;">📤 提交给下行确认投流</button>
+          </div>
+        </div>
+        <div class="card" id="sv-monitor-data-card" style="display: none;">
+          <div class="card-header"><h2>📋 KOL 发布数据</h2></div>
+          <table>
+            <thead><tr><th>KOL 名称</th><th>状态</th><th>发布日期</th><th>链接</th><th>CPUV</th><th>推荐投流</th></tr></thead>
+            <tbody id="sv-monitor-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== 下行内容审批台 ==================== -->
+      <div id="page-downstream-workspace" class="page">
+        <div class="page-header" style="background: linear-gradient(135deg, #1d39c4 0%, #162da8 100%); color: white;">
+          <h1 style="color: white;">📤 下行内容审批台</h1>
+          <p style="color: rgba(255,255,255,0.85);">审批直管提交的工作并确认</p>
+        </div>
+        <div class="module-grid">
+          <div class="module-card" onclick="navigateTo('downstream-brief')" style="border-color: #1d39c4;">
+            <div class="module-icon" style="color: #1d39c4;">📋</div>
+            <h3 style="color: #1d39c4;">1. Brief 审批</h3>
+            <p>审批直管提交的 Brief</p>
+            <span class="todo-badge" id="ds-brief-badge" style="display: none;">0</span>
+          </div>
+          <div class="module-card" onclick="navigateTo('downstream-kol')" style="border-color: #722ed1;">
+            <div class="module-icon" style="color: #722ed1;">🎯</div>
+            <h3 style="color: #722ed1;">2. 选号确认</h3>
+            <p>确认直管推荐的达人</p>
+            <span class="todo-badge" id="ds-kol-badge" style="display: none;">0</span>
+          </div>
+          <div class="module-card" onclick="navigateTo('downstream-audit')" style="border-color: #ff7d00;">
+            <div class="module-icon" style="color: #ff7d00;">✅</div>
+            <h3 style="color: #ff7d00;">3. 内容审核</h3>
+            <p>审批直管提交的内容</p>
+            <span class="todo-badge" id="ds-audit-badge" style="display: none;">0</span>
+          </div>
+          <div class="module-card" onclick="navigateTo('downstream-monitor')" style="border-color: #165dff;">
+            <div class="module-icon" style="color: #165dff;">📊</div>
+            <h3 style="color: #165dff;">4. 投流确认</h3>
+            <p>确认推荐的投流笔记</p>
+            <span class="todo-badge" id="ds-monitor-badge" style="display: none;">0</span>
+          </div>
+          <div class="module-card" onclick="navigateTo('downstream-review')" style="border-color: #f53f3f;">
+            <div class="module-icon" style="color: #f53f3f;">🔄</div>
+            <h3 style="color: #f53f3f;">5. 投后复盘</h3>
+            <p>分析投放效果（仅下行）</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 下行 - Brief 审批 -->
+      <div id="page-downstream-brief" class="page">
+        <div class="page-header"><h1>📋 Brief 审批</h1><p>查看并审批直管提交的 Brief</p></div>
+        <div class="card">
+          <div class="card-header"><h2>📥 待审批 Brief</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+          <div id="ds-brief-list"></div>
+        </div>
+      </div>
+
+      <!-- 下行 - Brief 审批详情 -->
+      <div id="page-downstream-brief-detail" class="page">
+        <div class="page-header"><h1>📋 Brief 审批详情</h1><p>查看 Brief 详情并进行审批</p></div>
+        <div class="card" id="ds-brief-detail-content"></div>
+      </div>
+
+      <!-- 下行 - 选号确认 -->
+      <div id="page-downstream-kol" class="page">
+        <div class="page-header"><h1>🎯 选号确认</h1><p>查看并确认直管推荐的达人</p></div>
+        <div class="card">
+          <div class="card-header"><h2>📥 待确认达人推荐</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+          <div id="ds-kol-list"></div>
         </div>
       </div>
 
       <!-- 下行 - 内容审核 -->
       <div id="page-downstream-audit" class="page">
-        <div class="page-header"><h1>✅ 内容审核</h1><p>AI 自动审核达人内容</p></div>
-
-        <!-- 稿件上传区域 -->
-        <div class="card" id="draft-upload-section">
-          <div class="card-header"><h2>📤 上传达人稿件</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
-          
-          <!-- Word 文档上传 -->
-          <div style="border: 2px dashed #1d39c4; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('draft-file').click()">
-            <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
-            <p style="color: #1d39c4; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传达人稿件 Word 文档</p>
-            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，系统将自动解析达人名称和稿件内容</p>
-            <input type="file" id="draft-file" accept=".docx" style="display: none;" onchange="handleDraftWordUpload(this)">
-          </div>
-          <p id="draft-file-name" style="font-size: 0.85rem; color: #00b42a; margin-top: 0.8rem; display: none;"></p>
-          
-          <!-- 解析结果预览 -->
-          <div id="draft-parse-preview" style="display: none; margin-top: 1.5rem; background: #f0f5ff; padding: 1rem; border-radius: 6px; border: 1px solid #d6e4ff;">
-            <h4 style="margin-bottom: 0.8rem; color: #1d39c4;">📋 解析结果预览（可编辑修正）</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group">
-                <label>达人名称</label>
-                <input type="text" id="draft-creator-name" placeholder="自动解析，例如：白杨刀">
-              </div>
-              <div class="form-group">
-                <label>内容类型</label>
-                <select id="draft-content-type" style="width: 100%; padding: 0.5rem; border: 1px solid #e5e6eb; border-radius: 4px;">
-                  <option value="video">视频脚本</option>
-                  <option value="image">图文文案</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>稿件内容</label>
-              <textarea id="draft-content" style="min-height: 150px;" placeholder="自动解析的稿件内容"></textarea>
-            </div>
-          </div>
-          
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
-            <button class="btn btn-primary" onclick="submitDraftForAudit()" id="draft-submit-btn" style="display: none;">🔍 提交审核</button>
-          </div>
-        </div>
-
-        <!-- 审核结果区域 -->
-        <div class="card" id="draft-audit-section" style="display: none;">
-          <div class="card-header">
-            <h2 id="audit-draft-title">待审核内容</h2>
-            <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
-            <div>
-              <h4 style="margin-bottom: 0.8rem;">📋 Brief 要求</h4>
-              <div class="editor-container" id="audit-brief-requirements"></div>
-            </div>
-            <div>
-              <h4 style="margin-bottom: 0.8rem;">📝 达人初稿</h4>
-              <div class="editor-container" id="audit-draft-content"></div>
-            </div>
-          </div>
-
-          <div class="audit-content-full">
-            <h4>📝 审核修改后的完整内容</h4>
-            <div style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e5e6eb;">
-              <p style="color: #86909c; font-size: 0.85rem; margin-bottom: 0.8rem;">AI 已自动修正以下问题：</p>
-              <div id="audit-issues-list"></div>
-              <hr style="border: none; border-top: 1px solid #e5e6eb; margin: 1rem 0;">
-              <h5 style="margin-bottom: 0.5rem; color: #1d2129;">✅ 修正后完整内容：</h5>
-              <div id="audit-corrected-content" style="background: #f7f8fa; padding: 1rem; border-radius: 4px; line-height: 1.8;"></div>
-            </div>
-          </div>
-
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">↩️ 返回</button>
-            <button class="btn btn-primary" onclick="pushAuditToMerchant()">📤 推送给商家审核</button>
-            <button class="btn btn-success" onclick="directSend()">🚀 直接发送</button>
-          </div>
+        <div class="page-header"><h1>✅ 内容审核</h1><p>查看并审批直管提交的内容稿件</p></div>
+        <div class="card">
+          <div class="card-header"><h2>📥 待审批内容</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+          <div id="ds-audit-list"></div>
         </div>
       </div>
 
-      <!-- 下行 - 发布&投流监测 -->
+      <!-- 下行 - 投流确认 -->
       <div id="page-downstream-monitor" class="page">
-        <div class="page-header"><h1>📊 发布&投流监测</h1><p>监控发布进度与投放效果</p></div>
-        
-        <!-- 晴雨表概览 -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-          <!-- 发布进度 -->
-          <div class="card" style="cursor: pointer;" onclick="showMonitorDetail('publish')">
-            <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
-              <h2>📅 发布进度</h2>
-              <span style="font-size: 0.8rem; color: #86909c;">点击查看详情 ▸</span>
-            </div>
-            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-              <div style="flex: 1; text-align: center; padding: 1rem; background: #f7f8fa; border-radius: 6px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #1d39c4;" id="publish-total">5</div>
-                <div style="font-size: 0.8rem; color: #86909c; margin-top: 0.3rem;">总数量</div>
-              </div>
-              <div style="flex: 1; text-align: center; padding: 1rem; background: #e8ffea; border-radius: 6px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #00b42a;" id="publish-on-time">3</div>
-                <div style="font-size: 0.8rem; color: #00b42a; margin-top: 0.3rem;">按时发布</div>
-              </div>
-              <div style="flex: 1; text-align: center; padding: 1rem; background: #ffece8; border-radius: 6px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #f53f3f;" id="publish-delayed">2</div>
-                <div style="font-size: 0.8rem; color: #f53f3f; margin-top: 0.3rem;">未发布</div>
-              </div>
-            </div>
-            <div style="margin-top: 0.8rem;">
-              <div class="progress-bar" style="height: 8px;">
-                <div class="progress-fill success" id="publish-progress-bar" style="width: 60%;"></div>
-              </div>
-              <p style="font-size: 0.75rem; color: #86909c; margin-top: 0.4rem; text-align: center;">发布完成率 <span id="publish-rate" style="color: #00b42a; font-weight: bold;">60%</span></p>
-            </div>
-          </div>
-          
-          <!-- 投放进度 -->
-          <div class="card" style="cursor: pointer;" onclick="showMonitorDetail('deploy')">
-            <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
-              <h2>🎯 投放进度</h2>
-              <span style="font-size: 0.8rem; color: #86909c;">点击查看详情 ▸</span>
-            </div>
-            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-              <div style="flex: 1; text-align: center; padding: 1rem; background: #f7f8fa; border-radius: 6px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #1d39c4;" id="deploy-total">5</div>
-                <div style="font-size: 0.8rem; color: #86909c; margin-top: 0.3rem;">总数量</div>
-              </div>
-              <div style="flex: 1; text-align: center; padding: 1rem; background: #e8ffea; border-radius: 6px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #00b42a;" id="deploy-qualified">3</div>
-                <div style="font-size: 0.8rem; color: #00b42a; margin-top: 0.3rem;">符合Brief</div>
-              </div>
-              <div style="flex: 1; text-align: center; padding: 1rem; background: #fff7e8; border-radius: 6px;">
-                <div style="font-size: 2rem; font-weight: bold; color: #ff7d00;" id="deploy-unqualified">2</div>
-                <div style="font-size: 0.8rem; color: #ff7d00; margin-top: 0.3rem;">不符合</div>
-              </div>
-            </div>
-            <div style="margin-top: 0.8rem;">
-              <div class="progress-bar" style="height: 8px;">
-                <div class="progress-fill success" id="deploy-progress-bar" style="width: 60%;"></div>
-              </div>
-              <p style="font-size: 0.75rem; color: #86909c; margin-top: 0.4rem; text-align: center;">投放合格率 <span id="deploy-rate" style="color: #00b42a; font-weight: bold;">60%</span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 发布进度详情 -->
-      <div id="page-monitor-publish-detail" class="page">
-        <div class="page-header"><h1>📅 发布进度详情</h1><p>查看各KOL发布状态</p></div>
+        <div class="page-header"><h1>📊 投流确认</h1><p>查看发布进度并确认投流笔记</p></div>
         <div class="card">
-          <div class="card-header"><h2>KOL 发布进度列表</h2><button class="btn btn-outline" onclick="navigateTo('downstream-monitor')">返回概览</button></div>
-          <table>
-            <thead>
-              <tr>
-                <th>KOL 名称</th>
-                <th>稿件进度</th>
-                <th>预计发布日期</th>
-                <th>实际发布日期</th>
-                <th>发布链接</th>
-                <th>状态</th>
-              </tr>
-            </thead>
-            <tbody id="publish-detail-body"></tbody>
-          </table>
+          <div class="card-header"><h2>📅 发布进度</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+          <div id="ds-monitor-publish-status"></div>
         </div>
-      </div>
-      
-      <!-- 投放进度详情 -->
-      <div id="page-monitor-deploy-detail" class="page">
-        <div class="page-header"><h1>🎯 投放进度详情</h1><p>查看各KOL投放效果</p></div>
         <div class="card">
-          <div class="card-header"><h2>KOL 投放效果列表</h2><button class="btn btn-outline" onclick="navigateTo('downstream-monitor')">返回概览</button></div>
-          <table>
-            <thead>
-              <tr>
-                <th>KOL 名称</th>
-                <th>投流监测 (CPUV)</th>
-                <th>Brief目标</th>
-                <th>达成率</th>
-                <th>是否符合</th>
-                <th>发布链接</th>
-              </tr>
-            </thead>
-            <tbody id="deploy-detail-body"></tbody>
-          </table>
+          <div class="card-header"><h2>🎯 待确认投流笔记</h2></div>
+          <div id="ds-monitor-deploy-list"></div>
         </div>
       </div>
 
@@ -621,71 +390,28 @@
         <div class="page-header"><h1>🔄 投后复盘</h1><p>分析投放效果，沉淀方法论</p></div>
         <div class="card">
           <div class="card-header"><h2>📁 过往复盘报告</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
-          <div class="review-deck">
+          <div style="background: #f7f8fa; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem;">
             <h4>珀莱雅红宝石面霜 - 2026年3月投放复盘</h4>
-            <div class="meta">投放周期：2026.3.15-3.25 | 达人数：5 位 | 平台：小红书</div>
-            <div class="review-stats">
-              <div class="stat"><div class="value">¥12.5</div><div class="label">平均 CPUV</div></div>
-              <div class="stat"><div class="value">0.42%</div><div class="label">进店率</div></div>
-              <div class="stat"><div class="value">5.8%</div><div class="label">互动率</div></div>
-              <div class="stat"><div class="value">⭐⭐⭐⭐</div><div class="label">综合评级</div></div>
+            <p style="font-size: 0.8rem; color: #86909c;">投放周期：2026.3.15-3.25 | 达人数：5 位 | 平台：小红书</p>
+            <div style="display: flex; gap: 0.8rem; margin-top: 0.8rem;">
+              <div style="background: white; padding: 0.5rem 1rem; border-radius: 4px; flex: 1; text-align: center;"><div style="font-size: 1.1rem; font-weight: bold;">¥12.5</div><div style="font-size: 0.75rem; color: #86909c;">平均 CPUV</div></div>
+              <div style="background: white; padding: 0.5rem 1rem; border-radius: 4px; flex: 1; text-align: center;"><div style="font-size: 1.1rem; font-weight: bold;">0.42%</div><div style="font-size: 0.75rem; color: #86909c;">进店率</div></div>
+              <div style="background: white; padding: 0.5rem 1rem; border-radius: 4px; flex: 1; text-align: center;"><div style="font-size: 1.1rem; font-weight: bold;">5.8%</div><div style="font-size: 0.75rem; color: #86909c;">互动率</div></div>
             </div>
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><h2>📊 选择复盘目的</h2></div>
-          <div class="module-grid">
-            <div class="module-card" onclick="navigateTo('review-internal')" style="text-align: left; padding: 1.5rem;">
-              <div class="module-icon" style="text-align: center;">📈</div>
-              <h3 style="color: #1d39c4; margin: 0.5rem 0;">1. 内部复盘</h3>
-              <p style="font-size: 0.85rem; color: #4e5969;">沉淀投放方法论，优化流程，对上级汇报</p>
-            </div>
-            <div class="module-card" onclick="showToast('商家复盘 5 月上线')" style="text-align: left; padding: 1.5rem;">
-              <div class="module-icon" style="text-align: center;">🤝</div>
-              <h3 style="color: #00b42a; margin: 0.5rem 0;">2. 商家复盘</h3>
-              <p style="font-size: 0.85rem; color: #86909c;">5 月上线</p>
-            </div>
-            <div class="module-card" onclick="showToast('Show Case 5 月上线')" style="text-align: left; padding: 1.5rem;">
-              <div class="module-icon" style="text-align: center;">🏆</div>
-              <h3 style="color: #722ed1; margin: 0.5rem 0;">3. Show Case</h3>
-              <p style="font-size: 0.85rem; color: #86909c;">5 月上线</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 内部复盘页面 -->
-      <div id="page-review-internal" class="page">
-        <div class="page-header"><h1>📈 内部复盘报告</h1><p>沉淀投放方法论，优化流程，对上级汇报</p></div>
-        <div class="card">
-          <div class="card-header"><h2>一、投放策略分析</h2><button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button></div>
+          <div class="card-header"><h2>📊 内部复盘分析</h2></div>
           <table>
-            <thead><tr><th>维度</th><th>目标</th><th>实际</th><th>达成率</th><th>分析</th></tr></thead>
+            <thead><tr><th>维度</th><th>目标</th><th>实际</th><th>达成率</th></tr></thead>
             <tbody>
-              <tr><td>达人数</td><td>5 位</td><td>5 位</td><td><span class="badge badge-success">100%</span></td><td>按计划完成达人筛选与签约</td></tr>
-              <tr><td>CPUV 目标</td><td>¥15</td><td>¥12.5</td><td><span class="badge badge-success">120%</span></td><td>实际成本优于目标，投放效率超预期</td></tr>
-              <tr><td>进店率</td><td>0.35%</td><td>0.42%</td><td><span class="badge badge-success">120%</span></td><td>内容种草效果显著，引流效率提升</td></tr>
-              <tr><td>互动率</td><td>5.0%</td><td>5.8%</td><td><span class="badge badge-success">116%</span></td><td>内容质量高，用户参与度高</td></tr>
-              <tr><td>发布准时率</td><td>100%</td><td>80%</td><td><span class="badge badge-warning">80%</span></td><td>1位达人因内容修改延期2天发布</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="card">
-          <div class="card-header"><h2>二、执行效率评估</h2></div>
-          <table>
-            <thead><tr><th>流程节点</th><th>平均耗时</th><th>上期耗时</th><th>效率变化</th><th>瓶颈分析</th></tr></thead>
-            <tbody>
-              <tr><td>Brief 评估→下发</td><td>1.5 天</td><td>3 天</td><td><span class="badge badge-success">↓50%</span></td><td>AI 辅助评估大幅缩短时间</td></tr>
-              <tr><td>智能选号→确认</td><td>2 天</td><td>5 天</td><td><span class="badge badge-success">↓60%</span></td><td>AI 推荐准确率提升，减少反复沟通</td></tr>
-              <tr><td>内容审核→修改</td><td>3 天</td><td>7 天</td><td><span class="badge badge-success">↓57%</span></td><td>自动审核+一键修正减少返工</td></tr>
-              <tr><td>完稿→发布</td><td>2 天</td><td>3 天</td><td><span class="badge badge-success">↓33%</span></td><td>流程标准化，档期管理更有效</td></tr>
-              <tr><td>全链路总耗时</td><td>8.5 天</td><td>18 天</td><td><span class="badge badge-success">↓53%</span></td><td>整体效率显著提升</td></tr>
+              <tr><td>达人数</td><td>5 位</td><td>5 位</td><td><span class="badge badge-success">100%</span></td></tr>
+              <tr><td>CPUV 目标</td><td>¥15</td><td>¥12.5</td><td><span class="badge badge-success">120%</span></td></tr>
+              <tr><td>进店率</td><td>0.35%</td><td>0.42%</td><td><span class="badge badge-success">120%</span></td></tr>
             </tbody>
           </table>
           <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button>
             <button class="btn btn-primary" onclick="showToast('📥 内部复盘报告已导出')">📥 导出报告</button>
-            <button class="btn btn-success" onclick="showToast('📤 已推送给直管')">📤 推送给直管</button>
           </div>
         </div>
       </div>
@@ -697,7 +423,7 @@
   <div class="loading-overlay" id="loading">
     <div class="loading-box">
       <div class="spinner"></div>
-      <h3 id="loading-text">AI 正在评估 Brief...</h3>
+      <h3 id="loading-text">AI 正在处理...</h3>
     </div>
   </div>
 
@@ -712,103 +438,22 @@
       messagingSenderId: "239861095082",
       appId: "1:239861095082:web:37ccf8c0cd62bcd26e4ed3"
     };
-    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    
-    // ==================== 数据存储 ====================
+
+    // ==================== 本地存储 ====================
     const Storage = {
       get(key, defaultValue = null) {
-        try {
-          const data = localStorage.getItem('taobao_zhongcao_' + key);
-          return data ? JSON.parse(data) : defaultValue;
-        } catch (e) { return defaultValue; }
+        try { const data = localStorage.getItem('tz_' + key); return data ? JSON.parse(data) : defaultValue; } catch (e) { return defaultValue; }
       },
-      set(key, value) {
-        try { localStorage.setItem('taobao_zhongcao_' + key, JSON.stringify(value)); } catch (e) {}
-      }
+      set(key, value) { try { localStorage.setItem('tz_' + key, JSON.stringify(value)); } catch (e) {} }
     };
-    
-    // ==================== Firebase 数据同步 ====================
-    let todoCount = 0;
-    
-    // 监听Brief下发
-    function listenToBriefDispatch() {
-      if (!currentUser || currentUser.role !== 'supervisor') return;
-      
-      const briefsRef = db.ref('briefs/dispatched');
-      briefsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const briefs = Object.values(data);
-          const unreadCount = briefs.filter(b => !b.readBySupervisor).length;
-          todoCount = unreadCount;
-          updateTodoBadge();
-        } else {
-          todoCount = 0;
-          updateTodoBadge();
-        }
-      });
-    }
-    
-    // 更新待办徽章
-    function updateTodoBadge() {
-      // 更新导航栏徽章
-      const navBadge = document.getElementById('nav-todo-badge');
-      if (navBadge) {
-        navBadge.textContent = todoCount;
-        navBadge.style.display = todoCount > 0 ? 'inline' : 'none';
-      }
-      
-      // 更新模块卡片徽章
-      const moduleBadge = document.getElementById('module-todo-badge');
-      if (moduleBadge) {
-        moduleBadge.textContent = todoCount;
-        moduleBadge.style.display = todoCount > 0 ? 'block' : 'none';
-      }
-      
-      // 更新直管Brief徽章
-      updateBriefTodoBadge();
-    }
-    
-    // 下发Brief给直管
-    function dispatchBriefToSupervisor(brief, evalReport) {
-      if (!currentUser || currentUser.role !== 'downstream') {
-        showToast('⚠️ 只有下行内容角色可以下发Brief');
-        return;
-      }
-      
-      const briefId = db.ref('briefs/dispatched').push().key;
-      const dispatchData = {
-        id: briefId,
-        brief: brief,
-        evalReport: evalReport,
-        dispatchedBy: currentUser.username,
-        dispatchedAt: new Date().toISOString(),
-        readBySupervisor: false,
-        status: 'pending'
-      };
-      
-      db.ref('briefs/dispatched/' + briefId).set(dispatchData)
-        .then(() => {
-          showToast('📤 Brief已下发给直管');
-          // 同时保存到本地
-          Storage.set('current_brief', brief);
-        })
-        .catch(err => {
-          console.error('下发失败：', err);
-          showToast('⚠️ 下发失败，请检查网络');
-        });
-    }
-    
-    // 标记Brief为已读
-    function markBriefAsRead(briefId) {
-      db.ref('briefs/dispatched/' + briefId + '/readBySupervisor').set(true);
-    }
+
+    // ==================== 全局状态 ====================
+    let currentUser = null;
+    let todoCounts = { brief: 0, kol: 0, audit: 0, monitor: 0 };
 
     // ==================== 认证系统 ====================
-    let currentUser = null;
-
     function handleLogin() {
       const username = document.getElementById('login-username').value.trim() || '演示用户';
       const role = document.getElementById('login-role').value;
@@ -827,13 +472,10 @@
     function showApp() {
       document.getElementById('page-login').classList.remove('active');
       document.getElementById('app-container').style.display = 'block';
-      document.getElementById('user-display-name').textContent = `${currentUser.username} (${currentUser.role === 'downstream' ? '下行内容' : '直管执行'})`;
+      const roleText = currentUser.role === 'supervisor' ? '直管执行' : '下行内容';
+      document.getElementById('user-display-name').textContent = `${currentUser.username} (${roleText})`;
       navigateTo('home');
-      
-      // 启动 Firebase 监听
-      if (currentUser.role === 'supervisor') {
-        listenToBriefDispatch();
-      }
+      startFirebaseListeners();
     }
 
     // ==================== 页面导航 ====================
@@ -843,342 +485,529 @@
       if (page) page.classList.add('active');
       updateBreadcrumb(pageId);
       window.scrollTo(0, 0);
-      if (pageId === 'downstream-kol') initKolTable();
-      if (pageId === 'downstream-monitor') initMonitorTable();
-      if (pageId === 'supervisor-dashboard') {
-        initSupervisorDashboard();
-      }
-      if (pageId === 'downstream-brief') loadSavedBrief();
-      if (pageId === 'downstream-audit') resetDraftAuditPage();
-    }
-
-    function resetDraftAuditPage() {
-      document.getElementById('draft-upload-section').style.display = 'block';
-      document.getElementById('draft-audit-section').style.display = 'none';
+      
+      if (pageId === 'supervisor-brief') loadSupervisorBriefStatus();
+      if (pageId === 'downstream-brief') loadDownstreamBriefList();
+      if (pageId === 'downstream-kol') loadDownstreamKolList();
+      if (pageId === 'downstream-audit') loadDownstreamAuditList();
+      if (pageId === 'downstream-monitor') loadDownstreamMonitorList();
     }
 
     function updateBreadcrumb(pageId) {
       const bc = document.getElementById('breadcrumb');
       let html = '<span class="breadcrumb-item" onclick="goHome()">首页</span>';
-      if (pageId.startsWith('downstream')) {
-        html += '<span class="breadcrumb-item" onclick="navigateTo(\'downstream-workspace\')">下行内容</span>';
-        const names = { 
-          'downstream-brief': 'Brief 评估', 
-          'downstream-kol': '智能选号', 
-          'downstream-audit': '内容审核', 
-          'downstream-monitor': '发布&投流监测', 
-          'downstream-review': '投后复盘', 
-          'review-internal': '内部复盘',
-          'monitor-publish-detail': '发布进度详情',
-          'monitor-deploy-detail': '投放进度详情'
-        };
+      if (pageId.startsWith('supervisor') && pageId !== 'supervisor-dashboard') {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'supervisor-dashboard\')">直管工作台</span>';
+        const names = { 'supervisor-brief': 'Brief评估', 'supervisor-kol': '智能选号', 'supervisor-audit': '内容审核', 'supervisor-monitor': '发布监测' };
         if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
-      } else if (pageId.startsWith('supervisor')) {
-        html += '<span class="breadcrumb-item" onclick="navigateTo(\'supervisor-dashboard\')">直管看板</span>';
-        if (pageId === 'supervisor-brief-detail') {
-          html += '<span class="breadcrumb-item">Brief 详情</span>';
-        }
+      } else if (pageId.startsWith('downstream') && pageId !== 'downstream-workspace') {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'downstream-workspace\')">下行审批台</span>';
+        const names = { 'downstream-brief': 'Brief审批', 'downstream-kol': '选号确认', 'downstream-audit': '内容审核', 'downstream-monitor': '投流确认', 'downstream-review': '投后复盘' };
+        if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
       }
       bc.innerHTML = html;
     }
 
-    function goHome() {
-      navigateTo('home');
+    function goHome() { navigateTo('home'); }
+
+    // ==================== Firebase 监听 ====================
+    function startFirebaseListeners() {
+      if (!currentUser) return;
+      
+      // 监听下行待办数量
+      if (currentUser.role === 'downstream') {
+        db.ref('briefs/submitted').on('value', snap => { updateTodoBadge('brief', countPending(snap.val())); });
+        db.ref('kols/submitted').on('value', snap => { updateTodoBadge('kol', countPending(snap.val())); });
+        db.ref('drafts/submitted').on('value', snap => { updateTodoBadge('audit', countPending(snap.val())); });
+        db.ref('monitor/deploy_recommendations').on('value', snap => { updateTodoBadge('monitor', countPending(snap.val())); });
+      }
+      
+      // 监听直管审批结果
+      if (currentUser.role === 'supervisor') {
+        db.ref('briefs/submitted').on('value', snap => {
+          const data = snap.val();
+          if (data) {
+            const myBriefs = Object.values(data).filter(b => b.submittedBy === currentUser.username);
+            const rejectedCount = myBriefs.filter(b => b.status === 'rejected').length;
+            if (rejectedCount > 0) showToast(`📋 有 ${rejectedCount} 个 Brief 被打回，请修改`);
+          }
+        });
+      }
     }
 
-    // ==================== 达人表格 ====================
-    function initKolTable() {
-      const data = Storage.get('kol_data', [
-        { name: '@面包疙瘩', platform: '小红书', cpm: '¥18.5', cpe: '¥2.3', cpuv: '¥11.2', recommend: '强烈推荐', attribute: '代理' },
-        { name: '@gowithme', platform: '小红书', cpm: '¥15.2', cpe: '¥1.8', cpuv: '¥13.5', recommend: '推荐', attribute: '矩阵号' },
-        { name: '@辣妈celia', platform: '小红书', cpm: '¥22.0', cpe: '¥2.8', cpuv: '¥14.8', recommend: '可考虑', attribute: '个人号' },
-        { name: '@白杨刀', platform: '小红书', cpm: '¥16.8', cpe: '¥2.1', cpuv: '¥12.5', recommend: '推荐', attribute: '代理' },
-        { name: '@豆豆睡醒了', platform: '小红书', cpm: '¥14.5', cpe: '¥1.6', cpuv: '¥15.2', recommend: '可考虑', attribute: '矩阵号' }
-      ]);
-      const tbody = document.getElementById('kol-table-body');
-      if (!tbody) return;
-      tbody.innerHTML = data.map((d, i) => `
-        <tr>
-          <td><b>${d.name}</b></td>
-          <td><span class="badge badge-info">${d.platform}</span></td>
-          <td><a href="#" style="color: #165dff;">查看</a></td>
-          <td>${d.cpm}</td>
-          <td>${d.cpe}</td>
-          <td>${d.cpuv}</td>
-          <td><span class="badge badge-${d.recommend === '强烈推荐' ? 'success' : d.recommend === '推荐' ? 'success' : 'warning'}">${d.recommend}</span></td>
-          <td><span class="badge badge-${d.attribute === '代理' ? 'purple' : d.attribute === '矩阵号' ? 'warning' : 'info'}">${d.attribute}</span></td>
-          <td>
-            <div class="dropdown">
-              <button class="dropdown-btn" onclick="toggleDropdown(this)">操作 ▾</button>
-              <div class="dropdown-content">
-                <a href="#" onclick="nextStep('${d.name}', 'merchant')">📤 推荐给商家</a>
-                <a href="#" onclick="nextStep('${d.name}', 'supervisor')">📤 推送给直管</a>
-                <a href="#" onclick="nextStep('${d.name}', 'matrix')">📤 推送给矩阵号团队</a>
-              </div>
+    function countPending(data) {
+      if (!data) return 0;
+      return Object.values(data).filter(item => item.status === 'pending').length;
+    }
+
+    function updateTodoBadge(type, count) {
+      todoCounts[type] = count;
+      const badgeId = currentUser.role === 'downstream' ? `ds-${type}-badge` : `sv-${type}-badge`;
+      const badge = document.getElementById(badgeId);
+      if (badge) {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'block' : 'none';
+      }
+      // 更新导航栏总数
+      const total = Object.values(todoCounts).reduce((a, b) => a + b, 0);
+      const navBadge = document.getElementById('nav-todo-badge');
+      if (navBadge) { navBadge.textContent = total; navBadge.style.display = total > 0 ? 'inline' : 'none'; }
+      const moduleBadge = document.getElementById('module-todo-badge');
+      if (moduleBadge) { moduleBadge.textContent = total; moduleBadge.style.display = total > 0 ? 'block' : 'none'; }
+    }
+
+    // ==================== 直管 - Brief 上传 ====================
+    function handleSupervisorBriefUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      document.getElementById('sv-brief-file-name').style.display = 'block';
+      document.getElementById('sv-brief-file-name').textContent = `📎 已选择：${file.name}`;
+      showToast('📄 正在解析 Word 文档...');
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
+          .then(function(result) {
+            const parsed = parseBriefContent(result.value);
+            document.getElementById('sv-brief-brand').value = parsed.brand;
+            document.getElementById('sv-brief-product').value = parsed.product;
+            document.getElementById('sv-brief-selling-points').value = parsed.sellingPoints;
+            document.getElementById('sv-brief-target-audience').value = parsed.targetAudience;
+            document.getElementById('sv-brief-cpuv-target').value = parsed.cpuvTarget;
+            document.getElementById('sv-brief-shop-rate-target').value = parsed.shopRateTarget;
+            document.getElementById('sv-brief-content-direction').value = parsed.contentDirection;
+            document.getElementById('sv-brief-parse-preview').style.display = 'block';
+            document.getElementById('sv-brief-submit-btn').style.display = 'inline-block';
+            showToast('✅ Word 解析完成，请检查并修正');
+          })
+          .catch(err => { showToast('⚠️ 解析失败，请检查格式'); console.error(err); });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function parseBriefContent(text) {
+      const result = { brand: '', product: '', sellingPoints: '', targetAudience: '', cpuvTarget: '', shopRateTarget: '', contentDirection: '' };
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      const patterns = {
+        brand: [/品牌/, /brand/i], product: [/产品/, /product/i], sellingPoints: [/卖点/, /亮点/],
+        targetAudience: [/人群/, /目标/, /受众/], cpuvTarget: [/CPUV/, /cpuv/], shopRateTarget: [/进店率/],
+        contentDirection: [/内容方向/, /内容要求/]
+      };
+      let currentField = null;
+      lines.forEach(line => {
+        let found = false;
+        for (const [field, pats] of Object.entries(patterns)) {
+          if (pats.some(p => p.test(line))) { currentField = field; found = true; const parts = line.split(/[：:]/); if (parts.length > 1) result[field] = parts.slice(1).join(':').trim(); break; }
+        }
+        if (!found && currentField) result[currentField] += (result[currentField] ? '\n' : '') + line;
+      });
+      for (const key in result) result[key] = result[key].trim();
+      return result;
+    }
+
+    function submitSupervisorBrief() {
+      const brief = {
+        brand: document.getElementById('sv-brief-brand').value.trim(),
+        product: document.getElementById('sv-brief-product').value.trim(),
+        sellingPoints: document.getElementById('sv-brief-selling-points').value.trim(),
+        targetAudience: document.getElementById('sv-brief-target-audience').value.trim(),
+        cpuvTarget: document.getElementById('sv-brief-cpuv-target').value,
+        shopRateTarget: document.getElementById('sv-brief-shop-rate-target').value,
+        contentDirection: document.getElementById('sv-brief-content-direction').value.trim()
+      };
+      if (!brief.brand || !brief.product) { showToast('⚠️ 请至少填写品牌和产品'); return; }
+      
+      const briefId = db.ref('briefs/submitted').push().key;
+      db.ref('briefs/submitted/' + briefId).set({
+        id: briefId, brief, submittedBy: currentUser.username, submittedAt: new Date().toISOString(),
+        status: 'pending', aiEval: generateBriefEval(brief)
+      }).then(() => {
+        showToast('📤 Brief 已提交给下行审批');
+        loadSupervisorBriefStatus();
+      }).catch(err => { showToast('⚠️ 提交失败：' + err.message); });
+    }
+
+    function generateBriefEval(brief) {
+      const evals = [];
+      const fields = ['brand', 'product', 'sellingPoints', 'targetAudience'];
+      const filled = fields.filter(f => brief[f]).length;
+      evals.push({ dim: '完整性', status: filled === fields.length ? 'success' : 'warning', label: filled === fields.length ? '✅ 完整' : '⚠️ 需补充', desc: `必填项 ${filled}/${fields.length}` });
+      if (brief.cpuvTarget) {
+        const cpuv = parseFloat(brief.cpuvTarget);
+        evals.push({ dim: 'CPUV目标', status: cpuv >= 10 && cpuv <= 20 ? 'success' : 'warning', label: cpuv >= 10 && cpuv <= 20 ? '✅ 合理' : '⚠️ 需调整', desc: `CPUV ${cpuv}元` });
+      }
+      return evals;
+    }
+
+    function loadSupervisorBriefStatus() {
+      if (!currentUser || currentUser.role !== 'supervisor') return;
+      db.ref('briefs/submitted').once('value', snap => {
+        const data = snap.val();
+        if (!data) {
+          document.getElementById('supervisor-brief-upload-card').style.display = 'block';
+          document.getElementById('supervisor-brief-submitted-card').style.display = 'none';
+          return;
+        }
+        const myBriefs = Object.values(data).filter(b => b.submittedBy === currentUser.username).reverse();
+        if (myBriefs.length === 0) {
+          document.getElementById('supervisor-brief-upload-card').style.display = 'block';
+          document.getElementById('supervisor-brief-submitted-card').style.display = 'none';
+          return;
+        }
+        document.getElementById('supervisor-brief-upload-card').style.display = 'none';
+        document.getElementById('supervisor-brief-submitted-card').style.display = 'block';
+        const latest = myBriefs[0];
+        const statusHtml = `
+          <div class="approval-item ${latest.status}">
+            <div class="approval-header">
+              <h4>${latest.brief.brand} - ${latest.brief.product}</h4>
+              <span class="badge badge-${latest.status === 'approved' ? 'success' : latest.status === 'rejected' ? 'danger' : 'warning'}">
+                ${latest.status === 'approved' ? '✅ 已通过' : latest.status === 'rejected' ? '❌ 已打回' : '⏳ 审批中'}
+              </span>
             </div>
-          </td>
+            <p style="font-size: 0.8rem; color: #86909c;">提交时间：${new Date(latest.submittedAt).toLocaleString('zh-CN')}</p>
+            ${latest.status === 'rejected' ? `<div class="reject-reason"><b>打回意见：</b>${latest.rejectReason || '无'}</div>` : ''}
+            ${latest.status === 'rejected' ? `<div class="action-bar"><button class="btn btn-primary" onclick="document.getElementById('supervisor-brief-upload-card').style.display='block'; document.getElementById('supervisor-brief-submitted-card').style.display='none';">✏️ 修改后重新提交</button></div>` : ''}
+          </div>
+        `;
+        document.getElementById('sv-brief-status-content').innerHTML = statusHtml;
+      });
+    }
+
+    // ==================== 直管 - 智能选号 ====================
+    function handleSupervisorKolUpload(input) {
+      const file = input.files[0];
+      if (file) {
+        showToast('📊 达人数据已上传，AI 生成推荐中...');
+        document.getElementById('sv-kol-submit-btn').style.display = 'inline-block';
+        document.getElementById('sv-kol-recommended-card').style.display = 'block';
+        loadMockKolTable();
+      }
+    }
+
+    function loadMockKolTable() {
+      const kols = [
+        { name: '@面包疙瘩', platform: '小红书', cpm: '¥18.5', cpe: '¥2.3', cpuv: '¥11.2', level: '强烈推荐' },
+        { name: '@gowithme', platform: '小红书', cpm: '¥15.2', cpe: '¥1.8', cpuv: '¥13.5', level: '推荐' },
+        { name: '@白杨刀', platform: '小红书', cpm: '¥16.8', cpe: '¥2.1', cpuv: '¥12.5', level: '推荐' },
+        { name: '@辣妈celia', platform: '小红书', cpm: '¥22.0', cpe: '¥2.8', cpuv: '¥14.8', level: '可考虑' },
+        { name: '@豆豆睡醒了', platform: '小红书', cpm: '¥14.5', cpe: '¥1.6', cpuv: '¥15.2', level: '可考虑' }
+      ];
+      document.getElementById('sv-kol-table-body').innerHTML = kols.map((k, i) => `
+        <tr>
+          <td><b>${k.name}</b></td><td><span class="badge badge-info">${k.platform}</span></td>
+          <td>${k.cpm}</td><td>${k.cpe}</td><td>${k.cpuv}</td>
+          <td><span class="badge badge-${k.level === '强烈推荐' ? 'success' : k.level === '推荐' ? 'success' : 'warning'}">${k.level}</span></td>
+          <td><input type="checkbox" id="sv-kol-check-${i}" checked></td>
         </tr>
       `).join('');
     }
 
-    // ==================== 监测表格 ====================
-    function initMonitorTable() {
-      const data = Storage.get('monitor_data', [
-        { name: '@面包疙瘩', status: '已确认完稿', estDate: '2026-03-18', actDate: '2026-03-20', link: 'https://www.xiaohongshu.com/explore/69bcbb7c000000001e00ec08', deploy: '可投放', inDeploy: true, cpuv: '¥11.2', target: '¥15', rate: '134%' },
-        { name: '@gowithme', status: '已确认完稿', estDate: '2026-03-14', actDate: '2026-03-15', link: 'https://www.xiaohongshu.com/explore/69b66b4b000000001a02ebf5', deploy: '可投放', inDeploy: true, cpuv: '¥13.5', target: '¥15', rate: '111%' },
-        { name: '@辣妈celia', status: '商家修改中', estDate: '2026-03-18', actDate: '-', link: '-', deploy: '待评估', inDeploy: false, cpuv: '-', target: '¥15', rate: '-' },
-        { name: '@白杨刀', status: '已确认完稿', estDate: '2026-03-19', actDate: '2026-03-20', link: 'https://www.xiaohongshu.com/explore/69bcce9e000000001b003423', deploy: '可投放', inDeploy: true, cpuv: '¥12.5', target: '¥15', rate: '120%' },
-        { name: '@豆豆睡醒了', status: '正在进行初稿', estDate: '2026-03-14', actDate: '-', link: '-', deploy: '待评估', inDeploy: false, cpuv: '-', target: '¥15', rate: '-' }
-      ]);
-      
-      // 计算晴雨表数据
-      const total = data.length;
-      const published = data.filter(d => d.actDate !== '-').length;
-      const unpublished = total - published;
-      const qualified = data.filter(d => d.deploy === '可投放').length;
-      const unqualified = total - qualified;
-      
-      // 更新晴雨表
-      document.getElementById('publish-total').textContent = total;
-      document.getElementById('publish-on-time').textContent = published;
-      document.getElementById('publish-delayed').textContent = unpublished;
-      document.getElementById('publish-rate').textContent = Math.round(published / total * 100) + '%';
-      document.getElementById('publish-progress-bar').style.width = (published / total * 100) + '%';
-      
-      document.getElementById('deploy-total').textContent = total;
-      document.getElementById('deploy-qualified').textContent = qualified;
-      document.getElementById('deploy-unqualified').textContent = unqualified;
-      document.getElementById('deploy-rate').textContent = Math.round(qualified / total * 100) + '%';
-      document.getElementById('deploy-progress-bar').style.width = (qualified / total * 100) + '%';
+    function submitSupervisorKol() {
+      const kols = [
+        { name: '@面包疙瘩', platform: '小红书', cpuv: '¥11.2', level: '强烈推荐' },
+        { name: '@gowithme', platform: '小红书', cpuv: '¥13.5', level: '推荐' },
+        { name: '@白杨刀', platform: '小红书', cpuv: '¥12.5', level: '推荐' }
+      ];
+      db.ref('kols/submitted').push({
+        kols, submittedBy: currentUser.username, submittedAt: new Date().toISOString(), status: 'pending'
+      }).then(() => { showToast('📤 达人推荐已提交给下行确认'); });
     }
-    
-    // 显示监测详情
-    function showMonitorDetail(type) {
-      const data = Storage.get('monitor_data', [
-        { name: '@面包疙瘩', status: '已确认完稿', estDate: '2026-03-18', actDate: '2026-03-20', link: 'https://www.xiaohongshu.com/explore/69bcbb7c000000001e00ec08', deploy: '可投放', inDeploy: true, cpuv: '¥11.2', target: '¥15', rate: '134%' },
-        { name: '@gowithme', status: '已确认完稿', estDate: '2026-03-14', actDate: '2026-03-15', link: 'https://www.xiaohongshu.com/explore/69b66b4b000000001a02ebf5', deploy: '可投放', inDeploy: true, cpuv: '¥13.5', target: '¥15', rate: '111%' },
-        { name: '@辣妈celia', status: '商家修改中', estDate: '2026-03-18', actDate: '-', link: '-', deploy: '待评估', inDeploy: false, cpuv: '-', target: '¥15', rate: '-' },
-        { name: '@白杨刀', status: '已确认完稿', estDate: '2026-03-19', actDate: '2026-03-20', link: 'https://www.xiaohongshu.com/explore/69bcce9e000000001b003423', deploy: '可投放', inDeploy: true, cpuv: '¥12.5', target: '¥15', rate: '120%' },
-        { name: '@豆豆睡醒了', status: '正在进行初稿', estDate: '2026-03-14', actDate: '-', link: '-', deploy: '待评估', inDeploy: false, cpuv: '-', target: '¥15', rate: '-' }
-      ]);
+
+    // ==================== 直管 - 内容审核 ====================
+    function handleSupervisorAuditUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      document.getElementById('sv-audit-file-name').style.display = 'block';
+      document.getElementById('sv-audit-file-name').textContent = `📎 已选择：${file.name}`;
       
-      if (type === 'publish') {
-        const tbody = document.getElementById('publish-detail-body');
-        tbody.innerHTML = data.map(d => `
-          <tr>
-            <td><b>${d.name}</b></td>
-            <td><span class="badge badge-${d.status === '已确认完稿' ? 'success' : d.status === '商家修改中' ? 'warning' : 'info'}">${d.status}</span></td>
-            <td>${d.estDate}</td>
-            <td>${d.actDate}</td>
-            <td>${d.link !== '-' ? `<a href="${d.link}" target="_blank" style="color: #165dff;">查看</a>` : '-'}</td>
-            <td><span class="badge badge-${d.actDate !== '-' ? 'success' : 'warning'}">${d.actDate !== '-' ? '✅ 已发布' : '⏳ 未发布'}</span></td>
-          </tr>
-        `).join('');
-        navigateTo('monitor-publish-detail');
-      } else if (type === 'deploy') {
-        const tbody = document.getElementById('deploy-detail-body');
-        tbody.innerHTML = data.map(d => `
-          <tr>
-            <td><b>${d.name}</b></td>
-            <td>${d.cpuv}</td>
-            <td>${d.target}</td>
-            <td style="color: ${d.rate !== '-' ? '#00b42a' : '#86909c'}; font-weight: bold;">${d.rate}</td>
-            <td><span class="badge badge-${d.deploy === '可投放' ? 'success' : 'warning'}">${d.deploy === '可投放' ? '✅ 符合' : '⏳ 不符合'}</span></td>
-            <td>${d.link !== '-' ? `<a href="${d.link}" target="_blank" style="color: #165dff;">查看</a>` : '-'}</td>
-          </tr>
-        `).join('');
-        navigateTo('monitor-deploy-detail');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
+          .then(function(result) {
+            const content = result.value;
+            const creatorName = content.split('\n').find(l => l.includes('@'))?.trim() || '达人';
+            document.getElementById('sv-audit-creator').value = creatorName;
+            document.getElementById('sv-audit-content').value = content;
+            
+            // AI 审核
+            const issues = runContentAudit(content);
+            document.getElementById('sv-audit-issues').innerHTML = issues.length === 0 
+              ? '<p style="color: #00b42a;">✅ AI 未发现问题，稿件符合要求</p>'
+              : issues.map(i => `<div style="margin-bottom: 0.5rem;"><span class="badge badge-${i.type === 'error' ? 'danger' : 'warning'}">${i.label}</span> ${i.desc}</div>`).join('');
+            
+            document.getElementById('sv-audit-parse-preview').style.display = 'block';
+            document.getElementById('sv-audit-submit-btn').style.display = 'inline-block';
+            showToast('✅ AI 审核完成，请检查并修正');
+          })
+          .catch(err => { showToast('⚠️ 解析失败'); console.error(err); });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function runContentAudit(content) {
+      const issues = [];
+      const errorDict = { '五重生态': '五重经典信号肽', '抗氧提亮': '抗氧化提亮' };
+      Object.entries(errorDict).forEach(([wrong, correct]) => {
+        if (content.includes(wrong)) issues.push({ type: 'error', label: '❌ 文案错误', desc: `"${wrong}" 应为 "${correct}"` });
+      });
+      if (content.length < 100) issues.push({ type: 'warning', label: '⚠️ 内容过短', desc: '建议补充更多卖点描述' });
+      return issues;
+    }
+
+    function submitSupervisorAudit() {
+      const draft = {
+        creator: document.getElementById('sv-audit-creator').value,
+        content: document.getElementById('sv-audit-content').value,
+        submittedBy: currentUser.username,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      };
+      db.ref('drafts/submitted').push(draft)
+        .then(() => { showToast('📤 内容已提交给下行审批'); navigateTo('supervisor-dashboard'); })
+        .catch(err => { showToast('⚠️ 提交失败：' + err.message); });
+    }
+
+    // ==================== 直管 - 发布监测 ====================
+    function handleSupervisorMonitorUpload(input) {
+      const file = input.files[0];
+      if (file) {
+        showToast('📊 发布数据已上传');
+        document.getElementById('sv-monitor-submit-btn').style.display = 'inline-block';
+        document.getElementById('sv-monitor-data-card').style.display = 'block';
+        loadMockMonitorTable();
       }
     }
 
-    // ==================== 直管看板 ====================
-    function initSupervisorDashboard() {
-      // 更新Brief代办徽章
-      updateBriefTodoBadge();
+    function loadMockMonitorTable() {
+      const data = [
+        { name: '@面包疙瘩', status: '已发布', date: '2026-03-20', link: 'https://...', cpuv: '¥11.2', recommend: true },
+        { name: '@gowithme', status: '已发布', date: '2026-03-15', link: 'https://...', cpuv: '¥13.5', recommend: true },
+        { name: '@辣妈celia', status: '制作中', date: '-', link: '-', cpuv: '-', recommend: false },
+        { name: '@白杨刀', status: '已发布', date: '2026-03-20', link: 'https://...', cpuv: '¥12.5', recommend: true },
+        { name: '@豆豆睡醒了', status: '待发布', date: '-', link: '-', cpuv: '-', recommend: false }
+      ];
+      document.getElementById('sv-monitor-table-body').innerHTML = data.map((d, i) => `
+        <tr>
+          <td><b>${d.name}</b></td>
+          <td><span class="badge badge-${d.status === '已发布' ? 'success' : 'warning'}">${d.status}</span></td>
+          <td>${d.date}</td><td>${d.link !== '-' ? '<a href="#" style="color: #165dff;">查看</a>' : '-'}</td>
+          <td>${d.cpuv}</td>
+          <td><input type="checkbox" id="sv-monitor-rec-${i}" ${d.recommend ? 'checked' : ''}></td>
+        </tr>
+      `).join('');
     }
-    
-    // 查看Brief详情
-    function viewSupervisorBrief(briefId) {
-      const briefRef = db.ref('briefs/dispatched/' + briefId);
-      briefRef.once('value', (snapshot) => {
-        const brief = snapshot.val();
-        if (!brief) {
-          showToast('⚠️ Brief不存在');
-          return;
-        }
-        
-        // 标记为已读
-        markBriefAsRead(briefId);
-        
-        const container = document.getElementById('supervisor-brief-detail-content');
-        container.innerHTML = `
-          <div class="card-header">
-            <h2>${brief.brief.brand} - ${brief.brief.product}</h2>
-            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
-          </div>
-          
+
+    function submitSupervisorMonitor() {
+      const recommendations = [
+        { name: '@面包疙瘩', cpuv: '¥11.2', recommend: true },
+        { name: '@gowithme', cpuv: '¥13.5', recommend: true },
+        { name: '@白杨刀', cpuv: '¥12.5', recommend: true }
+      ];
+      db.ref('monitor/deploy_recommendations').push({
+        recommendations, submittedBy: currentUser.username, submittedAt: new Date().toISOString(), status: 'pending'
+      }).then(() => { showToast('📤 投流推荐已提交给下行确认'); });
+    }
+
+    // ==================== 下行 - Brief 审批 ====================
+    function loadDownstreamBriefList() {
+      if (!currentUser || currentUser.role !== 'downstream') return;
+      db.ref('briefs/submitted').once('value', snap => {
+        const data = snap.val();
+        const container = document.getElementById('ds-brief-list');
+        if (!data) { container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待审批 Brief</p></div>'; return; }
+        const briefs = Object.entries(data).filter(([_, b]) => b.status === 'pending').reverse();
+        container.innerHTML = briefs.length === 0 
+          ? '<div class="empty-state"><div class="icon">✅</div><p>所有 Brief 已审批完成</p></div>'
+          : briefs.map(([id, b]) => `
+            <div class="approval-item pending" onclick="viewDownstreamBrief('${id}')">
+              <div class="approval-header">
+                <h4>${b.brief.brand} - ${b.brief.product}</h4>
+                <span class="badge badge-warning">待审批</span>
+              </div>
+              <p style="font-size: 0.8rem; color: #86909c;">提交人：${b.submittedBy} | 时间：${new Date(b.submittedAt).toLocaleString('zh-CN')}</p>
+            </div>
+          `).join('');
+      });
+    }
+
+    function viewDownstreamBrief(id) {
+      db.ref('briefs/submitted/' + id).once('value', snap => {
+        const b = snap.val();
+        if (!b) return;
+        document.getElementById('ds-brief-detail-content').innerHTML = `
+          <div class="card-header"><h2>${b.brief.brand} - ${b.brief.product}</h2><button class="btn btn-outline" onclick="navigateTo('downstream-brief')">返回</button></div>
           <table style="margin-bottom: 1.5rem;">
-            <tr><th style="width: 120px;">品牌</th><td>${brief.brief.brand}</td></tr>
-            <tr><th>产品</th><td>${brief.brief.product}</td></tr>
-            <tr><th>核心卖点</th><td>${brief.brief.sellingPoints || '-'}</td></tr>
-            <tr><th>目标人群</th><td>${brief.brief.targetAudience || '-'}</td></tr>
-            <tr><th>CPUV 目标</th><td>${brief.brief.cpuvTarget ? '¥' + brief.brief.cpuvTarget : '-'}</td></tr>
-            <tr><th>进店率目标</th><td>${brief.brief.shopRateTarget ? brief.brief.shopRateTarget + '%' : '-'}</td></tr>
-            <tr><th>内容方向</th><td>${brief.brief.contentDirection || '-'}</td></tr>
+            <tr><th style="width: 120px;">品牌</th><td>${b.brief.brand}</td></tr>
+            <tr><th>产品</th><td>${b.brief.product}</td></tr>
+            <tr><th>核心卖点</th><td>${b.brief.sellingPoints || '-'}</td></tr>
+            <tr><th>目标人群</th><td>${b.brief.targetAudience || '-'}</td></tr>
+            <tr><th>CPUV 目标</th><td>${b.brief.cpuvTarget ? '¥' + b.brief.cpuvTarget : '-'}</td></tr>
+            <tr><th>进店率目标</th><td>${b.brief.shopRateTarget ? b.brief.shopRateTarget + '%' : '-'}</td></tr>
+            <tr><th>内容方向</th><td>${b.brief.contentDirection || '-'}</td></tr>
           </table>
-          
-          <h3 style="margin-bottom: 1rem; color: #1d39c4;">🤖 AI 评估报告</h3>
-          <table>
-            <thead><tr><th>评估维度</th><th>状态</th><th>评估说明</th><th>建议</th></tr></thead>
-            <tbody>
-              ${brief.evalReport ? brief.evalReport.map(r => `
-                <tr>
-                  <td>${r.dim}</td>
-                  <td><span class="badge badge-${r.status}">${r.label}</span></td>
-                  <td>${r.desc}</td>
-                  <td>${r.suggest}</td>
-                </tr>
-              `).join('') : '<tr><td colspan="4" style="text-align: center; color: #86909c;">暂无评估报告</td></tr>'}
-            </tbody>
-          </table>
-          
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
-            <button class="btn btn-success" onclick="showToast('✅ Brief已确认')">✅ 确认接收</button>
+          ${b.aiEval ? `<h4 style="margin-bottom: 0.8rem;">🤖 AI 评估报告</h4><table><thead><tr><th>维度</th><th>状态</th><th>说明</th></tr></thead><tbody>${b.aiEval.map(e => `<tr><td>${e.dim}</td><td><span class="badge badge-${e.status}">${e.label}</span></td><td>${e.desc}</td></tr>`).join('')}</tbody></table>` : ''}
+          <div class="approval-actions">
+            <button class="btn btn-success" onclick="approveBrief('${id}')">✅ 确认通过</button>
+            <button class="btn btn-danger" onclick="showRejectBox('brief', '${id}')">❌ 打回修改</button>
+          </div>
+          <div class="reject-reason-box" id="reject-box-brief">
+            <label>打回意见（必填）：</label>
+            <textarea id="reject-reason-brief" placeholder="请说明需要修改的内容..."></textarea>
+            <div class="action-bar"><button class="btn btn-danger" onclick="rejectBrief('brief', '${id}')">确认打回</button></div>
           </div>
         `;
-        
-        navigateTo('supervisor-brief-detail');
+        navigateTo('downstream-brief-detail');
       });
     }
 
-    // ==================== 交互函数 ====================
-    function toggleDropdown(btn) {
-      const content = btn.nextElementSibling;
-      document.querySelectorAll('.dropdown-content').forEach(d => { if (d !== content) d.classList.remove('show'); });
-      content.classList.toggle('show');
-    }
-
-    function nextStep(name, target) {
-      const names = { merchant: '商家', supervisor: '直管', matrix: '矩阵号团队' };
-      showToast(`📤 ${name} 已推送给${names[target]}`);
-      document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-    }
-
-    function addToDelivery(el, name) {
-      const row = el.parentElement;
-      row.querySelectorAll('.select-yes, .select-no').forEach(s => s.classList.remove('selected'));
-      el.classList.add('selected');
-      const isYes = el.classList.contains('select-yes');
-      showToast(isYes ? `✅ ${name} 已加入投放，将推送给投流团队` : `❌ ${name} 已取消投放`);
-    }
-
-    function evaluateBrief() {
-      const brief = Storage.get('current_brief', {});
-      const loading = document.getElementById('loading');
-      loading.classList.add('show');
-      document.getElementById('loading-text').textContent = 'AI 正在评估 Brief...';
-      let p = 0;
-      const interval = setInterval(() => {
-        p += 25;
-        if (p >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            loading.classList.remove('show');
-            document.getElementById('brief-eval-result').style.display = 'block';
-            generateBriefEvalReport(brief);
-            showToast('✅ Brief 评估完成');
-          }, 300);
-        }
-      }, 400);
-    }
-
-    function generateBriefEvalReport(brief) {
-      const tbody = document.getElementById('brief-eval-tbody');
-      const evalResults = [];
-
-      // 完整性检查
-      const requiredFields = ['brand', 'product', 'sellingPoints', 'targetAudience'];
-      const filledCount = requiredFields.filter(f => brief[f] && brief[f].trim()).length;
-      evalResults.push({
-        dim: '完整性检查',
-        status: filledCount === requiredFields.length ? 'success' : 'warning',
-        label: filledCount === requiredFields.length ? '✅ 通过' : '⚠️ 需补充',
-        desc: `必填项 ${filledCount}/${requiredFields.length}`,
-        suggest: filledCount < requiredFields.length ? '请补充缺失的必填项' : '无'
+    function approveBrief(id) {
+      db.ref('briefs/submitted/' + id + '/status').set('approved').then(() => {
+        showToast('✅ Brief 已确认通过');
+        navigateTo('downstream-brief');
       });
-
-      // 目标合理性
-      if (brief.cpuvTarget) {
-        const cpuv = parseFloat(brief.cpuvTarget);
-        if (cpuv < 10) {
-          evalResults.push({ dim: '目标合理性', status: 'warning', label: '⚠️ 需优化', desc: `CPUV 目标 ${cpuv} 元过低`, suggest: '建议调整至 12-18 元' });
-        } else if (cpuv <= 20) {
-          evalResults.push({ dim: '目标合理性', status: 'success', label: '✅ 通过', desc: `CPUV 目标 ${cpuv} 元在合理区间`, suggest: '无' });
-        } else {
-          evalResults.push({ dim: '目标合理性', status: 'warning', label: '⚠️ 偏高', desc: `CPUV 目标 ${cpuv} 元高于行业均值`, suggest: '建议评估 ROI' });
-        }
-      }
-
-      // 人群清晰度
-      if (brief.targetAudience && brief.targetAudience.length > 20) {
-        evalResults.push({ dim: '人群清晰度', status: 'success', label: '✅ 通过', desc: '目标人群描述详细可执行', suggest: '可补充兴趣标签' });
-      } else if (brief.targetAudience) {
-        evalResults.push({ dim: '人群清晰度', status: 'warning', label: '⚠️ 需细化', desc: '目标人群描述过于简略', suggest: '建议补充年龄、地域、职业等信息' });
-      }
-
-      // 内容方向
-      if (brief.contentDirection) {
-        const directions = brief.contentDirection.split(/[、,，\n]/).filter(d => d.trim());
-        if (directions.length > 5) {
-          evalResults.push({ dim: '内容方向', status: 'warning', label: '⚠️ 需聚焦', desc: `${directions.length} 个内容方向过于分散`, suggest: '建议聚焦 2-3 个核心方向' });
-        } else {
-          evalResults.push({ dim: '内容方向', status: 'success', label: '✅ 通过', desc: `内容方向 ${directions.length} 个，聚焦合理`, suggest: '无' });
-        }
-      }
-
-      tbody.innerHTML = evalResults.map(r => `<tr><td>${r.dim}</td><td><span class="badge badge-${r.status}">${r.label}</span></td><td>${r.desc}</td><td>${r.suggest}</td></tr>`).join('');
     }
 
-    function dispatchBrief() {
-      const brief = Storage.get('current_brief');
-      if (!brief) {
-        showToast('⚠️ 请先保存 Brief');
-        return;
-      }
+    function showRejectBox(type, id) {
+      document.getElementById(`reject-box-${type}`).style.display = 'block';
+    }
+
+    function rejectBrief(type, id) {
+      const reason = document.getElementById(`reject-reason-${type}`).value.trim();
+      if (!reason) { showToast('⚠️ 请填写打回意见'); return; }
+      db.ref('briefs/submitted/' + id).update({ status: 'rejected', rejectReason: reason, reviewedAt: new Date().toISOString() })
+        .then(() => { showToast('❌ Brief 已打回'); navigateTo('downstream-brief'); });
+    }
+
+    // ==================== 下行 - 选号确认 ====================
+    function loadDownstreamKolList() {
+      if (!currentUser || currentUser.role !== 'downstream') return;
+      db.ref('kols/submitted').once('value', snap => {
+        const data = snap.val();
+        const container = document.getElementById('ds-kol-list');
+        if (!data) { container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待确认达人推荐</p></div>'; return; }
+        const kols = Object.values(data).filter(k => k.status === 'pending').reverse();
+        container.innerHTML = kols.length === 0 
+          ? '<div class="empty-state"><div class="icon">✅</div><p>所有达人推荐已确认完成</p></div>'
+          : kols.map((k, idx) => `
+            <div class="approval-item pending">
+              <h4>达人推荐 List（提交人：${k.submittedBy}）</h4>
+              <table style="margin-top: 0.8rem;">
+                <thead><tr><th>KOL</th><th>平台</th><th>CPUV</th><th>推荐等级</th></tr></thead>
+                <tbody>${k.kols.map(kol => `<tr><td><b>${kol.name}</b></td><td>${kol.platform}</td><td>${kol.cpuv}</td><td><span class="badge badge-success">${kol.level}</span></td></tr>`).join('')}</tbody>
+              </table>
+              <div class="approval-actions">
+                <button class="btn btn-success" onclick="approveKolRecommendation('${k.id}')">✅ 确认投放</button>
+                <button class="btn btn-danger" onclick="showToast('❌ 已打回，请直管重新选号')">❌ 打回重选</button>
+              </div>
+            </div>
+          `).join('');
+      });
+    }
+
+    function approveKolRecommendation(id) {
+      db.ref('kols/submitted/' + id + '/status').set('approved').then(() => {
+        showToast('✅ 达人推荐已确认');
+        loadDownstreamKolList();
+      });
+    }
+
+    // ==================== 下行 - 内容审核 ====================
+    function loadDownstreamAuditList() {
+      if (!currentUser || currentUser.role !== 'downstream') return;
+      db.ref('drafts/submitted').once('value', snap => {
+        const data = snap.val();
+        const container = document.getElementById('ds-audit-list');
+        if (!data) { container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待审批内容</p></div>'; return; }
+        const drafts = Object.values(data).filter(d => d.status === 'pending').reverse();
+        container.innerHTML = drafts.length === 0 
+          ? '<div class="empty-state"><div class="icon">✅</div><p>所有内容已审批完成</p></div>'
+          : drafts.map((d, idx) => `
+            <div class="approval-item pending">
+              <div class="approval-header">
+                <h4>达人稿件 - ${d.creator}</h4>
+                <span class="badge badge-warning">待审批</span>
+              </div>
+              <p style="font-size: 0.8rem; color: #86909c;">提交人：${d.submittedBy} | 时间：${new Date(d.submittedAt).toLocaleString('zh-CN')}</p>
+              <div style="background: white; padding: 0.8rem; border-radius: 4px; margin-top: 0.5rem; max-height: 150px; overflow-y: auto;">
+                <pre style="white-space: pre-wrap; font-family: inherit; margin: 0; font-size: 0.85rem;">${d.content.substring(0, 300)}...</pre>
+              </div>
+              <div class="approval-actions">
+                <button class="btn btn-success" onclick="approveDraft('${d.id}')">✅ 确认出街</button>
+                <button class="btn btn-warning" onclick="showToast('✏️ 已打回修改，请直管调整')">✏️ 打回修改</button>
+              </div>
+            </div>
+          `).join('');
+      });
+    }
+
+    function approveDraft(id) {
+      db.ref('drafts/submitted/' + id + '/status').set('approved').then(() => {
+        showToast('✅ 内容已确认出街');
+        loadDownstreamAuditList();
+      });
+    }
+
+    // ==================== 下行 - 投流确认 ====================
+    function loadDownstreamMonitorList() {
+      if (!currentUser || currentUser.role !== 'downstream') return;
+      // 发布进度
+      const publishData = [
+        { name: '@面包疙瘩', status: '已发布', date: '2026-03-20' },
+        { name: '@gowithme', status: '已发布', date: '2026-03-15' },
+        { name: '@辣妈celia', status: '制作中', date: '-' },
+        { name: '@白杨刀', status: '已发布', date: '2026-03-20' },
+        { name: '@豆豆睡醒了', status: '待发布', date: '-' }
+      ];
+      const published = publishData.filter(d => d.status === '已发布').length;
+      document.getElementById('ds-monitor-publish-status').innerHTML = `
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+          <div style="flex: 1; text-align: center; padding: 1rem; background: #f7f8fa; border-radius: 6px;">
+            <div style="font-size: 2rem; font-weight: bold; color: #1d39c4;">${publishData.length}</div><div style="font-size: 0.8rem; color: #86909c;">总数量</div>
+          </div>
+          <div style="flex: 1; text-align: center; padding: 1rem; background: #e8ffea; border-radius: 6px;">
+            <div style="font-size: 2rem; font-weight: bold; color: #00b42a;">${published}</div><div style="font-size: 0.8rem; color: #00b42a;">已发布</div>
+          </div>
+          <div style="flex: 1; text-align: center; padding: 1rem; background: #fff7e8; border-radius: 6px;">
+            <div style="font-size: 2rem; font-weight: bold; color: #ff7d00;">${publishData.length - published}</div><div style="font-size: 0.8rem; color: #ff7d00;">未发布</div>
+          </div>
+        </div>
+        <div class="progress-bar" style="height: 8px;"><div class="progress-fill success" style="width: ${published/publishData.length*100}%;"></div></div>
+        <p style="font-size: 0.75rem; color: #86909c; margin-top: 0.4rem; text-align: center;">发布完成率 <span style="color: #00b42a; font-weight: bold;">${Math.round(published/publishData.length*100)}%</span></p>
+      `;
       
-      if (confirm('确认下发 Brief 给直管吗？')) {
-        // 获取评估报告
-        const evalResults = [];
-        const tbody = document.getElementById('brief-eval-tbody');
-        if (tbody && tbody.rows.length > 0) {
-          for (let row of tbody.rows) {
-            evalResults.push({
-              dim: row.cells[0].textContent,
-              status: row.cells[1].querySelector('.badge')?.className.match(/badge-(\w+)/)?.[1] || 'info',
-              label: row.cells[1].textContent.trim(),
-              desc: row.cells[2].textContent,
-              suggest: row.cells[3].textContent
-            });
-          }
-        }
-        
-        dispatchBriefToSupervisor(brief, evalResults);
-      }
+      // 投流推荐
+      db.ref('monitor/deploy_recommendations').once('value', snap => {
+        const data = snap.val();
+        const container = document.getElementById('ds-monitor-deploy-list');
+        if (!data) { container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待确认投流推荐</p></div>'; return; }
+        const recs = Object.values(data).filter(r => r.status === 'pending').reverse();
+        container.innerHTML = recs.length === 0 
+          ? '<div class="empty-state"><div class="icon">✅</div><p>所有投流推荐已确认完成</p></div>'
+          : recs.map(r => `
+            <div class="approval-item pending">
+              <h4>投流推荐（提交人：${r.submittedBy}）</h4>
+              <table style="margin-top: 0.8rem;">
+                <thead><tr><th>KOL</th><th>CPUV</th><th>推荐</th></tr></thead>
+                <tbody>${r.recommendations.map(rec => `<tr><td><b>${rec.name}</b></td><td>${rec.cpuv}</td><td><span class="badge badge-success">✅ 推荐投放</span></td></tr>`).join('')}</tbody>
+              </table>
+              <div class="approval-actions">
+                <button class="btn btn-success" onclick="approveDeployRecommendation('${r.id}')">✅ 确认投放</button>
+                <button class="btn btn-danger" onclick="showToast('❌ 已驳回投流推荐')">❌ 不投放</button>
+              </div>
+            </div>
+          `).join('');
+      });
     }
 
-    function returnBrief() {
-      if (confirm('确认退回 Brief 给上行吗？')) showToast('📤 Brief 已退回给上行');
+    function approveDeployRecommendation(id) {
+      db.ref('monitor/deploy_recommendations/' + id + '/status').set('approved').then(() => {
+        showToast('✅ 已确认投放');
+        loadDownstreamMonitorList();
+      });
     }
 
-    function pushAuditToMerchant() {
-      if (confirm('确认推送给商家审核吗？')) showToast('📤 已推送给商家审核');
-    }
-
-    function directSend() {
-      if (confirm('确认直接发送此内容吗？')) showToast('🚀 内容已直接发送');
-    }
-
+    // ==================== 工具函数 ====================
     function showToast(msg) {
       const toast = document.getElementById('toast');
       document.getElementById('toast-msg').textContent = msg;
@@ -1186,484 +1015,11 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.dropdown')) {
-        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
-      }
-    });
-
     // ==================== 初始化 ====================
     (function init() {
       const savedUser = Storage.get('user');
-      if (savedUser && savedUser.username) {
-        currentUser = savedUser;
-        showApp();
-      }
+      if (savedUser && savedUser.username) { currentUser = savedUser; showApp(); }
     })();
-
-    // ==================== Brief 上传功能 ====================
-    function handleBriefWordUpload(input) {
-      const file = input.files[0];
-      if (!file) return;
-      
-      if (!file.name.endsWith('.docx')) {
-        showToast('⚠️ 请上传 .docx 格式的 Word 文档');
-        return;
-      }
-      
-      document.getElementById('brief-file-name').style.display = 'block';
-      document.getElementById('brief-file-name').textContent = `📎 已选择：${file.name}`;
-      showToast('📄 正在解析 Word 文档...');
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const arrayBuffer = e.target.result;
-        
-        // 使用 mammoth.js 解析 Word 文档
-        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
-          .then(function(result) {
-            const text = result.value;
-            console.log('Word 文档内容：', text);
-            
-            // 智能解析 Brief 信息
-            const parsed = parseBriefContent(text);
-            
-            // 填充到表单
-            document.getElementById('brief-brand').value = parsed.brand || '';
-            document.getElementById('brief-product').value = parsed.product || '';
-            document.getElementById('brief-selling-points').value = parsed.sellingPoints || '';
-            document.getElementById('brief-target-audience').value = parsed.targetAudience || '';
-            document.getElementById('brief-cpuv-target').value = parsed.cpuvTarget || '';
-            document.getElementById('brief-shop-rate-target').value = parsed.shopRateTarget || '';
-            document.getElementById('brief-content-direction').value = parsed.contentDirection || '';
-            
-            // 显示预览区域和保存按钮
-            document.getElementById('brief-parse-preview').style.display = 'block';
-            document.getElementById('brief-save-btn').style.display = 'inline-block';
-            
-            showToast('✅ Word 文档解析完成，请检查并修正');
-          })
-          .catch(function(err) {
-            console.error('Word 解析错误：', err);
-            showToast('⚠️ Word 解析失败，请检查文档格式');
-          });
-      };
-      reader.readAsArrayBuffer(file);
-    }
-    
-    // 智能解析 Brief 内容
-    function parseBriefContent(text) {
-      const result = {
-        brand: '',
-        product: '',
-        sellingPoints: '',
-        targetAudience: '',
-        cpuvTarget: '',
-        shopRateTarget: '',
-        contentDirection: ''
-      };
-      
-      // 按行分割
-      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-      
-      // 关键词匹配提取
-      const keywordPatterns = {
-        brand: [/品牌/, /brand/i, /品牌名称/],
-        product: [/产品/, /product/i, /产品名称/, /推广产品/],
-        sellingPoints: [/卖点/, /亮点/, /核心卖点/, /产品亮点/, /功能/],
-        targetAudience: [/人群/, /目标/, /受众/, /目标人群/, /目标受众/, /用户画像/],
-        cpuvTarget: [/CPUV/, /cpuv/, /单次播放成本/, /CPM/],
-        shopRateTarget: [/进店率/, /进店/, /店铺访问/, /shop.*rate/i],
-        contentDirection: [/内容方向/, /内容要求/, /创作方向/, /内容建议/, /内容类型/]
-      };
-      
-      let currentField = null;
-      
-      lines.forEach(line => {
-        // 检查是否是新字段的开始
-        let foundField = false;
-        
-        for (const [field, patterns] of Object.entries(keywordPatterns)) {
-          for (const pattern of patterns) {
-            if (pattern.test(line)) {
-              currentField = field;
-              foundField = true;
-              
-              // 提取冒号后的内容
-              const parts = line.split(/[：:]/);
-              if (parts.length > 1) {
-                result[field] = parts.slice(1).join(':').trim();
-              }
-              break;
-            }
-          }
-          if (foundField) break;
-        }
-        
-        // 如果不是新字段，追加到当前字段
-        if (!foundField && currentField) {
-          const separator = result[currentField] ? '\n' : '';
-          result[currentField] += separator + line;
-        }
-      });
-      
-      // 清理结果
-      for (const key of Object.keys(result)) {
-        result[key] = result[key].trim();
-      }
-      
-      return result;
-    }
-
-    function saveBrief() {
-      const brand = document.getElementById('brief-brand').value.trim();
-      const product = document.getElementById('brief-product').value.trim();
-      const sellingPoints = document.getElementById('brief-selling-points').value.trim();
-      const targetAudience = document.getElementById('brief-target-audience').value.trim();
-      const cpuvTarget = document.getElementById('brief-cpuv-target').value;
-      const shopRateTarget = document.getElementById('brief-shop-rate-target').value;
-      const contentDirection = document.getElementById('brief-content-direction').value.trim();
-
-      if (!brand || !product) { showToast('请至少填写品牌和产品名称'); return; }
-
-      const brief = { brand, product, sellingPoints, targetAudience, cpuvTarget, shopRateTarget, contentDirection, createdAt: new Date().toISOString() };
-      Storage.set('current_brief', brief);
-      showBriefDisplay(brief);
-      showToast('💾 Brief 已保存');
-    }
-
-    function showBriefDisplay(brief) {
-      document.getElementById('brief-upload-section').style.display = 'none';
-      document.getElementById('brief-display-section').style.display = 'block';
-      document.getElementById('brief-display-title').textContent = `商家 Brief - ${brief.brand}${brief.product}`;
-      document.getElementById('display-brand').textContent = brief.brand;
-      document.getElementById('display-product').textContent = brief.product;
-      document.getElementById('display-selling-points').textContent = brief.sellingPoints || '-';
-      document.getElementById('display-target-audience').textContent = brief.targetAudience || '-';
-      document.getElementById('display-cpuv-target').textContent = brief.cpuvTarget ? `¥${brief.cpuvTarget}` : '-';
-      document.getElementById('display-shop-rate-target').textContent = brief.shopRateTarget ? `${brief.shopRateTarget}%` : '-';
-      document.getElementById('display-content-direction').textContent = brief.contentDirection || '-';
-    }
-
-    function editBrief() {
-      document.getElementById('brief-upload-section').style.display = 'block';
-      document.getElementById('brief-display-section').style.display = 'none';
-      document.getElementById('brief-eval-result').style.display = 'none';
-    }
-
-    function loadSavedBrief() {
-      const brief = Storage.get('current_brief');
-      if (brief) {
-        showBriefDisplay(brief);
-      }
-    }
-
-    // ==================== 稿件上传功能 ====================
-    function handleDraftWordUpload(input) {
-      const file = input.files[0];
-      if (!file) return;
-      
-      if (!file.name.endsWith('.docx')) {
-        showToast('⚠️ 请上传 .docx 格式的 Word 文档');
-        return;
-      }
-      
-      document.getElementById('draft-file-name').style.display = 'block';
-      document.getElementById('draft-file-name').textContent = `📎 已选择：${file.name}`;
-      showToast('📄 正在解析 Word 文档...');
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const arrayBuffer = e.target.result;
-        
-        // 使用 mammoth.js 解析 Word 文档
-        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
-          .then(function(result) {
-            const text = result.value;
-            console.log('稿件内容：', text);
-            
-            // 智能解析稿件信息
-            const parsed = parseDraftContent(text);
-            
-            // 填充到表单
-            document.getElementById('draft-creator-name').value = parsed.creatorName || '';
-            document.getElementById('draft-content').value = parsed.content || '';
-            
-            // 显示预览区域和提交按钮
-            document.getElementById('draft-parse-preview').style.display = 'block';
-            document.getElementById('draft-submit-btn').style.display = 'inline-block';
-            
-            showToast('✅ Word 文档解析完成，请检查并修正');
-          })
-          .catch(function(err) {
-            console.error('Word 解析错误：', err);
-            showToast('⚠️ Word 解析失败，请检查文档格式');
-          });
-      };
-      reader.readAsArrayBuffer(file);
-    }
-    
-    // 智能解析稿件内容
-    function parseDraftContent(text) {
-      const result = {
-        creatorName: '',
-        content: ''
-      };
-      
-      // 尝试从文件名或内容中提取达人名称
-      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-      
-      // 查找可能的达人名称（包含@或"达人"关键词的行）
-      for (const line of lines) {
-        if (line.includes('@') || line.includes('达人：') || line.includes('创作者：')) {
-          result.creatorName = line.replace(/.*[达人：|创作者：|@]/, '').trim();
-          break;
-        }
-      }
-      
-      // 如果没找到达人名称，使用整个文本作为内容
-      result.content = text;
-      
-      return result;
-    }
-
-    function loadDraftFromDingTalk() {
-      const link = document.getElementById('draft-dingtalk-link').value.trim();
-      if (!link) {
-        showToast('⚠️ 请先粘贴钉钉文档链接');
-        return;
-      }
-      
-      // 当前为预览版，提示用户手动复制粘贴
-      showToast('💡 请在钉钉中打开文档，Ctrl+A 全选复制后粘贴到下方稿件内容框');
-      
-      // 5月后端接入后将实现自动抓取
-      console.log('钉钉文档链接：', link);
-    }
-
-    function submitDraftForAudit() {
-      const creatorName = document.getElementById('draft-creator-name').value.trim();
-      const content = document.getElementById('draft-content').value.trim();
-      if (!creatorName || !content) { showToast('请填写达人名称和稿件内容'); return; }
-
-      const brief = Storage.get('current_brief', {});
-      const auditResult = runAudit(content, brief);
-      showAuditResult(creatorName, content, auditResult, brief);
-      showToast('🔍 审核完成');
-    }
-
-    function runAudit(content, brief) {
-      const issues = [];
-      let correctedContent = content;
-
-      // 产品名检查
-      const productName = brief.product || '';
-      if (productName) {
-        const wrongVariants = [productName.replace('面霜', '水乳套装'), productName.replace('面霜', '水乳'), productName.replace('面霜', '乳液')];
-        wrongVariants.forEach(wrong => {
-          if (content.includes(wrong)) {
-            issues.push({ type: '产品名错误', wrong, correct: productName });
-            correctedContent = correctedContent.replaceAll(wrong, productName);
-          }
-        });
-      }
-
-      // 常见错误词典
-      const errorDict = {
-        '五重生态': '五重经典信号肽',
-        '五重生态系统': '五重经典信号肽',
-        '双环肽+五重生态': '双环肽+五重经典信号肽',
-        '抗氧提亮': '抗氧化提亮',
-        '轻润': '轻盈润泽'
-      };
-
-      Object.keys(errorDict).forEach(wrong => {
-        if (content.includes(wrong)) {
-          issues.push({ type: '文案细节错误', wrong, correct: errorDict[wrong] });
-          correctedContent = correctedContent.replaceAll(wrong, errorDict[wrong]);
-        }
-      });
-
-      // 卖点检查
-      const sellingPoints = brief.sellingPoints || '';
-      if (sellingPoints) {
-        const points = sellingPoints.split(/[、,，\n]/).filter(p => p.trim());
-        const missingPoints = points.filter(p => !content.includes(p.trim().substring(0, 4)));
-        if (missingPoints.length > 0) {
-          issues.push({ type: '卖点遗漏', missing: missingPoints.map(p => p.trim()) });
-        }
-      }
-
-      return { issues, correctedContent };
-    }
-
-    function showAuditResult(creatorName, originalContent, auditResult, brief) {
-      document.getElementById('draft-upload-section').style.display = 'none';
-      document.getElementById('draft-audit-section').style.display = 'block';
-      document.getElementById('audit-draft-title').textContent = `待审核内容 - ${creatorName}`;
-
-      // Brief 要求
-      document.getElementById('audit-brief-requirements').innerHTML = `
-        <p><b>产品名称：</b><span class="correct-text">${brief.product || '-'}</span></p>
-        <p><b>核心卖点：</b>${brief.sellingPoints || '-'}</p>
-        <p><b>目标人群：</b>${brief.targetAudience || '-'}</p>
-      `;
-
-      // 达人初稿
-      document.getElementById('audit-draft-content').innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${originalContent}</pre>`;
-
-      // 问题列表
-      const issuesList = document.getElementById('audit-issues-list');
-      if (auditResult.issues.length === 0) {
-        issuesList.innerHTML = '<p style="color: #00b42a;">✅ 未发现问题，稿件符合 Brief 要求</p>';
-      } else {
-        issuesList.innerHTML = auditResult.issues.map(issue => {
-          if (issue.type === '产品名错误' || issue.type === '文案细节错误') {
-            return `<div style="display: flex; gap: 1rem; margin-bottom: 0.8rem;"><span class="badge badge-danger">❌ ${issue.type}</span><span style="font-size: 0.85rem;"><s style="color: #f53f3f;">${issue.wrong}</s> → <span style="color: #00b42a; font-weight: 500;">${issue.correct}</span></span></div>`;
-          } else if (issue.type === '卖点遗漏') {
-            return `<div style="display: flex; gap: 1rem; margin-bottom: 0.8rem;"><span class="badge badge-warning">⚠️ ${issue.type}</span><span style="font-size: 0.85rem;">以下卖点未在稿件中体现：${issue.missing.join('、')}</span></div>`;
-          }
-          return '';
-        }).join('');
-      }
-
-      // 修正后内容
-      document.getElementById('audit-corrected-content').innerHTML = `<pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${auditResult.correctedContent}</pre>`;
-    }
-
-    function handleDraftFileUpload(input) {
-      const file = input.files[0];
-      if (file) {
-        document.getElementById('draft-file-name').style.display = 'block';
-      }
-    }
-    
-    // ==================== 直管 Brief 评估弹窗 ====================
-    function showBriefEvalModal() {
-      document.getElementById('modal-brief-eval').style.display = 'flex';
-      updateBriefTodoBadge();
-    }
-    
-    function closeBriefEvalModal() {
-      document.getElementById('modal-brief-eval').style.display = 'none';
-    }
-    
-    function showIndustrySelect() {
-      document.getElementById('modal-industry-select').style.display = 'flex';
-    }
-    
-    function closeIndustrySelect() {
-      document.getElementById('modal-industry-select').style.display = 'none';
-    }
-    
-    function selectIndustry(industry) {
-      showToast(`🏭 已选择行业：${industry}，5月上线完整功能`);
-      closeIndustrySelect();
-    }
-    
-    function showBrandSelect() {
-      // 生成品牌列表
-      const brands = [
-        { name: '珀莱雅', icon: '💄' },
-        { name: '薇诺娜', icon: '🌿' },
-        { name: '花西子', icon: '🌸' },
-        { name: '完美日记', icon: '✨' },
-        { name: '华熙生物', icon: '🧬' },
-        { name: '自然堂', icon: '🏔️' }
-      ];
-      
-      const container = document.getElementById('brand-list-container');
-      container.innerHTML = brands.map(b => `
-        <div class="brand-card-supervisor" onclick="selectBrand('${b.name}')">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">${b.icon}</div>
-          <h4 style="color: #1d2129; margin: 0;">${b.name}</h4>
-        </div>
-      `).join('');
-      
-      document.getElementById('modal-brand-select').style.display = 'flex';
-    }
-    
-    function closeBrandSelect() {
-      document.getElementById('modal-brand-select').style.display = 'none';
-    }
-    
-    function selectBrand(brand) {
-      showToast(`🏢 已选择品牌：${brand}，5月上线完整功能`);
-      closeBrandSelect();
-    }
-    
-    function showBriefTodoList() {
-      loadSupervisorBriefTodoList();
-      document.getElementById('modal-brief-todo').style.display = 'flex';
-    }
-    
-    function closeBriefTodoList() {
-      document.getElementById('modal-brief-todo').style.display = 'none';
-    }
-    
-    // 更新Brief代办徽章
-    function updateBriefTodoBadge() {
-      const badges = ['supervisor-brief-badge', 'brief-todo-badge'];
-      badges.forEach(id => {
-        const badge = document.getElementById(id);
-        if (badge) {
-          badge.textContent = todoCount;
-          badge.style.display = todoCount > 0 ? 'block' : 'none';
-        }
-      });
-      
-      // 更新代办计数
-      const countEl = document.getElementById('brief-todo-count');
-      if (countEl) {
-        countEl.textContent = `${todoCount} 条待办`;
-      }
-    }
-    
-    // 加载直管Brief代办列表
-    function loadSupervisorBriefTodoList() {
-      if (!currentUser || currentUser.role !== 'supervisor') return;
-      
-      const briefsRef = db.ref('briefs/dispatched');
-      briefsRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        const container = document.getElementById('brief-todo-list-container');
-        if (!container) return;
-        
-        if (!data) {
-          container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待办 Brief</p></div>';
-          updateBriefTodoBadge();
-          return;
-        }
-        
-        const briefs = Object.entries(data).reverse();
-        container.innerHTML = briefs.map(([id, brief]) => `
-          <div class="brief-todo-item ${!brief.readBySupervisor ? 'unread' : ''}" onclick="viewSupervisorBriefFromModal('${id}')">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <h4 style="margin-bottom: 0.3rem; color: ${!brief.readBySupervisor ? '#1d39c4' : '#1d2129'};">
-                  ${!brief.readBySupervisor ? '🔴' : ''} ${brief.brief.brand} - ${brief.brief.product}
-                </h4>
-                <p style="font-size: 0.8rem; color: #86909c; margin: 0;">
-                  下发人：${brief.dispatchedBy} | 下发时间：${new Date(brief.dispatchedAt).toLocaleString('zh-CN')}
-                </p>
-              </div>
-              <div>
-                ${!brief.readBySupervisor ? '<span class="badge badge-danger">待查看</span>' : '<span class="badge badge-success">已查看</span>'}
-              </div>
-            </div>
-          </div>
-        `).join('');
-        
-        updateBriefTodoBadge();
-      });
-    }
-    
-    // 从弹窗查看Brief详情
-    function viewSupervisorBriefFromModal(briefId) {
-      closeBriefTodoList();
-      closeBriefEvalModal();
-      viewSupervisorBrief(briefId);
-    }
   </script>
 </body>
 </html>
