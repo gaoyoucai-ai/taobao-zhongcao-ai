@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>淘宝种草 AI 助手 - Demo V3</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f0f2f5; color: #1d2129; line-height: 1.6; }
+    .top-nav { background: #1d39c4; padding: 0.8rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+    .nav-brand { color: white; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+    .nav-brand span { font-size: 0.85rem; opacity: 0.8; }
+    .breadcrumb { display: flex; gap: 0.3rem; color: rgba(255,255,255,0.85); font-size: 0.85rem; }
+    .breadcrumb-item { cursor: pointer; }
+    .breadcrumb-item:hover { color: white; }
+    .breadcrumb-item::after { content: '/'; margin-left: 0.3rem; opacity: 0.6; }
+    .breadcrumb-item:last-child::after { content: ''; }
+    .btn-home { background: rgba(255,255,255,0.15); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+    .main-container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+    .page { display: none; animation: fadeIn 0.3s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .page-header { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .page-header h1 { color: #1d2129; font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .page-header p { color: #86909c; font-size: 0.9rem; }
+    .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e6eb; }
+    .card-header h2 { color: #1d2129; font-size: 1.2rem; }
+    .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .module-card { background: white; border: 1px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; }
+    .module-card:hover { border-color: #1d39c4; box-shadow: 0 4px 12px rgba(29,57,196,0.12); transform: translateY(-2px); }
+    .module-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .module-card h3 { color: #1d2129; font-size: 1rem; margin-bottom: 0.3rem; }
+    .module-card p { color: #86909c; font-size: 0.8rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid #e5e6eb; font-size: 0.9rem; }
+    th { background: #f7f8fa; color: #4e5969; font-weight: 600; }
+    tr:hover { background: #f7f8fa; }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+    .badge-success { background: #e8ffea; color: #00b42a; }
+    .badge-warning { background: #fff7e8; color: #ff7d00; }
+    .badge-danger { background: #ffece8; color: #f53f3f; }
+    .badge-info { background: #e8f3ff; color: #165dff; }
+    .badge-purple { background: #f5e8ff; color: #722ed1; }
+    .btn { padding: 0.5rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+    .btn-primary { background: #1d39c4; color: white; }
+    .btn-primary:hover { background: #162da8; }
+    .btn-success { background: #00b42a; color: white; }
+    .btn-success:hover { background: #009a29; }
+    .btn-outline { background: white; color: #1d39c4; border: 1px solid #1d39c4; }
+    .btn-outline:hover { background: #f2f3ff; }
+    .btn-link { background: none; border: none; color: #165dff; cursor: pointer; font-size: 0.85rem; }
+    .btn-link:hover { text-decoration: underline; }
+    .action-bar { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .select-yes { background: #e8ffea; color: #00b42a; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
+    .select-no { background: #ffece8; color: #f53f3f; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 0.85rem; }
+    .select-yes.selected { background: #00b42a; color: white; }
+    .select-no.selected { background: #f53f3f; color: white; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-btn { background: #1d39c4; color: white; padding: 0.3rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+    .dropdown-content { display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #e5e6eb; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); z-index: 100; min-width: 160px; }
+    .dropdown-content.show { display: block; }
+    .dropdown-content a { display: block; padding: 0.6rem 1rem; color: #1d2129; text-decoration: none; font-size: 0.85rem; }
+    .dropdown-content a:hover { background: #f7f8fa; }
+    .audit-item { padding: 0.6rem 0; border-bottom: 1px solid #e5e6eb; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+    .audit-item:last-child { border-bottom: none; }
+    .audit-content-full { background: #f7f8fa; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; }
+    .audit-content-full h4 { color: #1d2129; margin-bottom: 1rem; }
+    .audit-content-full p { margin-bottom: 0.5rem; color: #4e5969; }
+    .progress-bar { width: 100%; height: 6px; background: #e5e6eb; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+    .progress-fill.success { background: #00b42a; }
+    .progress-fill.warning { background: #ff7d00; }
+    .toast { position: fixed; top: 1rem; right: 1rem; background: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); z-index: 3000; display: none; border-left: 4px solid #00b42a; }
+    .toast.show { display: block; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; }
+    .loading-overlay.show { display: flex; }
+    .loading-box { background: white; padding: 2rem; border-radius: 8px; text-align: center; }
+    .spinner { width: 40px; height: 40px; border: 3px solid #e5e6eb; border-top-color: #1d39c4; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .brand-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+    .brand-card { background: white; border: 1px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; }
+    .brand-card:hover, .brand-card.selected { border-color: #1d39c4; background: #f2f3ff; }
+    .brand-card .logo { font-size: 2rem; margin-bottom: 0.5rem; }
+    .review-deck { background: #f7f8fa; border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+    .review-deck h4 { color: #1d2129; margin-bottom: 0.3rem; }
+    .review-deck .meta { color: #86909c; font-size: 0.8rem; margin-bottom: 0.8rem; }
+    .review-stats { display: flex; gap: 1rem; }
+    .review-stats .stat { background: white; padding: 0.6rem; border-radius: 4px; flex: 1; text-align: center; }
+    .review-stats .stat .value { font-size: 1.2rem; font-weight: bold; color: #1d2129; }
+    .review-stats .stat .label { font-size: 0.75rem; color: #86909c; }
+    .editor-container { border: 1px solid #e5e6eb; border-radius: 6px; padding: 1rem; min-height: 200px; background: white; }
+    .error-text { background: #ffece8; text-decoration: line-through; color: #f53f3f; cursor: pointer; padding: 0 4px; border-radius: 2px; }
+    .correct-text { background: #e8ffea; color: #00b42a; padding: 0 4px; border-radius: 2px; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea { width: 100%; padding: 0.6rem; border: 1px solid #e5e6eb; border-radius: 4px; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    @media (max-width: 768px) { .top-nav { flex-direction: column; gap: 0.5rem; } .module-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-brand" onclick="goHome()">🌱 淘宝种草 AI 助手 <span>| Demo V3</span></div>
+    <div class="breadcrumb" id="breadcrumb"><span class="breadcrumb-item" onclick="goHome()">首页</span></div>
+    <button class="btn-home" onclick="goHome()">🏠 首页</button>
+  </nav>
+
+  <main class="main-container">
+    <!-- 首页 -->
+    <div id="page-home" class="page active">
+      <div class="page-header"><h1>请选择你的角色</h1><p>不同角色有不同的工作台和权限</p></div>
+      <div class="module-grid">
+        <div class="module-card" onclick="selectRole('merchant')"><div class="module-icon">🏪</div><h3>商家</h3><p>品牌方/广告主</p></div>
+        <div class="module-card" onclick="selectRole('upstream')"><div class="module-icon">📝</div><h3>上行内容</h3><p>负责内容创作</p></div>
+        <div class="module-card" onclick="selectRole('downstream')"><div class="module-icon">📤</div><h3>下行内容</h3><p>负责分发管理</p></div>
+        <div class="module-card" onclick="selectRole('ad-delivery')"><div class="module-icon">📊</div><h3>下行投流</h3><p>负责广告投放</p></div>
+        <div class="module-card" onclick="selectRole('supervisor')"><div class="module-icon">✅</div><h3>直管</h3><p>统筹全流程</p></div>
+      </div>
+    </div>
+
+    <!-- 商家首页 -->
+    <div id="page-merchant-home" class="page">
+      <div class="page-header"><h1>🏪 商家工作台</h1><p>管理你的种草全流程</p></div>
+      <div class="module-grid">
+        <div class="module-card" onclick="navigateTo('merchant-brief')"><div class="module-icon">📋</div><h3>1. 上传 Brief</h3><p>提交投放需求</p></div>
+        <div class="module-card" onclick="navigateTo('merchant-kol')"><div class="module-icon">🎯</div><h3>2. KOL 审核</h3><p>审核推荐达人</p></div>
+        <div class="module-card" onclick="navigateTo('merchant-draft')"><div class="module-icon">✅</div><h3>3. 稿件审核</h3><p>在线编辑审核</p></div>
+        <div class="module-card" onclick="navigateTo('merchant-review')"><div class="module-icon">📊</div><h3>4. 查收复盘</h3><p>查看效果报告</p></div>
+      </div>
+    </div>
+
+    <!-- 商家 - 上传 Brief -->
+    <div id="page-merchant-brief" class="page">
+      <div class="page-header"><h1>📋 上传 Brief</h1><p>提交你的种草投放需求</p></div>
+      <div class="card">
+        <div class="card-header"><h2>产品信息</h2></div>
+        <div class="form-group"><label>品牌名称</label><input type="text" value="珀莱雅"></div>
+        <div class="form-group"><label>产品名称</label><input type="text" value="红宝石面霜"></div>
+        <div class="form-group"><label>产品亮点简述</label><textarea>国民级面霜，长期霸榜销量、回购、好评榜第一，三种质地量肤定制，中国美妆首个环肽</textarea></div>
+        <div class="form-group"><label>核心卖点</label><textarea>1. 淡纹紧致饱满功效，改善干纹、表情纹，面部轮廓更清晰
+2. 国民面霜、万金油面霜的设定，质地温和
+3. 三重质地量肤定制，完美匹配肤质和季节
+4. 创新"双环肽+五重经典信号肽"
+5. 可替换芯环保</textarea></div>
+        <div class="form-group"><label>目标人群</label><textarea>23-30岁新一线及二线城市 都市白领/资深中产/小镇青年/精致妈妈的女性</textarea></div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+          <button class="btn btn-primary" onclick="showToast('📤 Brief 已提交')">📤 提交 Brief</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商家 - KOL 审核 -->
+    <div id="page-merchant-kol" class="page">
+      <div class="page-header"><h1>🎯 KOL 审核</h1><p>AI 已根据你的 Brief 推荐了优质达人</p></div>
+      <div class="card">
+        <div class="card-header">
+          <h2>推荐达人 List</h2>
+          <div>
+            <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+            <button class="btn btn-primary" onclick="confirmKolSelection()">✅ 确认选择</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr><th>KOL 名称</th><th>平台</th><th>主页链接</th><th>CPM</th><th>CPE</th><th>过往 CPUV</th><th>推荐</th><th>选择</th></tr>
+          </thead>
+          <tbody id="merchantKolBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 商家 - 稿件审核 -->
+    <div id="page-merchant-draft" class="page">
+      <div class="page-header"><h1>✅ 稿件审核</h1><p>在线编辑审核达人稿件</p></div>
+      <div class="card">
+        <div class="card-header"><h2>达人稿件 - 白杨刀 视频脚本</h2><button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h4 style="margin-bottom: 0.8rem;">📋 Brief 要求</h4>
+            <div class="editor-container">
+              <p><b>产品名称：</b><span class="correct-text">珀莱雅红宝石面霜</span></p>
+              <p><b>核心成分：</b>创新"双环肽 + <span class="correct-text">五重经典信号肽</span>"</p>
+              <p><b>核心卖点：</b>淡纹紧致饱满、改善干纹表情纹、国民面霜、三重质地量肤定制、可替换芯环保</p>
+              <p><b>植入要求：</b>产品正面特写、质地展示</p>
+            </div>
+          </div>
+          <div>
+            <h4 style="margin-bottom: 0.8rem;">📝 达人初稿（可编辑）</h4>
+            <div class="editor-container" contenteditable="true">
+              <p>——转场，蒙太奇画面——</p>
+              <p>【画面】陈安带林晓在院子里走动</p>
+              <p>——广告植入——</p>
+              <p>陈安：这是我托城里朋友找的，<span class="error-text" onclick="fixDraft(this, '珀莱雅红宝石面霜')">珀莱雅红宝石水乳套装</span>（产品正面特写），城里很火的，说里面有<span class="error-text" onclick="fixDraft(this, '双环肽和五重经典信号肽')">五重生态</span>，能抗氧提亮，淡化纹路，质地也很轻润...</p>
+              <p>——广告结束——</p>
+            </div>
+            <p style="color: #f53f3f; font-size: 0.8rem; margin-top: 0.5rem;">💡 点击红色删除线文字可自动修正</p>
+          </div>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+          <button class="btn btn-success" onclick="approveDraft()">✅ 确认提交</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商家 - 查收复盘 -->
+    <div id="page-merchant-review" class="page">
+      <div class="page-header"><h1>📊 查收复盘</h1><p>查看历史投放效果报告</p></div>
+      <div class="card">
+        <div class="card-header"><h2>历史投放复盘报告</h2><button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button></div>
+        <div class="review-deck">
+          <h4>珀莱雅红宝石面霜 - 2026年3月投放复盘</h4>
+          <div class="meta">投放周期：2026.3.15-3.25 | 达人数：5 位 | 平台：小红书</div>
+          <div class="review-stats">
+            <div class="stat"><div class="value">¥12.5</div><div class="label">平均 CPUV</div></div>
+            <div class="stat"><div class="value">0.42%</div><div class="label">进店率</div></div>
+            <div class="stat"><div class="value">5.8%</div><div class="label">互动率</div></div>
+            <div class="stat"><div class="value">⭐⭐⭐⭐</div><div class="label">综合评级</div></div>
+          </div>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅双抗精华 - 2026年2月投放复盘</h4>
+          <div class="meta">投放周期：2026.2.10-2.20 | 达人数：8 位 | 平台：小红书+B站</div>
+          <div class="review-stats">
+            <div class="stat"><div class="value">¥14.2</div><div class="label">平均 CPUV</div></div>
+            <div class="stat"><div class="value">0.35%</div><div class="label">进店率</div></div>
+            <div class="stat"><div class="value">4.5%</div><div class="label">互动率</div></div>
+            <div class="stat"><div class="value">⭐⭐⭐</div><div class="label">综合评级</div></div>
+          </div>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅红宝石水乳 - 2026年1月投放复盘</h4>
+          <div class="meta">投放周期：2026.1.5-1.15 | 达人数：6 位 | 平台：小红书</div>
+          <div class="review-stats">
+            <div class="stat"><div class="value">¥16.8</div><div class="label">平均 CPUV</div></div>
+            <div class="stat"><div class="value">0.28%</div><div class="label">进店率</div></div>
+            <div class="stat"><div class="value">3.9%</div><div class="label">互动率</div></div>
+            <div class="stat"><div class="value">⭐⭐⭐</div><div class="label">综合评级</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 下行内容 - 首页 -->
+    <div id="page-downstream-home" class="page">
+      <div class="page-header"><h1>📤 下行内容工作台</h1><p>请选择要服务的品牌</p></div>
+      <div class="card">
+        <h2 style="margin-bottom: 1rem;">选择品牌</h2>
+        <div class="brand-select">
+          <div class="brand-card" onclick="selectBrand('proya')"><div class="logo">💧</div><h4>珀莱雅</h4></div>
+          <div class="brand-card" onclick="selectBrand('winona')"><div class="logo">🌿</div><h4>薇诺娜</h4></div>
+          <div class="brand-card" onclick="selectBrand('marubi')"><div class="logo">✨</div><h4>丸美</h4></div>
+          <div class="brand-card" onclick="selectBrand('chando')"><div class="logo">🌸</div><h4>自然堂</h4></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 下行内容 - 品牌工作台 -->
+    <div id="page-downstream-workspace" class="page">
+      <div class="page-header"><h1 id="downstream-brand-title">📤 珀莱雅工作台</h1><p>管理种草投放全流程</p></div>
+      <div class="module-grid">
+        <div class="module-card" onclick="navigateTo('downstream-brief')"><div class="module-icon">📋</div><h3>1. Brief 评估</h3><p>评估并下发 Brief</p></div>
+        <div class="module-card" onclick="navigateTo('downstream-kol')"><div class="module-icon">🎯</div><h3>2. 智能选号</h3><p>AI 推荐优质达人</p></div>
+        <div class="module-card" onclick="navigateTo('downstream-audit')"><div class="module-icon">✅</div><h3>3. 内容审核</h3><p>自动审核内容</p></div>
+        <div class="module-card" onclick="navigateTo('downstream-monitor')"><div class="module-icon">📊</div><h3>4. 发布&投流监测</h3><p>监控发布进度与投放效果</p></div>
+        <div class="module-card" onclick="navigateTo('downstream-review')"><div class="module-icon">🔄</div><h3>5. 投后复盘</h3><p>分析投放效果</p></div>
+      </div>
+    </div>
+
+    <!-- 下行 - Brief 评估 -->
+    <div id="page-downstream-brief" class="page">
+      <div class="page-header"><h1>📋 Brief 评估</h1><p>查看商家 Brief 并进行评估</p></div>
+      <div class="card">
+        <div class="card-header"><h2>商家 Brief - 珀莱雅红宝石面霜</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+        <table>
+          <tr><th style="width: 120px;">品牌</th><td>珀莱雅</td></tr>
+          <tr><th>产品</th><td>红宝石面霜</td></tr>
+          <tr><th>核心卖点</th><td>淡纹紧致饱满、国民面霜、三重质地量肤定制、双环肽+五重经典信号肽、可替换芯环保</td></tr>
+          <tr><th>目标人群</th><td>23-30岁新一线及二线城市 都市白领/资深中产/小镇青年/精致妈妈的女性</td></tr>
+        </table>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+          <button class="btn btn-primary" onclick="evaluateBrief()">🤖 AI 评估 Brief</button>
+          <button class="btn btn-success" onclick="dispatchBrief()">📤 下发 Brief</button>
+        </div>
+      </div>
+      <div class="card" id="brief-eval-result" style="display: none;">
+        <div class="card-header"><h2>🤖 AI Brief 评估报告</h2></div>
+        <table>
+          <thead><tr><th>评估维度</th><th>状态</th><th>评估说明</th><th>建议</th></tr></thead>
+          <tbody>
+            <tr><td>完整性检查</td><td><span class="badge badge-success">✅ 通过</span></td><td>所有必填项完整（8/8）</td><td>无</td></tr>
+            <tr><td>卖点准确性</td><td><span class="badge badge-success">✅ 通过</span></td><td>核心卖点与官方资料一致</td><td>无</td></tr>
+            <tr><td>目标合理性</td><td><span class="badge badge-warning">⚠️ 需优化</span></td><td>CPUV 目标 15 元略低于行业均值</td><td>建议调整至 16-18 元</td></tr>
+            <tr><td>人群清晰度</td><td><span class="badge badge-success">✅ 通过</span></td><td>目标人群描述清晰可执行</td><td>可补充兴趣标签</td></tr>
+            <tr><td>内容方向</td><td><span class="badge badge-warning">⚠️ 需优化</span></td><td>5 个内容方向占比分散</td><td>建议聚焦 2-3 个核心方向</td></tr>
+          </tbody>
+        </table>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+          <button class="btn btn-danger" onclick="returnBrief()">📤 退回 Brief 给上行</button>
+          <button class="btn btn-success" onclick="dispatchBrief()">📤 下发 Brief 给直管</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 下行 - 智能选号（优化版：加达人属性 + 下一步） -->
+    <div id="page-downstream-kol" class="page">
+      <div class="page-header"><h1>🎯 智能选号</h1><p>AI 基于 Brief 推荐的优质达人 List</p></div>
+      <div class="card">
+        <div class="card-header"><h2>推荐达人 List</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+        <table>
+          <thead>
+            <tr>
+              <th>KOL 名称</th>
+              <th>平台</th>
+              <th>主页链接</th>
+              <th>CPM</th>
+              <th>CPE</th>
+              <th>过往 CPUV</th>
+              <th>推荐</th>
+              <th>达人属性</th>
+              <th>下一步</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>@面包疙瘩</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #165dff;">查看</a></td>
+              <td>¥18.5</td>
+              <td>¥2.3</td>
+              <td>¥11.2</td>
+              <td><span class="badge badge-success">强烈推荐</span></td>
+              <td><span class="badge badge-purple">代理</span></td>
+              <td>
+                <div class="dropdown">
+                  <button class="dropdown-btn" onclick="toggleDropdown(this)">操作 ▾</button>
+                  <div class="dropdown-content">
+                    <a href="#" onclick="nextStep('面包疙瘩', 'merchant')">📤 推荐给商家</a>
+                    <a href="#" onclick="nextStep('面包疙瘩', 'supervisor')">📤 推送给直管</a>
+                    <a href="#" onclick="nextStep('面包疙瘩', 'matrix')">📤 推送给矩阵号团队</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@gowithme</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #165dff;">查看</a></td>
+              <td>¥15.2</td>
+              <td>¥1.8</td>
+              <td>¥13.5</td>
+              <td><span class="badge badge-success">推荐</span></td>
+              <td><span class="badge badge-warning">矩阵号</span></td>
+              <td>
+                <div class="dropdown">
+                  <button class="dropdown-btn" onclick="toggleDropdown(this)">操作 ▾</button>
+                  <div class="dropdown-content">
+                    <a href="#" onclick="nextStep('gowithme', 'merchant')">📤 推荐给商家</a>
+                    <a href="#" onclick="nextStep('gowithme', 'supervisor')">📤 推送给直管</a>
+                    <a href="#" onclick="nextStep('gowithme', 'matrix')">📤 推送给矩阵号团队</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@辣妈 celia</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #165dff;">查看</a></td>
+              <td>¥22.0</td>
+              <td>¥2.8</td>
+              <td>¥14.8</td>
+              <td><span class="badge badge-warning">可考虑</span></td>
+              <td><span class="badge badge-info">个人号</span></td>
+              <td>
+                <div class="dropdown">
+                  <button class="dropdown-btn" onclick="toggleDropdown(this)">操作 ▾</button>
+                  <div class="dropdown-content">
+                    <a href="#" onclick="nextStep('辣妈 celia', 'merchant')">📤 推荐给商家</a>
+                    <a href="#" onclick="nextStep('辣妈 celia', 'supervisor')">📤 推送给直管</a>
+                    <a href="#" onclick="nextStep('辣妈 celia', 'matrix')">📤 推送给矩阵号团队</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@白杨刀</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #165dff;">查看</a></td>
+              <td>¥16.8</td>
+              <td>¥2.1</td>
+              <td>¥12.5</td>
+              <td><span class="badge badge-success">推荐</span></td>
+              <td><span class="badge badge-purple">代理</span></td>
+              <td>
+                <div class="dropdown">
+                  <button class="dropdown-btn" onclick="toggleDropdown(this)">操作 ▾</button>
+                  <div class="dropdown-content">
+                    <a href="#" onclick="nextStep('白杨刀', 'merchant')">📤 推荐给商家</a>
+                    <a href="#" onclick="nextStep('白杨刀', 'supervisor')">📤 推送给直管</a>
+                    <a href="#" onclick="nextStep('白杨刀', 'matrix')">📤 推送给矩阵号团队</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@豆豆睡醒了</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #165dff;">查看</a></td>
+              <td>¥14.5</td>
+              <td>¥1.6</td>
+              <td>¥15.2</td>
+              <td><span class="badge badge-warning">可考虑</span></td>
+              <td><span class="badge badge-warning">矩阵号</span></td>
+              <td>
+                <div class="dropdown">
+                  <button class="dropdown-btn" onclick="toggleDropdown(this)">操作 ▾</button>
+                  <div class="dropdown-content">
+                    <a href="#" onclick="nextStep('豆豆睡醒了', 'merchant')">📤 推荐给商家</a>
+                    <a href="#" onclick="nextStep('豆豆睡醒了', 'supervisor')">📤 推送给直管</a>
+                    <a href="#" onclick="nextStep('豆豆睡醒了', 'matrix')">📤 推送给矩阵号团队</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 下行 - 内容审核（优化版：审核修改后完整内容 + 直接发送） -->
+    <div id="page-downstream-audit" class="page">
+      <div class="page-header"><h1>✅ 内容审核</h1><p>AI 自动审核达人内容</p></div>
+      <div class="card">
+        <div class="card-header"><h2>待审核内容 - 白杨刀 视频脚本</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1rem;">
+          <div>
+            <h4 style="margin-bottom: 0.8rem;">📋 Brief 要求</h4>
+            <div class="editor-container">
+              <p><b>产品名称：</b><span class="correct-text">珀莱雅红宝石面霜</span></p>
+              <p><b>核心成分：</b>创新"双环肽 + <span class="correct-text">五重经典信号肽</span>"</p>
+              <p><b>核心卖点：</b>淡纹紧致饱满、改善干纹表情纹、国民面霜、三重质地量肤定制、可替换芯环保</p>
+              <p><b>植入要求：</b>产品正面特写、质地展示</p>
+            </div>
+          </div>
+          <div>
+            <h4 style="margin-bottom: 0.8rem;">📝 达人初稿</h4>
+            <div class="editor-container">
+              <p>——转场，蒙太奇画面——</p>
+              <p>【画面】陈安带林晓在院子里走动</p>
+              <p>——广告植入——</p>
+              <p>陈安：这是我托城里朋友找的，<span class="error-text">珀莱雅红宝石水乳套装</span>（产品正面特写），城里很火的，说里面有<span class="error-text">五重生态</span>，能抗氧提亮，淡化纹路，质地也很轻润...</p>
+              <p>——广告结束——</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 审核修改后的完整内容 -->
+        <div class="audit-content-full">
+          <h4>📝 审核修改后的完整内容</h4>
+          <div style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e5e6eb;">
+            <p style="color: #86909c; font-size: 0.85rem; margin-bottom: 0.8rem;">AI 已自动修正以下问题：</p>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <span class="badge badge-danger">❌ 产品名错误</span>
+              <span style="font-size: 0.85rem;"><s style="color: #f53f3f;">珀莱雅红宝石水乳套装</s> → <span style="color: #00b42a; font-weight: 500;">珀莱雅红宝石面霜</span></span>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <span class="badge badge-danger">❌ 成分描述错误</span>
+              <span style="font-size: 0.85rem;"><s style="color: #f53f3f;">五重生态</s> → <span style="color: #00b42a; font-weight: 500;">双环肽和五重经典信号肽</span></span>
+            </div>
+            <hr style="border: none; border-top: 1px solid #e5e6eb; margin: 1rem 0;">
+            <h5 style="margin-bottom: 0.5rem; color: #1d2129;">✅ 修正后完整脚本：</h5>
+            <div style="background: #f7f8fa; padding: 1rem; border-radius: 4px; line-height: 1.8;">
+              <p>——转场，蒙太奇画面——</p>
+              <p>【画面】陈安带林晓在院子里走动</p>
+              <p>——广告植入——</p>
+              <p>陈安：这是我托城里朋友找的，<span class="correct-text">珀莱雅红宝石面霜</span>（产品正面特写），城里很火的，说里面有<span class="correct-text">双环肽和五重经典信号肽</span>，能抗氧提亮，淡化纹路，质地也很轻润。你看这质地，有三种可以选择，特别适合不同的肤质和季节。而且这个包装还可以替换内芯，非常环保...</p>
+              <p>【画面】产品质地展示，三种质地对比</p>
+              <p>——广告结束——</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">↩️ 返回</button>
+          <button class="btn btn-primary" onclick="pushAuditToMerchant()">📤 推送给商家审核</button>
+          <button class="btn btn-success" onclick="directSend()">🚀 直接发送</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 下行 - 发布&投流监测 -->
+    <div id="page-downstream-monitor" class="page">
+      <div class="page-header"><h1>📊 发布&投流监测</h1><p>监控发布进度与投放效果</p></div>
+      <div class="card">
+        <div class="card-header"><h2>KOL 投放进度总览</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+        <table>
+          <thead>
+            <tr>
+              <th>KOL 名称</th>
+              <th>稿件进度</th>
+              <th>预计发布日期</th>
+              <th>实际发布日期</th>
+              <th>发布链接</th>
+              <th>投放评估</th>
+              <th>加入投放</th>
+              <th>投流监测 (CPUV)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>@面包疙瘩</b></td>
+              <td><span class="badge badge-success">已确认完稿</span></td>
+              <td>2026-03-18</td>
+              <td>2026-03-20</td>
+              <td><a href="https://www.xiaohongshu.com/explore/69bcbb7c000000001e00ec08" target="_blank" style="color: #165dff;">查看</a></td>
+              <td><span class="badge badge-success">✅ 可投放</span></td>
+              <td>
+                <span class="select-yes selected" onclick="addToDelivery(this, '面包疙瘩')">YES</span>
+                <span class="select-no" onclick="addToDelivery(this, '面包疙瘩')">NO</span>
+              </td>
+              <td>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                    <span>实际 ¥11.2</span>
+                    <span>目标 ¥15</span>
+                    <span style="color: #00b42a; font-weight: bold;">134%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill success" style="width: 100%;"></div></div>
+                  <p style="font-size: 0.75rem; color: #00b42a; margin-top: 0.2rem;">✅ 超额完成</p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@gowithme</b></td>
+              <td><span class="badge badge-success">已确认完稿</span></td>
+              <td>2026-03-14</td>
+              <td>2026-03-15</td>
+              <td><a href="https://www.xiaohongshu.com/explore/69b66b4b000000001a02ebf5" target="_blank" style="color: #165dff;">查看</a></td>
+              <td><span class="badge badge-success">✅ 可投放</span></td>
+              <td>
+                <span class="select-yes selected" onclick="addToDelivery(this, 'gowithme')">YES</span>
+                <span class="select-no" onclick="addToDelivery(this, 'gowithme')">NO</span>
+              </td>
+              <td>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                    <span>实际 ¥13.5</span>
+                    <span>目标 ¥15</span>
+                    <span style="color: #00b42a; font-weight: bold;">111%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill success" style="width: 100%;"></div></div>
+                  <p style="font-size: 0.75rem; color: #00b42a; margin-top: 0.2rem;">✅ 达成目标</p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@辣妈 celia</b></td>
+              <td><span class="badge badge-warning">商家修改中</span></td>
+              <td>2026-03-18</td>
+              <td>-</td>
+              <td>-</td>
+              <td><span class="badge badge-warning">⏳ 待评估</span></td>
+              <td>
+                <span class="select-yes" onclick="addToDelivery(this, '辣妈 celia')">YES</span>
+                <span class="select-no selected" onclick="addToDelivery(this, '辣妈 celia')">NO</span>
+              </td>
+              <td>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                    <span>实际 -</span>
+                    <span>目标 ¥15</span>
+                    <span style="color: #86909c;">-</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                  <p style="font-size: 0.75rem; color: #86909c; margin-top: 0.2rem;">⏳ 待发布</p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@白杨刀</b></td>
+              <td><span class="badge badge-success">已确认完稿</span></td>
+              <td>2026-03-19</td>
+              <td>2026-03-20</td>
+              <td><a href="https://www.xiaohongshu.com/explore/69bcce9e000000001b003423" target="_blank" style="color: #165dff;">查看</a></td>
+              <td><span class="badge badge-success">✅ 可投放</span></td>
+              <td>
+                <span class="select-yes selected" onclick="addToDelivery(this, '白杨刀')">YES</span>
+                <span class="select-no" onclick="addToDelivery(this, '白杨刀')">NO</span>
+              </td>
+              <td>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                    <span>实际 ¥12.5</span>
+                    <span>目标 ¥15</span>
+                    <span style="color: #00b42a; font-weight: bold;">120%</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill success" style="width: 100%;"></div></div>
+                  <p style="font-size: 0.75rem; color: #00b42a; margin-top: 0.2rem;">✅ 超额完成</p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><b>@豆豆睡醒了</b></td>
+              <td><span class="badge badge-info">正在进行初稿</span></td>
+              <td>2026-03-14</td>
+              <td>-</td>
+              <td>-</td>
+              <td><span class="badge badge-warning">⏳ 待评估</span></td>
+              <td>
+                <span class="select-yes" onclick="addToDelivery(this, '豆豆睡醒了')">YES</span>
+                <span class="select-no selected" onclick="addToDelivery(this, '豆豆睡醒了')">NO</span>
+              </td>
+              <td>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.3rem;">
+                    <span>实际 -</span>
+                    <span>目标 ¥15</span>
+                    <span style="color: #86909c;">-</span>
+                  </div>
+                  <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                  <p style="font-size: 0.75rem; color: #86909c; margin-top: 0.2rem;">⏳ 待发布</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 下行 - 投后复盘 -->
+    <div id="page-downstream-review" class="page">
+      <div class="page-header"><h1>🔄 投后复盘</h1><p>分析投放效果，沉淀方法论</p></div>
+      
+      <!-- 过往复盘材料 -->
+      <div class="card">
+        <div class="card-header"><h2>📁 过往复盘报告</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
+        <div class="review-deck">
+          <h4>珀莱雅红宝石面霜 - 2026年3月投放复盘</h4>
+          <div class="meta">投放周期：2026.3.15-3.25 | 达人数：5 位 | 平台：小红书</div>
+          <div class="review-stats">
+            <div class="stat"><div class="value">¥12.5</div><div class="label">平均 CPUV</div></div>
+            <div class="stat"><div class="value">0.42%</div><div class="label">进店率</div></div>
+            <div class="stat"><div class="value">5.8%</div><div class="label">互动率</div></div>
+            <div class="stat"><div class="value">⭐⭐⭐⭐</div><div class="label">综合评级</div></div>
+          </div>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅双抗精华 - 2026年2月投放复盘</h4>
+          <div class="meta">投放周期：2026.2.10-2.20 | 达人数：8 位 | 平台：小红书+B站</div>
+          <div class="review-stats">
+            <div class="stat"><div class="value">¥14.2</div><div class="label">平均 CPUV</div></div>
+            <div class="stat"><div class="value">0.35%</div><div class="label">进店率</div></div>
+            <div class="stat"><div class="value">4.5%</div><div class="label">互动率</div></div>
+            <div class="stat"><div class="value">⭐⭐⭐</div><div class="label">综合评级</div></div>
+          </div>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅红宝石水乳 - 2026年1月投放复盘</h4>
+          <div class="meta">投放周期：2026.1.5-1.15 | 达人数：6 位 | 平台：小红书</div>
+          <div class="review-stats">
+            <div class="stat"><div class="value">¥16.8</div><div class="label">平均 CPUV</div></div>
+            <div class="stat"><div class="value">0.28%</div><div class="label">进店率</div></div>
+            <div class="stat"><div class="value">3.9%</div><div class="label">互动率</div></div>
+            <div class="stat"><div class="value">⭐⭐⭐</div><div class="label">综合评级</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 复盘目的选项 -->
+      <div class="card">
+        <div class="card-header"><h2>📊 选择复盘目的</h2></div>
+        <div class="module-grid">
+          <div class="module-card" onclick="navigateTo('review-internal')" style="text-align: left; padding: 1.5rem;">
+            <div class="module-icon" style="text-align: center;">📈</div>
+            <h3 style="color: #1d39c4; margin: 0.5rem 0;">1. 内部复盘</h3>
+            <p style="font-size: 0.85rem; color: #4e5969;">沉淀投放方法论，优化流程，对上级汇报</p>
+            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #86909c;">
+              • 投放策略分析<br>
+              • 执行效率评估<br>
+              • 成本优化建议<br>
+              • 方法论沉淀
+            </div>
+          </div>
+          <div class="module-card" onclick="navigateTo('review-merchant')" style="text-align: left; padding: 1.5rem;">
+            <div class="module-icon" style="text-align: center;">🤝</div>
+            <h3 style="color: #00b42a; margin: 0.5rem 0;">2. 商家复盘</h3>
+            <p style="font-size: 0.85rem; color: #4e5969;">检查 KPI 完成度，证明投放价值，促进复投</p>
+            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #86909c;">
+              • KPI 达成情况<br>
+              • ROI 对比分析<br>
+              • 跨平台效果对比<br>
+              • 投资回报证明
+            </div>
+          </div>
+          <div class="module-card" onclick="navigateTo('review-showcase')" style="text-align: left; padding: 1.5rem;">
+            <div class="module-icon" style="text-align: center;">🏆</div>
+            <h3 style="color: #722ed1; margin: 0.5rem 0;">3. Show Case</h3>
+            <p style="font-size: 0.85rem; color: #4e5969;">与平台共创行业案例，展示新能力，行业大会分享</p>
+            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #86909c;">
+              • 行业创新案例<br>
+              • 平台能力展示<br>
+              • 合作模式创新<br>
+              • 行业大会素材
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内部复盘页面 -->
+    <div id="page-review-internal" class="page">
+      <div class="page-header"><h1>📈 内部复盘报告</h1><p>沉淀投放方法论，优化流程，对上级汇报</p></div>
+      
+      <div class="card">
+        <div class="card-header"><h2>一、投放策略分析</h2><button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button></div>
+        <table>
+          <thead><tr><th>维度</th><th>目标</th><th>实际</th><th>达成率</th><th>分析</th></tr></thead>
+          <tbody>
+            <tr><td>达人数</td><td>5 位</td><td>5 位</td><td><span class="badge badge-success">100%</span></td><td>按计划完成达人筛选与签约</td></tr>
+            <tr><td>CPUV 目标</td><td>¥15</td><td>¥12.5</td><td><span class="badge badge-success">120%</span></td><td>实际成本优于目标，投放效率超预期</td></tr>
+            <tr><td>进店率</td><td>0.35%</td><td>0.42%</td><td><span class="badge badge-success">120%</span></td><td>内容种草效果显著，引流效率提升</td></tr>
+            <tr><td>互动率</td><td>5.0%</td><td>5.8%</td><td><span class="badge badge-success">116%</span></td><td>内容质量高，用户参与度高</td></tr>
+            <tr><td>发布准时率</td><td>100%</td><td>80%</td><td><span class="badge badge-warning">80%</span></td><td>1位达人因内容修改延期2天发布</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>二、执行效率评估</h2></div>
+        <table>
+          <thead><tr><th>流程节点</th><th>平均耗时</th><th>上期耗时</th><th>效率变化</th><th>瓶颈分析</th></tr></thead>
+          <tbody>
+            <tr><td>Brief 评估→下发</td><td>1.5 天</td><td>3 天</td><td><span class="badge badge-success">↓50%</span></td><td>AI 辅助评估大幅缩短时间</td></tr>
+            <tr><td>智能选号→确认</td><td>2 天</td><td>5 天</td><td><span class="badge badge-success">↓60%</span></td><td>AI 推荐准确率提升，减少反复沟通</td></tr>
+            <tr><td>内容审核→修改</td><td>3 天</td><td>7 天</td><td><span class="badge badge-success">↓57%</span></td><td>自动审核+一键修正减少返工</td></tr>
+            <tr><td>完稿→发布</td><td>2 天</td><td>3 天</td><td><span class="badge badge-success">↓33%</span></td><td>流程标准化，档期管理更有效</td></tr>
+            <tr><td>全链路总耗时</td><td>8.5 天</td><td>18 天</td><td><span class="badge badge-success">↓53%</span></td><td>整体效率显著提升</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>三、成本优化分析</h2></div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+          <div style="background: #f7f8fa; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #00b42a; font-weight: bold;">¥12.5</div>
+            <div style="font-size: 0.8rem; color: #86909c;">平均 CPUV</div>
+            <div style="font-size: 0.75rem; color: #00b42a; margin-top: 0.3rem;">↓27% vs 上期 ¥16.8</div>
+          </div>
+          <div style="background: #f7f8fa; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #165dff; font-weight: bold;">¥62,500</div>
+            <div style="font-size: 0.8rem; color: #86909c;">总投放成本</div>
+            <div style="font-size: 0.75rem; color: #00b42a; margin-top: 0.3rem;">节省 ¥21,500</div>
+          </div>
+          <div style="background: #f7f8fa; padding: 1rem; border-radius: 6px; text-align: center;">
+            <div style="font-size: 2rem; color: #722ed1; font-weight: bold;">87%</div>
+            <div style="font-size: 0.8rem; color: #86909c;">预算使用率</div>
+            <div style="font-size: 0.75rem; color: #86909c; margin-top: 0.3rem;">预算 ¥84,000</div>
+          </div>
+        </div>
+        <div style="background: #e8f7ff; padding: 1rem; border-radius: 6px; border-left: 4px solid #165dff;">
+          <h4 style="margin-bottom: 0.5rem;">💡 成本优化建议</h4>
+          <p style="font-size: 0.85rem; color: #4e5969;">1. 矩阵号 CPUV 表现优于代理号 15%，建议下期增加矩阵号占比至 40%</p>
+          <p style="font-size: 0.85rem; color: #4e5969;">2. 小红书平台 CPV 低于行业均值 23%，建议扩大该平台投放预算</p>
+          <p style="font-size: 0.85rem; color: #4e5969;">3. 达人档期提前 2 周锁定可降低报价 8-12%，建议优化档期管理流程</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>四、方法论沉淀</h2></div>
+        <div style="background: #f5e8ff; padding: 1.2rem; border-radius: 6px; border-left: 4px solid #722ed1; margin-bottom: 1rem;">
+          <h4 style="color: #722ed1; margin-bottom: 0.8rem;">📌 本期验证成功的策略</h4>
+          <div style="font-size: 0.85rem; color: #4e5969; line-height: 1.8;">
+            <p>✅ <b>达人筛选模型：</b>CPM < ¥20 + CPE < ¥2.5 + 过往 CPUV < ¥15 的组合筛选准确率达 85%</p>
+            <p>✅ <b>内容审核 SOP：</b>AI 自动修正产品名/成分错误，人工复核核心卖点，审核效率提升 57%</p>
+            <p>✅ <b>投流时机：</b>发布后 48 小时内启动投流效果最佳，CPUV 可降低 18%</p>
+            <p>✅ <b>达人属性配比：</b>代理 60% + 矩阵号 30% + 个人号 10% 的组合效果最优</p>
+          </div>
+        </div>
+        <div style="background: #fff7e8; padding: 1.2rem; border-radius: 6px; border-left: 4px solid #ff7d00;">
+          <h4 style="color: #ff7d00; margin-bottom: 0.8rem;">⚠️ 下期需优化项</h4>
+          <div style="font-size: 0.85rem; color: #4e5969; line-height: 1.8;">
+            <p>🔧 <b>发布准时率：</b>建立达人履约评分机制，延期 2 次以上降低优先级</p>
+            <p>🔧 <b>内容方向聚焦：</b>本期 5 个方向过于分散，下期聚焦 2-3 个核心方向</p>
+            <p>🔧 <b>跨平台对比：</b>建议同步测试 B站/抖音，建立多平台效果基准</p>
+          </div>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button>
+          <button class="btn btn-primary" onclick="showToast('📥 内部复盘报告已导出')">📥 导出报告</button>
+          <button class="btn btn-success" onclick="showToast('📤 已推送给直管')">📤 推送给直管</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商家复盘页面 -->
+    <div id="page-review-merchant" class="page">
+      <div class="page-header"><h1>🤝 商家复盘报告</h1><p>KPI 达成验证与投资回报证明</p></div>
+      
+      <div class="card">
+        <div class="card-header"><h2>一、KPI 达成情况</h2><button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button></div>
+        <table>
+          <thead><tr><th>KPI 指标</th><th>合同约定</th><th>实际完成</th><th>达成率</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td>投放达人数</td><td>≥ 5 位</td><td>5 位</td><td><b>100%</b></td><td><span class="badge badge-success">✅ 达成</span></td></tr>
+            <tr><td>CPUV</td><td>≤ ¥15</td><td>¥12.5</td><td><b>120%</b></td><td><span class="badge badge-success">✅ 超额达成</span></td></tr>
+            <tr><td>总曝光量</td><td>≥ 500,000</td><td>685,000</td><td><b>137%</b></td><td><span class="badge badge-success">✅ 超额达成</span></td></tr>
+            <tr><td>总互动量</td><td>≥ 25,000</td><td>39,730</td><td><b>159%</b></td><td><span class="badge badge-success">✅ 超额达成</span></td></tr>
+            <tr><td>进店率</td><td>≥ 0.35%</td><td>0.42%</td><td><b>120%</b></td><td><span class="badge badge-success">✅ 达成</span></td></tr>
+            <tr><td>发布周期</td><td>≤ 15 天</td><td>11 天</td><td><b>136%</b></td><td><span class="badge badge-success">✅ 提前完成</span></td></tr>
+          </tbody>
+        </table>
+        <div style="background: #e8ffea; padding: 1rem; border-radius: 6px; margin-top: 1rem; text-align: center;">
+          <div style="font-size: 1.5rem; color: #00b42a; font-weight: bold;">🎉 全部 KPI 达成，5 项超额完成</div>
+          <div style="font-size: 0.85rem; color: #4e5969; margin-top: 0.3rem;">综合评级：⭐⭐⭐⭐⭐ (5/5)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>二、小红书 vs 其他平台 ROI 对比</h2></div>
+        <table>
+          <thead><tr><th>指标</th><th>小红书 (本次)</th><th>行业均值 (小红书)</th><th>抖音</th><th>B站</th><th>微博</th></tr></thead>
+          <tbody>
+            <tr><td>CPUV</td><td style="color: #00b42a; font-weight: bold;">¥12.5</td><td>¥16.8</td><td>¥18.2</td><td>¥15.5</td><td>¥22.0</td></tr>
+            <tr><td>进店率</td><td style="color: #00b42a; font-weight: bold;">0.42%</td><td>0.32%</td><td>0.38%</td><td>0.28%</td><td>0.15%</td></tr>
+            <tr><td>互动率</td><td style="color: #00b42a; font-weight: bold;">5.8%</td><td>4.2%</td><td>3.5%</td><td>6.2%</td><td>1.8%</td></tr>
+            <tr><td>内容留存</td><td style="color: #00b42a; font-weight: bold;">长期</td><td>长期</td><td>7-30天</td><td>长期</td><td>7天</td></tr>
+            <tr><td>搜索溢出</td><td style="color: #00b42a; font-weight: bold;">+35%</td><td>+25%</td><td>+18%</td><td>+22%</td><td>+8%</td></tr>
+            <tr><td>综合 ROI</td><td style="color: #00b42a; font-weight: bold;">1:3.8</td><td>1:2.5</td><td>1:2.2</td><td>1:2.8</td><td>1:1.5</td></tr>
+          </tbody>
+        </table>
+        <div style="background: #f2f3ff; padding: 1rem; border-radius: 6px; margin-top: 1rem; border-left: 4px solid #1d39c4;">
+          <h4 style="color: #1d39c4; margin-bottom: 0.5rem;">💰 投资价值总结</h4>
+          <p style="font-size: 0.85rem; color: #4e5969;">本次小红书投放 CPUV 较行业均值低 <b>26%</b>，综合 ROI 达 <b>1:3.8</b>，显著优于其他平台。同等预算下，小红书可带来 <b>2.5 倍</b>于微博的有效曝光，进店率高出行业均值 <b>31%</b>。建议下期增加小红书投放预算至 <b>60%</b> 以上。</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>三、达人表现排名</h2></div>
+        <table>
+          <thead><tr><th>排名</th><th>达人</th><th>CPUV</th><th>曝光量</th><th>互动量</th><th>进店率</th><th>评级</th></tr></thead>
+          <tbody>
+            <tr><td>🥇 1</td><td><b>@面包疙瘩</b></td><td style="color: #00b42a; font-weight: bold;">¥11.2</td><td>158,000</td><td>12,450</td><td>0.52%</td><td><span class="badge badge-success">S</span></td></tr>
+            <tr><td>🥈 2</td><td><b>@白杨刀</b></td><td style="color: #00b42a; font-weight: bold;">¥12.5</td><td>142,000</td><td>9,860</td><td>0.45%</td><td><span class="badge badge-success">A</span></td></tr>
+            <tr><td>🥉 3</td><td><b>@gowithme</b></td><td style="color: #00b42a; font-weight: bold;">¥13.5</td><td>125,000</td><td>8,920</td><td>0.38%</td><td><span class="badge badge-success">A</span></td></tr>
+            <tr><td>4</td><td>@辣妈 celia</td><td>¥14.8</td><td>98,000</td><td>5,200</td><td>0.32%</td><td><span class="badge badge-warning">B+</span></td></tr>
+            <tr><td>5</td><td>@豆豆睡醒了</td><td>¥15.2</td><td>82,000</td><td>3,300</td><td>0.28%</td><td><span class="badge badge-warning">B</span></td></tr>
+          </tbody>
+        </table>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button>
+          <button class="btn btn-primary" onclick="showToast('📥 商家复盘报告已导出为 PDF')">📥 导出 PDF</button>
+          <button class="btn btn-success" onclick="showToast('📤 已推送给商家')">📤 推送给商家</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Show Case 页面 -->
+    <div id="page-review-showcase" class="page">
+      <div class="page-header"><h1>🏆 行业 Show Case</h1><p>与平台共创，展示行业新能力</p></div>
+      
+      <div class="card">
+        <div class="card-header"><h2>案例背景</h2><button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button></div>
+        <table>
+          <tr><th style="width: 120px;">品牌</th><td>珀莱雅 (PROYA)</td></tr>
+          <tr><th>产品</th><td>红宝石面霜 - 中国美妆首个环肽抗老面霜</td></tr>
+          <tr><th>合作平台</th><td>小红书</td></tr>
+          <tr><th>投放周期</th><td>2026.3.15-3.25 (11天)</td></tr>
+          <tr><th>达人规模</th><td>5 位 (代理 60% + 矩阵号 30% + 个人号 10%)</td></tr>
+          <tr><th>核心创新</th><td>AI 驱动的全链路种草投放 + 平台新能力共创</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>一、行业新能力展示</h2></div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+          <div style="background: #f5e8ff; padding: 1.2rem; border-radius: 8px; border: 1px solid #d4a5ff;">
+            <h4 style="color: #722ed1; margin-bottom: 0.5rem;">🤖 AI 智能选号 2.0</h4>
+            <p style="font-size: 0.85rem; color: #4e5969;">行业首次实现基于 CPM/CPE/CPUV 多维度的 AI 达人推荐，筛选准确率达 85%，选号效率提升 60%。结合达人属性标签（代理/矩阵号/个人号），实现精准匹配。</p>
+          </div>
+          <div style="background: #e8f7ff; padding: 1.2rem; border-radius: 8px; border: 1px solid #a5d4ff;">
+            <h4 style="color: #165dff; margin-bottom: 0.5rem;">📝 AI 内容审核自动化</h4>
+            <p style="font-size: 0.85rem; color: #4e5969;">自动识别产品名错误、成分描述错误、卖点遗漏等问题，一键修正。审核效率提升 57%，错误率降低至 2% 以下。行业首创"AI 初审 + 人工复核"双审机制。</p>
+          </div>
+          <div style="background: #e8ffea; padding: 1.2rem; border-radius: 8px; border: 1px solid #a5ffd4;">
+            <h4 style="color: #00b42a; margin-bottom: 0.5rem;">📊 实时 CPUV 投流监测</h4>
+            <p style="font-size: 0.85rem; color: #4e5969;">行业首次实现投放过程中实时 CPUV 监控与动态调优，发布后 48 小时内启动投流，CPUV 较传统方式降低 18%。支持 YES/NO 快速决策是否加入投放。</p>
+          </div>
+          <div style="background: #fff7e8; padding: 1.2rem; border-radius: 8px; border: 1px solid #ffd4a5;">
+            <h4 style="color: #ff7d00; margin-bottom: 0.5rem;">🔄 多方协作工作流</h4>
+            <p style="font-size: 0.85rem; color: #4e5969;">打通商家→上行内容→下行内容→投流团队→直管的全链路协作，全链路耗时从 18 天缩短至 8.5 天 (↓53%)。实现达人推荐→审核→发布→投流→复盘的线上化闭环。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>二、与小红书平台共创成果</h2></div>
+        <table>
+          <thead><tr><th>共创维度</th><th>传统模式</th><th>本次创新</th><th>行业价值</th></tr></thead>
+          <tbody>
+            <tr><td>达人筛选</td><td>人工经验筛选，耗时 5-7 天</td><td>AI 多维度推荐，2 天完成，准确率 85%</td><td>为品牌方提供标准化选号方法论</td></tr>
+            <tr><td>内容审核</td><td>人工逐条审核，易出错漏</td><td>AI 自动审核+一键修正，错误率<2%</td><td>建立 UGC 内容质量保障标准</td></tr>
+            <tr><td>效果追踪</td><td>投放后手动统计，数据滞后</td><td>实时 CPUV 监控，动态调优</td><td>实现种草效果可量化、可优化</td></tr>
+            <tr><td>协作模式</td><td>多角色信息不同步，反复沟通</td><td>全链路线上化，信息实时同步</td><td>缩短 53% 投放周期，提升行业效率</td></tr>
+            <tr><td>复盘沉淀</td><td>Excel 手动整理，难以复用</td><td>AI 自动生成多维度复盘报告</td><td>建立可复用的投放方法论库</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>三、行业大会分享素材</h2></div>
+        <div style="background: linear-gradient(135deg, #1d39c4 0%, #722ed1 100%); padding: 1.5rem; border-radius: 8px; color: white; margin-bottom: 1rem;">
+          <h3 style="margin-bottom: 0.5rem;">📊 核心数据亮点</h3>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+            <div><div style="font-size: 2rem; font-weight: bold;">↓53%</div><div style="font-size: 0.8rem; opacity: 0.9;">投放周期缩短</div></div>
+            <div><div style="font-size: 2rem; font-weight: bold;">¥12.5</div><div style="font-size: 0.8rem; opacity: 0.9;">平均 CPUV (↓27%)</div></div>
+            <div><div style="font-size: 2rem; font-weight: bold;">1:3.8</div><div style="font-size: 0.8rem; opacity: 0.9;">综合 ROI</div></div>
+            <div><div style="font-size: 2rem; font-weight: bold;">85%</div><div style="font-size: 0.8rem; opacity: 0.9;">AI 选号准确率</div></div>
+          </div>
+        </div>
+        <div style="background: #f7f8fa; padding: 1.2rem; border-radius: 6px;">
+          <h4 style="margin-bottom: 0.8rem;">🎤 可用于行业大会的分享主题</h4>
+          <div style="font-size: 0.85rem; color: #4e5969; line-height: 2;">
+            <p>1. <b>AI 如何重塑种草投放全链路</b> - 从选号到复盘的智能化实践</p>
+            <p>2. <b>小红书种草效果量化方法论</b> - CPUV 指标体系与实时监测实践</p>
+            <p>3. <b>多方协作线上化</b> - 缩短 53% 投放周期的工作流创新</p>
+            <p>4. <b>美妆行业数字化投放标杆</b> - 珀莱雅案例拆解与可复用经验</p>
+            <p>5. <b>种草到转化的闭环构建</b> - 内容审核 + 投流监测 + 效果追踪一体化</p>
+          </div>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-review')">返回</button>
+          <button class="btn btn-primary" onclick="showToast('📥 Show Case 已导出为演示文稿')">📥 导出演示文稿</button>
+          <button class="btn btn-success" onclick="showToast('🤝 已推送给小红书对接团队')">🤝 推送给小红书团队</button>
+        </div>
+      </div>
+    </div>
+
+  <div class="toast" id="toast"><span id="toast-msg">操作成功</span></div>
+  <div class="loading-overlay" id="loading">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <h3 id="loading-text">AI 正在评估 Brief...</h3>
+    </div>
+  </div>
+
+  <script>
+    let currentRole = null;
+    let merchantKolSelections = {};
+
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const page = document.getElementById('page-' + pageId);
+      if (page) page.classList.add('active');
+      updateBreadcrumb(pageId);
+      window.scrollTo(0, 0);
+    }
+
+    function updateBreadcrumb(pageId) {
+      const bc = document.getElementById('breadcrumb');
+      let html = '<span class="breadcrumb-item" onclick="goHome()">首页</span>';
+      if (pageId.startsWith('merchant')) {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'merchant-home\')">商家</span>';
+        const names = { 'merchant-brief': '上传 Brief', 'merchant-kol': 'KOL 审核', 'merchant-draft': '稿件审核', 'merchant-review': '查收复盘' };
+        if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
+      } else if (pageId.startsWith('downstream')) {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'downstream-home\')">下行内容</span>';
+        const names = { 'downstream-brief': 'Brief 评估', 'downstream-kol': '智能选号', 'downstream-audit': '内容审核', 'downstream-monitor': '发布&投流监测', 'downstream-review': '投后复盘', 'review-internal': '内部复盘', 'review-merchant': '商家复盘', 'review-showcase': 'Show Case' };
+        if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
+      }
+      bc.innerHTML = html;
+    }
+
+    function goHome() {
+      currentRole = null;
+      navigateTo('home');
+    }
+
+    function selectRole(role) {
+      currentRole = role;
+      if (role === 'merchant') {
+        navigateTo('merchant-home');
+        initMerchantKolTable();
+      } else if (role === 'downstream') {
+        navigateTo('downstream-home');
+      } else {
+        showToast('该角色页面正在开发中...');
+      }
+    }
+
+    function initMerchantKolTable() {
+      const data = [
+        { name: '@面包疙瘩', platform: '小红书', link: '#', cpm: '¥18.5', cpe: '¥2.3', cpuv: '¥11.2', recommend: '强烈推荐' },
+        { name: '@gowithme', platform: '小红书', link: '#', cpm: '¥15.2', cpe: '¥1.8', cpuv: '¥13.5', recommend: '推荐' },
+        { name: '@辣妈 celia', platform: '小红书', link: '#', cpm: '¥22.0', cpe: '¥2.8', cpuv: '¥14.8', recommend: '可考虑' },
+        { name: '@白杨刀', platform: '小红书', link: '#', cpm: '¥16.8', cpe: '¥2.1', cpuv: '¥12.5', recommend: '推荐' },
+        { name: '@豆豆睡醒了', platform: '小红书', link: '#', cpm: '¥14.5', cpe: '¥1.6', cpuv: '¥15.2', recommend: '可考虑' }
+      ];
+      const tbody = document.getElementById('merchantKolBody');
+      if (!tbody) return;
+      tbody.innerHTML = data.map((d, i) => `
+        <tr>
+          <td><b>${d.name}</b></td>
+          <td><span class="badge badge-info">${d.platform}</span></td>
+          <td><a href="${d.link}" style="color: #165dff;">查看</a></td>
+          <td>${d.cpm}</td>
+          <td>${d.cpe}</td>
+          <td>${d.cpuv}</td>
+          <td><span class="badge badge-${d.recommend === '强烈推荐' ? 'success' : d.recommend === '推荐' ? 'success' : 'warning'}">${d.recommend}</span></td>
+          <td>
+            <span class="select-yes ${merchantKolSelections[i] === 'yes' ? 'selected' : ''}" onclick="selectMerchantKol(${i}, 'yes', this)">YES</span>
+            <span class="select-no ${merchantKolSelections[i] === 'no' ? 'selected' : ''}" onclick="selectMerchantKol(${i}, 'no', this)">NO</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function selectMerchantKol(index, choice, el) {
+      merchantKolSelections[index] = choice;
+      const row = el.parentElement;
+      row.querySelectorAll('.select-yes, .select-no').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function confirmKolSelection() {
+      const yesCount = Object.values(merchantKolSelections).filter(v => v === 'yes').length;
+      if (yesCount === 0) { showToast('请至少选择一位达人'); return; }
+      showToast(`✅ 已确认 ${yesCount} 位达人`);
+    }
+
+    function selectBrand(brand) {
+      const names = { proya: '珀莱雅', winona: '薇诺娜', marubi: '丸美', chando: '自然堂' };
+      document.getElementById('downstream-brand-title').textContent = `📤 ${names[brand]}工作台`;
+      setTimeout(() => navigateTo('downstream-workspace'), 200);
+    }
+
+    function evaluateBrief() {
+      const loading = document.getElementById('loading');
+      loading.classList.add('show');
+      let p = 0;
+      const interval = setInterval(() => {
+        p += 25;
+        if (p >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            loading.classList.remove('show');
+            document.getElementById('brief-eval-result').style.display = 'block';
+            showToast('✅ Brief 评估完成');
+          }, 300);
+        }
+      }, 400);
+    }
+
+    function dispatchBrief() {
+      if (confirm('确认下发 Brief 给直管吗？')) showToast('📤 Brief 已下发给直管');
+    }
+
+    function returnBrief() {
+      if (confirm('确认退回 Brief 给上行吗？')) showToast('📤 Brief 已退回给上行');
+    }
+
+    function fixDraft(el, correctText) {
+      el.textContent = correctText;
+      el.className = 'correct-text';
+      el.onclick = null;
+      el.style.textDecoration = 'none';
+    }
+
+    function approveDraft() {
+      if (confirm('确认提交此稿件吗？')) showToast('✅ 稿件已确认');
+    }
+
+    function pushAuditToMerchant() {
+      if (confirm('确认推送给商家审核吗？')) showToast('📤 已推送给商家审核');
+    }
+
+    function directSend() {
+      if (confirm('确认直接发送此内容吗？')) showToast('🚀 内容已直接发送');
+    }
+
+    function addToDelivery(el, name) {
+      const row = el.parentElement;
+      row.querySelectorAll('.select-yes, .select-no').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      const isYes = el.classList.contains('select-yes');
+      showToast(isYes ? `✅ ${name} 已加入投放，将推送给投流团队` : `❌ ${name} 已取消投放`);
+    }
+
+    function toggleDropdown(btn) {
+      const content = btn.nextElementSibling;
+      document.querySelectorAll('.dropdown-content').forEach(d => { if (d !== content) d.classList.remove('show'); });
+      content.classList.toggle('show');
+    }
+
+    function nextStep(name, target) {
+      const names = { merchant: '商家', supervisor: '直管', matrix: '矩阵号团队' };
+      showToast(`📤 ${name} 已推送给${names[target]}`);
+      document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+      }
+    });
+
+    navigateTo('home');
+  </script>
+</body>
+</html>

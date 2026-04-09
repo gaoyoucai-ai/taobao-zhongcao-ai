@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #ffffff; font-family: Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+.header {
+  background: #1a365d;
+  padding: 18pt 40pt;
+}
+.header h1 {
+  color: #ffffff;
+  font-size: 26pt;
+  margin: 0;
+}
+.header p {
+  color: #90cdf4;
+  font-size: 12pt;
+  margin: 6pt 0 0 0;
+}
+.content {
+  flex: 1;
+  padding: 15pt 40pt;
+  display: flex;
+  flex-direction: column;
+}
+.phase-header {
+  background: #3182ce;
+  color: white;
+  padding: 8pt 15pt;
+  border-radius: 6pt;
+  margin-bottom: 10pt;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.phase-header h2 {
+  font-size: 14pt;
+  margin: 0;
+}
+.phase-header span {
+  font-size: 11pt;
+  opacity: 0.9;
+}
+.timeline {
+  display: flex;
+  gap: 8pt;
+  margin-bottom: 12pt;
+}
+.time-block {
+  flex: 1;
+  background: #f7fafc;
+  border: 2pt solid #e2e8f0;
+  border-radius: 6pt;
+  padding: 8pt;
+}
+.time-block.highlight {
+  border-color: #3182ce;
+  background: #ebf8ff;
+}
+.time-block h4 {
+  color: #1a365d;
+  font-size: 10pt;
+  margin: 0 0 6pt 0;
+  text-align: center;
+}
+.time-block ul {
+  margin: 0;
+  padding-left: 12pt;
+  font-size: 9pt;
+  color: #2d3748;
+  line-height: 1.4;
+}
+.time-block li {
+  margin-bottom: 3pt;
+}
+.divider {
+  height: 2pt;
+  background: #e2e8f0;
+  margin: 10pt 0;
+}
+.phase2-header {
+  background: #16a085;
+  color: white;
+  padding: 8pt 15pt;
+  border-radius: 6pt;
+  margin-bottom: 10pt;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.phase2-header h2 {
+  font-size: 14pt;
+  margin: 0;
+}
+.phase2-header span {
+  font-size: 11pt;
+  opacity: 0.9;
+}
+.timeline2 {
+  display: flex;
+  gap: 10pt;
+}
+.time-block2 {
+  flex: 1;
+  background: #f0fff4;
+  border: 2pt solid #c6f6d5;
+  border-radius: 6pt;
+  padding: 8pt;
+}
+.time-block2 h4 {
+  color: #276749;
+  font-size: 11pt;
+  margin: 0 0 6pt 0;
+  text-align: center;
+}
+.time-block2 ul {
+  margin: 0;
+  padding-left: 12pt;
+  font-size: 9pt;
+  color: #2d3748;
+  line-height: 1.4;
+}
+.footer {
+  background: #f7fafc;
+  padding: 10pt 40pt;
+  display: flex;
+  justify-content: center;
+  gap: 30pt;
+}
+.milestone {
+  text-align: center;
+}
+.milestone h4 {
+  color: #1a365d;
+  font-size: 14pt;
+  margin: 0;
+}
+.milestone p {
+  color: #4a5568;
+  font-size: 9pt;
+  margin: 4pt 0 0 0;
+}
+.badge {
+  display: inline-block;
+  background: #fed7d7;
+  color: #c53030;
+  padding: 2pt 6pt;
+  border-radius: 4pt;
+  font-size: 8pt;
+  margin-left: 4pt;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>实施路线图 - 零预算启动，分阶段投入</h1>
+  <p>双周迭代，先用免费方案做出 MVP，证明价值后申请预算补齐能力</p>
+</div>
+<div class="content">
+  <div class="phase-header">
+    <h2>Step 1：提升人效（4 月 -6 月，618 前完成）</h2>
+    <span>目标：零预算实现 58% 功能，有预算可实现 100%</span>
+  </div>
+  <div class="timeline">
+    <div class="time-block highlight">
+      <h4>4 月上</h4>
+      <ul>
+        <li>Brief 智能检查</li>
+        <li>交互问答系统</li>
+        <li>规则引擎搭建</li>
+      </ul>
+    </div>
+    <div class="time-block">
+      <h4>4 月下</h4>
+      <ul>
+        <li>达人推荐引擎</li>
+        <li>账号评估模型</li>
+        <li>黑名单管理</li>
+      </ul>
+    </div>
+    <div class="time-block highlight">
+      <h4>5 月上</h4>
+      <ul>
+        <li>档期管理系统</li>
+        <li>成本测算工具</li>
+        <li>交互式选号</li>
+      </ul>
+    </div>
+    <div class="time-block">
+      <h4>5 月下</h4>
+      <ul>
+        <li>内容自动审核<span class="badge">文本</span></li>
+        <li>敏感词检测</li>
+        <li>Brief 符合度</li>
+      </ul>
+    </div>
+    <div class="time-block highlight">
+      <h4>6 月上</h4>
+      <ul>
+        <li>投流智能评估<span class="badge">手动数据</span></li>
+        <li>效果监测看板</li>
+        <li>工作台上线</li>
+      </ul>
+    </div>
+    <div class="time-block">
+      <h4>6 月下</h4>
+      <ul>
+        <li>618 实战验证</li>
+        <li>MVP 全模块测试</li>
+        <li>Step1 上线</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="divider"></div>
+  
+  <div class="phase2-header">
+    <h2>Step 2：种草做得更好（7 月 -9 月，Q3 完成）</h2>
+    <span>需要预算支持：第三方 API+AI 能力</span>
+  </div>
+  <div class="timeline2">
+    <div class="time-block2">
+      <h4>7 月</h4>
+      <ul>
+        <li>内容效果深度分析</li>
+        <li>黄金前 3 秒分析</li>
+        <li>高转化话术库</li>
+        <li><b>需预算</b>：NLP 服务</li>
+      </ul>
+    </div>
+    <div class="time-block2">
+      <h4>8 月</h4>
+      <ul>
+        <li>投流效果智能优化</li>
+        <li>归因分析模型</li>
+        <li>A/B 测试框架</li>
+        <li><b>需预算</b>：数据分析</li>
+      </ul>
+    </div>
+    <div class="time-block2">
+      <h4>9 月</h4>
+      <ul>
+        <li>新人群挖掘</li>
+        <li>九层人群画像</li>
+        <li>品牌增长策略</li>
+        <li><b>需预算</b>：人群数据</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div class="milestone">
+    <h4>4.15</h4>
+    <p>MVP 首批功能</p>
+  </div>
+  <div class="milestone">
+    <h4>5.15</h4>
+    <p>核心能力完成</p>
+  </div>
+  <div class="milestone">
+    <h4>6.18</h4>
+    <p>Step1 上线</p>
+  </div>
+  <div class="milestone">
+    <h4 style="color: #c53030;">有预算后</h4>
+    <p>补齐 AI+ 数据能力</p>
+  </div>
+  <div class="milestone">
+    <h4>9.30</h4>
+    <p>Step2 完整上线</p>
+  </div>
+</div>
+</body>
+</html>

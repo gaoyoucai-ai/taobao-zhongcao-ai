@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #f7fafc; font-family: Arial, sans-serif;
+  display: flex; flex-direction: column;
+}
+.header {
+  background: #1a365d;
+  padding: 18pt 40pt;
+}
+.header h1 {
+  color: #ffffff;
+  font-size: 24pt;
+  margin: 0;
+}
+.header p {
+  color: #90cdf4;
+  font-size: 11pt;
+  margin: 6pt 0 0 0;
+}
+.content {
+  flex: 1;
+  padding: 15pt 30pt;
+  display: flex;
+  gap: 15pt;
+}
+.demo-panel {
+  flex: 1;
+  background: white;
+  border: 1pt solid #e2e8f0;
+  border-radius: 8pt;
+  box-shadow: 0 2pt 8pt rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.panel-header {
+  background: #edf2f7;
+  padding: 8pt 12pt;
+  border-bottom: 1pt solid #cbd5e0;
+}
+.panel-header h3 {
+  color: #1a365d;
+  font-size: 11pt;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+.panel-header h3::before {
+  content: '';
+  display: inline-block;
+  width: 8pt;
+  height: 8pt;
+  background: #48bb78;
+  border-radius: 50%;
+  margin-right: 6pt;
+}
+.panel-body {
+  flex: 1;
+  padding: 10pt;
+  overflow-y: auto;
+  font-size: 9pt;
+}
+/* Brief 检查界面 */
+.brief-item {
+  margin-bottom: 8pt;
+  padding: 6pt;
+  background: #f7fafc;
+  border-left: 3pt solid #cbd5e0;
+  border-radius: 4pt;
+}
+.brief-item.pass {
+  border-left-color: #48bb78;
+  background: #f0fff4;
+}
+.brief-item.warning {
+  border-left-color: #ed8936;
+  background: #fffaf0;
+}
+.brief-item.fail {
+  border-left-color: #f56565;
+  background: #fff5f5;
+}
+.brief-item h4 {
+  color: #1a365d;
+  font-size: 9pt;
+  margin: 0 0 3pt 0;
+}
+.brief-item p {
+  color: #4a5568;
+  font-size: 8pt;
+  margin: 0;
+}
+.status-badge {
+  display: inline-block;
+  padding: 1pt 4pt;
+  border-radius: 3pt;
+  font-size: 7pt;
+  margin-left: 4pt;
+}
+.status-pass {
+  background: #c6f6d5;
+  color: #276749;
+}
+.status-warning {
+  background: #feebc8;
+  color: #c05621;
+}
+.status-fail {
+  background: #fed7d7;
+  color: #c53030;
+}
+/* 达人列表 */
+.creator-card {
+  display: flex;
+  align-items: center;
+  padding: 6pt;
+  margin-bottom: 6pt;
+  background: #f7fafc;
+  border-radius: 4pt;
+  border: 1pt solid #e2e8f0;
+}
+.creator-avatar {
+  width: 30pt;
+  height: 30pt;
+  border-radius: 50%;
+  background: #4299e1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12pt;
+  font-weight: bold;
+  margin-right: 8pt;
+}
+.creator-info {
+  flex: 1;
+}
+.creator-info h4 {
+  color: #1a365d;
+  font-size: 9pt;
+  margin: 0;
+}
+.creator-info p {
+  color: #4a5568;
+  font-size: 8pt;
+  margin: 2pt 0 0 0;
+}
+.creator-score {
+  text-align: right;
+}
+.score-number {
+  font-size: 14pt;
+  font-weight: bold;
+  color: #48bb78;
+}
+.score-label {
+  font-size: 7pt;
+  color: #4a5568;
+}
+/* 审核结果 */
+.audit-result {
+  padding: 8pt;
+  background: #ebf8ff;
+  border: 1pt solid #bee3f8;
+  border-radius: 4pt;
+  margin-bottom: 8pt;
+}
+.audit-result h4 {
+  color: #1a365d;
+  font-size: 10pt;
+  margin: 0 0 4pt 0;
+}
+.audit-result ul {
+  margin: 0;
+  padding-left: 12pt;
+  font-size: 8pt;
+  color: #2d3748;
+}
+.audit-result li {
+  margin-bottom: 2pt;
+}
+/* 底部标签 */
+.footer-tabs {
+  display: flex;
+  background: #edf2f7;
+  border-top: 1pt solid #cbd5e0;
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 6pt;
+  font-size: 9pt;
+  color: #4a5568;
+  border-right: 1pt solid #cbd5e0;
+  cursor: pointer;
+}
+.tab:last-child {
+  border-right: none;
+}
+.tab.active {
+  background: white;
+  color: #1a365d;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>系统 Demo - 淘宝种草 AI 助手工作台</h1>
+  <p>多角色协作界面：商家/销售/运营/执行/投流，每个角色都有专属工作台</p>
+</div>
+<div class="content">
+  <!-- Panel 1: Brief 智能检查 -->
+  <div class="demo-panel">
+    <div class="panel-header">
+      <h3>Brief 智能检查</h3>
+    </div>
+    <div class="panel-body">
+      <div class="brief-item pass">
+        <h4>完整性检查 <span class="status-badge status-pass">通过</span></h4>
+        <p>所有必填项已完整填写（8/8）</p>
+      </div>
+      
+      <div class="brief-item warning">
+        <h4>卖点准确性 <span class="status-badge status-warning">需优化</span></h4>
+        <p>"控油 72 小时"与官方资料"控油 48 小时"不符，建议修改</p>
+      </div>
+      
+      <div class="brief-item pass">
+        <h4>目标合理性 <span class="status-badge status-pass">通过</span></h4>
+        <p>CPUV 目标 15 元符合行业基准（平均 15-18 元）</p>
+      </div>
+      
+      <div class="brief-item fail">
+        <h4>人群清晰度 <span class="status-badge status-fail">不通过</span></h4>
+        <p>目标人群描述过于宽泛，建议补充：年龄段、城市等级、消费能力</p>
+      </div>
+      
+      <div style="margin-top: 8pt; padding: 6pt; background: #fef3c7; border: 1pt dashed #f59e0b; border-radius: 4pt;">
+        <p style="color: #92400e; font-size: 8pt; margin: 0;">
+          💡 <b>AI 建议</b>：建议将目标人群修改为"18-25 岁年轻女性，一二线城市，中等消费能力，关注护肤美妆"
+        </p>
+      </div>
+    </div>
+    <div class="footer-tabs">
+      <div class="tab active">Brief 检查</div>
+      <div class="tab">交互优化</div>
+      <div class="tab">历史记录</div>
+    </div>
+  </div>
+  
+  <!-- Panel 2: 智能选号推荐 -->
+  <div class="demo-panel">
+    <div class="panel-header">
+      <h3>智能选号推荐</h3>
+    </div>
+    <div class="panel-body">
+      <div class="creator-card">
+        <div class="creator-avatar">李</div>
+        <div class="creator-info">
+          <h4>@小李的美妆日记</h4>
+          <p>小红书 | 85w 粉丝 | 美妆个护</p>
+        </div>
+        <div class="creator-score">
+          <div class="score-number">92</div>
+          <div class="score-label">匹配度</div>
+        </div>
+      </div>
+      
+      <div class="creator-card">
+        <div class="creator-avatar">王</div>
+        <div class="creator-info">
+          <h4>@王同学的日常</h4>
+          <p>B 站 | 120w 粉丝 | 生活方式</p>
+        </div>
+        <div class="creator-score">
+          <div class="score-number">88</div>
+          <div class="score-label">匹配度</div>
+        </div>
+      </div>
+      
+      <div class="creator-card">
+        <div class="creator-avatar">张</div>
+        <div class="creator-info">
+          <h4>@张小评测</h4>
+          <p>抖音 | 200w 粉丝 | 专业评测</p>
+        </div>
+        <div class="creator-score">
+          <div class="score-number">85</div>
+          <div class="score-label">匹配度</div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 8pt; padding: 6pt; background: #e6fffa; border: 1pt solid #81e6d9; border-radius: 4pt;">
+        <p style="color: #234e52; font-size: 8pt; margin: 0;">
+          📊 <b>推荐理由</b>：@小李的美妆日记粉丝画像与目标人群重合度 92%，历史合作 CPUV 仅 12 元，配合度优秀
+        </p>
+      </div>
+    </div>
+    <div class="footer-tabs">
+      <div class="tab active">达人推荐</div>
+      <div class="tab">我的反馈</div>
+      <div class="tab">档期确认</div>
+    </div>
+  </div>
+  
+  <!-- Panel 3: 内容审核结果 -->
+  <div class="demo-panel">
+    <div class="panel-header">
+      <h3>内容自动审核</h3>
+    </div>
+    <div class="panel-body">
+      <div class="audit-result">
+        <h4>🟢 审核通过 - 可直接发布</h4>
+        <ul>
+          <li>✅ 基础合规：无敏感词/违规内容</li>
+          <li>✅ Brief 符合度：核心卖点完整传达（3/3）</li>
+          <li>✅ 文案准确性：无错别字，商品名正确</li>
+        </ul>
+      </div>
+      
+      <div style="padding: 6pt; background: #f7fafc; border: 1pt solid #e2e8f0; border-radius: 4pt; margin-bottom: 6pt;">
+        <p style="color: #1a365d; font-size: 8pt; margin: 0 0 4pt 0;"><b>检测到 1 处优化建议：</b></p>
+        <p style="color: #4a5568; font-size: 8pt; margin: 0;">
+          ⚠️ 第 25 秒产品展示时长较短（18 秒），建议延长至 30 秒以上以提升转化效果
+        </p>
+      </div>
+      
+      <div style="display: flex; gap: 6pt; margin-top: 8pt;">
+        <button style="flex: 1; padding: 6pt; background: #48bb78; color: white; border: none; border-radius: 4pt; font-size: 9pt; cursor: pointer;">
+          ✅ 确认发布
+        </button>
+        <button style="flex: 1; padding: 6pt; background: #ed8936; color: white; border: none; border-radius: 4pt; font-size: 9pt; cursor: pointer;">
+          ✏️ 修改建议
+        </button>
+      </div>
+    </div>
+    <div class="footer-tabs">
+      <div class="tab active">审核结果</div>
+      <div class="tab">历史记录</div>
+      <div class="tab">批量审核</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

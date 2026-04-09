@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>淘宝种草 AI 助手 - 完整流程 Demo V2</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #f5f7fa;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+    .top-nav {
+      background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .nav-brand { color: white; font-size: 1.4rem; font-weight: bold; cursor: pointer; }
+    .breadcrumb { display: flex; gap: 0.5rem; color: rgba(255,255,255,0.85); font-size: 0.9rem; }
+    .breadcrumb-item { cursor: pointer; }
+    .breadcrumb-item:hover { color: white; }
+    .breadcrumb-item::after { content: '/'; margin-left: 0.5rem; opacity: 0.6; }
+    .breadcrumb-item:last-child::after { content: ''; }
+    .btn-home {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .btn-home:hover { background: rgba(255,255,255,0.3); }
+    .main-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    .page { display: none; animation: fadeIn 0.4s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .page-header {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .page-header h1 { color: #1a365d; font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .page-header p { color: #4a5568; }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .module-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .module-card:hover {
+      transform: translateY(-4px);
+      border-color: #4299e1;
+      box-shadow: 0 8px 16px rgba(66,153,225,0.15);
+    }
+    .module-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .module-card h3 { color: #1a365d; font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .module-card p { color: #4a5568; font-size: 0.9rem; }
+    .section { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0; }
+    .section-header h2 { color: #1a365d; font-size: 1.4rem; }
+    .btn { padding: 0.6rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: bold; transition: all 0.3s; }
+    .btn-primary { background: #3182ce; color: white; }
+    .btn-primary:hover { background: #2c5282; }
+    .btn-success { background: #48bb78; color: white; }
+    .btn-success:hover { background: #38a169; }
+    .btn-warning { background: #ed8936; color: white; }
+    .btn-warning:hover { background: #dd6b20; }
+    .btn-danger { background: #f56565; color: white; }
+    .btn-danger:hover { background: #e53e3e; }
+    .btn-outline { background: white; color: #3182ce; border: 2px solid #3182ce; }
+    .btn-outline:hover { background: #ebf8ff; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .upload-area {
+      border: 3px dashed #cbd5e0;
+      border-radius: 12px;
+      padding: 3rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: #f7fafc;
+    }
+    .upload-area:hover { border-color: #4299e1; background: #ebf8ff; }
+    .upload-area .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .upload-area p { color: #1a365d; font-weight: bold; }
+    .upload-area .hint { color: #4a5568; font-size: 0.85rem; }
+    .upload-form { display: none; margin-top: 1.5rem; }
+    .upload-form.show { display: block; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; color: #1a365d; font-weight: bold; margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: #4299e1;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f7fafc; color: #1a365d; font-weight: bold; }
+    tr:hover { background: #f7fafc; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+    .badge-success { background: #c6f6d5; color: #276749; }
+    .badge-warning { background: #feebc8; color: #c05621; }
+    .badge-danger { background: #fed7d7; color: #c53030; }
+    .badge-info { background: #bee3f8; color: #2a4365; }
+    .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #cbd5e0;
+      border-radius: 26px;
+      transition: 0.3s;
+    }
+    .toggle-slider:before {
+      content: '';
+      position: absolute;
+      height: 20px; width: 20px;
+      left: 3px; bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: #48bb78; }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(24px); }
+    .select-yes { background: #c6f6d5; color: #276749; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .select-no { background: #fed7d7; color: #c53030; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .select-yes.selected { background: #48bb78; color: white; }
+    .select-no.selected { background: #f56565; color: white; }
+    .editor-container { border: 2px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; min-height: 300px; }
+    .editor-container h3 { color: #1a365d; margin-bottom: 1rem; }
+    .editor-container .brief-section { margin-bottom: 1.5rem; }
+    .editor-container .brief-section h4 { color: #2d3748; margin-bottom: 0.5rem; }
+    .editor-container .highlight { background: #fef3c7; padding: 0.2rem 0.4rem; border-radius: 4px; }
+    .editor-container .error { background: #fed7d7; text-decoration: line-through; }
+    .editor-container .correct { background: #c6f6d5; }
+    .diff-view { display: flex; gap: 2rem; }
+    .diff-view .left, .diff-view .right { flex: 1; }
+    .review-deck { background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; }
+    .review-deck h4 { color: #1a365d; margin-bottom: 0.5rem; }
+    .review-deck .meta { color: #4a5568; font-size: 0.85rem; margin-bottom: 1rem; }
+    .review-deck .stats { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .review-deck .stat { background: white; padding: 0.8rem; border-radius: 6px; flex: 1; text-align: center; }
+    .review-deck .stat .value { font-size: 1.5rem; font-weight: bold; color: #1a365d; }
+    .review-deck .stat .label { font-size: 0.8rem; color: #4a5568; }
+    .audit-result { padding: 1rem; background: #ebf8ff; border-radius: 8px; margin-bottom: 1rem; }
+    .audit-result h4 { color: #1a365d; margin-bottom: 0.5rem; }
+    .audit-item { padding: 0.5rem 0; border-bottom: 1px solid #bee3f8; }
+    .audit-item:last-child { border-bottom: none; }
+    .brand-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .brand-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .brand-card:hover, .brand-card.selected {
+      border-color: #4299e1;
+      background: #ebf8ff;
+    }
+    .brand-card .logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .brand-card h4 { color: #1a365d; }
+    .progress-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; margin: 1rem 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #48bb78, #38a169); border-radius: 4px; transition: width 0.3s; }
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: white; padding: 1rem 2rem; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); z-index: 3000; display: none; }
+    .toast.show { display: block; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    .loading-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .loading-overlay.show { display: flex; }
+    .loading-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 300px;
+    }
+    .spinner {
+      width: 50px; height: 50px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #48bb78;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .action-bar { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+    @media (max-width: 768px) {
+      .top-nav { flex-direction: column; gap: 0.5rem; }
+      .module-grid { grid-template-columns: 1fr; }
+      .diff-view { flex-direction: column; }
+      .review-deck .stats { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-brand" onclick="goHome()">🌱 淘宝种草 AI 助手</div>
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="breadcrumb-item" onclick="goHome()">首页</span>
+    </div>
+    <button class="btn-home" onclick="goHome()">🏠 返回首页</button>
+  </nav>
+
+  <main class="main-container">
+    <!-- Page: 首页 - 角色选择 -->
+    <div id="page-home" class="page active">
+      <div class="page-header">
+        <h1>请选择你的角色</h1>
+        <p>不同角色有不同的工作台和权限</p>
+      </div>
+      <div class="module-grid">
+        <div class="module-card" onclick="selectRole('merchant')">
+          <div class="module-icon">🏪</div>
+          <h3>商家</h3>
+          <p>品牌方/广告主</p>
+        </div>
+        <div class="module-card" onclick="selectRole('upstream')">
+          <div class="module-icon">📝</div>
+          <h3>上行内容</h3>
+          <p>负责内容创作</p>
+        </div>
+        <div class="module-card" onclick="selectRole('downstream')">
+          <div class="module-icon">📤</div>
+          <h3>下行内容</h3>
+          <p>负责分发管理</p>
+        </div>
+        <div class="module-card" onclick="selectRole('ad-delivery')">
+          <div class="module-icon">📊</div>
+          <h3>下行投流</h3>
+          <p>负责广告投放</p>
+        </div>
+        <div class="module-card" onclick="selectRole('supervisor')">
+          <div class="module-icon">✅</div>
+          <h3>直管</h3>
+          <p>统筹全流程</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 商家首页 -->
+    <div id="page-merchant-home" class="page">
+      <div class="page-header">
+        <h1>🏪 商家工作台</h1>
+        <p>管理你的种草全流程</p>
+      </div>
+      <div class="module-grid">
+        <div class="module-card" onclick="navigateTo('merchant-brief')">
+          <div class="module-icon">📋</div>
+          <h3>1. 上传 Brief</h3>
+          <p>提交你的投放需求</p>
+        </div>
+        <div class="module-card" onclick="navigateTo('merchant-kol')">
+          <div class="module-icon">🎯</div>
+          <h3>2. KOL 审核</h3>
+          <p>审核推荐达人，选择合作</p>
+        </div>
+        <div class="module-card" onclick="navigateTo('merchant-draft')">
+          <div class="module-icon">✅</div>
+          <h3>3. 稿件审核</h3>
+          <p>在线编辑审核达人稿件</p>
+        </div>
+        <div class="module-card" onclick="navigateTo('merchant-review')">
+          <div class="module-icon">📊</div>
+          <h3>4. 查收复盘</h3>
+          <p>查看投放效果报告</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 商家 - 上传 Brief -->
+    <div id="page-merchant-brief" class="page">
+      <div class="page-header">
+        <h1>📋 上传 Brief</h1>
+        <p>提交你的种草投放需求，AI 将自动评估</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>产品信息</h2>
+        </div>
+        <div class="form-group">
+          <label>品牌名称</label>
+          <input type="text" id="brandName" placeholder="例如：珀莱雅" value="珀莱雅">
+        </div>
+        <div class="form-group">
+          <label>产品名称</label>
+          <input type="text" id="productName" placeholder="例如：红宝石面霜" value="红宝石面霜">
+        </div>
+        <div class="form-group">
+          <label>产品亮点简述</label>
+          <textarea id="productHighlight">国民级面霜，长期霸榜销量、回购、好评榜第一，三种质地量肤定制，中国美妆首个环肽</textarea>
+        </div>
+        <div class="form-group">
+          <label>核心卖点</label>
+          <textarea id="coreSellingPoints">1. 淡纹紧致饱满功效，嘭弹面中的同时改善干纹、表情纹，整体面部轮廓更清晰
+2. 国民面霜、万金油面霜的设定，质地温和
+3. 三重质地量肤定制，完美匹配肤质和季节
+4. 创新"双环肽+五重经典信号肽"
+5. 可替换芯环保</textarea>
+        </div>
+        <div class="form-group">
+          <label>目标人群</label>
+          <textarea id="targetAudience">23-30岁新一线及二线城市 都市白领/资深中产/小镇青年/精致妈妈的女性</textarea>
+        </div>
+        <div class="form-group">
+          <label>竞品 List</label>
+          <textarea id="competitors">雅诗兰黛智妍面霜、Olay超红瓶、修丽可age面霜、百雀羚灵玉面霜、欧莱雅小蜜罐、丝塔芙大白罐、薇诺娜特护霜</textarea>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+          <button class="btn btn-primary" onclick="submitBrief()">📤 提交 Brief</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 商家 - KOL 审核 -->
+    <div id="page-merchant-kol" class="page">
+      <div class="page-header">
+        <h1>🎯 KOL 审核</h1>
+        <p>AI 已根据你的 Brief 推荐了优质达人，请选择合作达人</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>推荐达人 List</h2>
+          <div>
+            <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+            <button class="btn btn-primary" onclick="confirmKolSelection()">✅ 确认选择</button>
+          </div>
+        </div>
+        <table id="kolTable">
+          <thead>
+            <tr>
+              <th>KOL 名称</th>
+              <th>平台</th>
+              <th>主页链接</th>
+              <th>CPM</th>
+              <th>CPE</th>
+              <th>过往 CPUV</th>
+              <th>推荐</th>
+              <th>选择</th>
+            </tr>
+          </thead>
+          <tbody id="kolTableBody">
+            <!-- 动态生成 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Page: 商家 - 稿件审核 -->
+    <div id="page-merchant-draft" class="page">
+      <div class="page-header">
+        <h1>✅ 稿件审核</h1>
+        <p>在线编辑审核达人稿件，AI 已自动标注问题点</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>达人稿件 - 白杨刀 视频脚本</h2>
+          <div>
+            <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+            <button class="btn btn-success" onclick="approveDraft()">✅ 确认提交</button>
+          </div>
+        </div>
+        <div class="diff-view">
+          <div class="left">
+            <h4 style="color: #1a365d; margin-bottom: 1rem;">📋 Brief 要求</h4>
+            <div class="editor-container">
+              <div class="brief-section">
+                <h4>产品名称</h4>
+                <p class="highlight">珀莱雅红宝石<span class="correct">面霜</span></p>
+              </div>
+              <div class="brief-section">
+                <h4>核心成分</h4>
+                <p>创新"双环肽 + <span class="correct">五重经典信号肽</span>"</p>
+              </div>
+              <div class="brief-section">
+                <h4>核心卖点</h4>
+                <ul>
+                  <li>淡纹紧致饱满功效</li>
+                  <li>改善干纹、表情纹</li>
+                  <li>面部轮廓更清晰</li>
+                  <li>国民面霜、万金油面霜</li>
+                  <li>三重质地量肤定制</li>
+                  <li>可替换芯环保</li>
+                </ul>
+              </div>
+              <div class="brief-section">
+                <h4>植入要求</h4>
+                <p>产品正面特写、质地展示</p>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <h4 style="color: #1a365d; margin-bottom: 1rem;">📝 达人初稿（可编辑）</h4>
+            <div class="editor-container" contenteditable="true" id="draftEditor">
+              <div class="brief-section">
+                <h4>剧情脚本</h4>
+                <p>——转场，蒙太奇画面——</p>
+                <p>【画面】陈安带林晓在院子里走动，给她盖上外套，偶尔坐在院子里陪她晒太阳</p>
+                <p>【画外音】时间一点点过去，林晓的活动范围越来越大，肚子也越来越大</p>
+                <br>
+                <p>——广告植入——</p>
+                <p>陈安：（拿着礼盒过来）看你最近累的，脸色也不好看，打开看看</p>
+                <p>林晓：（麻木接过打开）（产品特写）</p>
+                <p>陈安：这是我托城里朋友找的，<span class="error" onclick="fixDraft(this, '珀莱雅红宝石面霜')">珀莱雅红宝石水乳套装</span>（产品正面特写），城里很火的，说里面有<span class="error" onclick="fixDraft(this, '双环肽和五重经典信号肽')">五重生态</span>，能抗氧提亮，淡化纹路，质地也很轻润（上手/上脸使用），你记得每天用，我喜欢看你一直漂漂亮亮的。</p>
+                <p>——广告结束——</p>
+              </div>
+            </div>
+            <div style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-radius: 8px;">
+              <p style="color: #856404; font-size: 0.9rem;">
+                💡 <b>AI 提示</b>：点击红色删除线文字可自动修正为正确内容
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+          <button class="btn btn-success" onclick="approveDraft()">✅ 确认提交</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 商家 - 查收复盘 -->
+    <div id="page-merchant-review" class="page">
+      <div class="page-header">
+        <h1>📊 查收复盘</h1>
+        <p>查看历史投放效果报告</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>历史投放复盘报告</h2>
+          <button class="btn btn-outline" onclick="navigateTo('merchant-home')">返回</button>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅红宝石面霜 - 2026年3月投放复盘</h4>
+          <div class="meta">投放周期：2026.3.15 - 2026.3.25 | 达人数：5 位 | 平台：小红书</div>
+          <div class="stats">
+            <div class="stat">
+              <div class="value">¥12.5</div>
+              <div class="label">平均 CPUV</div>
+            </div>
+            <div class="stat">
+              <div class="value">0.42%</div>
+              <div class="label">平均进店率</div>
+            </div>
+            <div class="stat">
+              <div class="value">5.8%</div>
+              <div class="label">平均互动率</div>
+            </div>
+            <div class="stat">
+              <div class="value">⭐⭐⭐⭐</div>
+              <div class="label">综合评级</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-outline">📄 查看详细报告</button>
+            <button class="btn btn-primary">📊 下载 PDF</button>
+          </div>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅双抗精华 - 2026年2月投放复盘</h4>
+          <div class="meta">投放周期：2026.2.10 - 2026.2.20 | 达人数：8 位 | 平台：小红书+B站</div>
+          <div class="stats">
+            <div class="stat">
+              <div class="value">¥14.2</div>
+              <div class="label">平均 CPUV</div>
+            </div>
+            <div class="stat">
+              <div class="value">0.35%</div>
+              <div class="label">平均进店率</div>
+            </div>
+            <div class="stat">
+              <div class="value">4.5%</div>
+              <div class="label">平均互动率</div>
+            </div>
+            <div class="stat">
+              <div class="value">⭐⭐⭐</div>
+              <div class="label">综合评级</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-outline">📄 查看详细报告</button>
+            <button class="btn btn-primary">📊 下载 PDF</button>
+          </div>
+        </div>
+        <div class="review-deck">
+          <h4>珀莱雅红宝石水乳 - 2026年1月投放复盘</h4>
+          <div class="meta">投放周期：2026.1.5 - 2026.1.15 | 达人数：6 位 | 平台：小红书</div>
+          <div class="stats">
+            <div class="stat">
+              <div class="value">¥16.8</div>
+              <div class="label">平均 CPUV</div>
+            </div>
+            <div class="stat">
+              <div class="value">0.28%</div>
+              <div class="label">平均进店率</div>
+            </div>
+            <div class="stat">
+              <div class="value">3.9%</div>
+              <div class="label">平均互动率</div>
+            </div>
+            <div class="stat">
+              <div class="value">⭐⭐⭐</div>
+              <div class="label">综合评级</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-outline">📄 查看详细报告</button>
+            <button class="btn btn-primary">📊 下载 PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 下行内容 - 选择品牌 -->
+    <div id="page-downstream-home" class="page">
+      <div class="page-header">
+        <h1>📤 下行内容工作台</h1>
+        <p>请先选择要服务的品牌</p>
+      </div>
+      <div class="section">
+        <h2 style="color: #1a365d; margin-bottom: 1rem;">选择品牌</h2>
+        <div class="brand-select">
+          <div class="brand-card" onclick="selectBrand('proya')">
+            <div class="logo">💧</div>
+            <h4>珀莱雅</h4>
+          </div>
+          <div class="brand-card" onclick="selectBrand('winona')">
+            <div class="logo">🌿</div>
+            <h4>薇诺娜</h4>
+          </div>
+          <div class="brand-card" onclick="selectBrand('marubi')">
+            <div class="logo">✨</div>
+            <h4>丸美</h4>
+          </div>
+          <div class="brand-card" onclick="selectBrand('chando')">
+            <div class="logo">🌸</div>
+            <h4>自然堂</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 下行内容 - 品牌工作台 -->
+    <div id="page-downstream-workspace" class="page">
+      <div class="page-header">
+        <h1 id="downstream-brand-title">📤 珀莱雅工作台</h1>
+        <p>管理种草投放全流程</p>
+      </div>
+      <div class="module-grid">
+        <div class="module-card" onclick="navigateTo('downstream-brief')">
+          <div class="module-icon">📋</div>
+          <h3>1. Brief 评估</h3>
+          <p>评估并下发 Brief</p>
+        </div>
+        <div class="module-card" onclick="navigateTo('downstream-kol')">
+          <div class="module-icon">🎯</div>
+          <h3>2. 智能选号</h3>
+          <p>AI 推荐优质达人</p>
+        </div>
+        <div class="module-card" onclick="navigateTo('downstream-audit')">
+          <div class="module-icon">✅</div>
+          <h3>3. 内容审核</h3>
+          <p>自动审核内容</p>
+        </div>
+        <div class="module-card" onclick="showToast('📅 功能开发中...')">
+          <div class="module-icon">📅</div>
+          <h3>4. 发布监测</h3>
+          <p>监控发布进度</p>
+        </div>
+        <div class="module-card" onclick="showToast('📈 功能开发中...')">
+          <div class="module-icon">📈</div>
+          <h3>5. 投放评估</h3>
+          <p>评估投放效果</p>
+        </div>
+        <div class="module-card" onclick="showToast('🎬 功能开发中...')">
+          <div class="module-icon">🎬</div>
+          <h3>6. 投流监测</h3>
+          <p>实时追踪投放</p>
+        </div>
+        <div class="module-card" onclick="showToast('🔄 功能开发中...')">
+          <div class="module-icon">🔄</div>
+          <h3>7. 投后复盘</h3>
+          <p>分析投放效果</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 下行内容 - Brief 评估 -->
+    <div id="page-downstream-brief" class="page">
+      <div class="page-header">
+        <h1>📋 Brief 评估</h1>
+        <p>查看商家 Brief 并进行评估</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>商家 Brief - 珀莱雅红宝石面霜</h2>
+          <div>
+            <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+          </div>
+        </div>
+        <div class="brief-section">
+          <h4>📦 产品信息</h4>
+          <table>
+            <tr><th style="width: 150px;">品牌</th><td>珀莱雅</td></tr>
+            <tr><th>产品</th><td>红宝石面霜</td></tr>
+            <tr><th>产品亮点</th><td>国民级面霜，长期霸榜销量、回购、好评榜第一，三种质地量肤定制，中国美妆首个环肽</td></tr>
+            <tr><th>目标人群</th><td>23-30岁新一线及二线城市 都市白领/资深中产/小镇青年/精致妈妈的女性</td></tr>
+          </table>
+        </div>
+        <div class="brief-section" style="margin-top: 1.5rem;">
+          <h4>🎯 核心卖点</h4>
+          <ul>
+            <li>淡纹紧致饱满功效，嘭弹面中的同时改善干纹、表情纹，整体面部轮廓更清晰</li>
+            <li>国民面霜、万金油面霜的设定，质地温和</li>
+            <li>三重质地量肤定制，完美匹配肤质和季节</li>
+            <li>创新"双环肽 + 五重经典信号肽"</li>
+            <li>可替换芯环保</li>
+          </ul>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+          <button class="btn btn-primary" onclick="evaluateBrief()">🤖 AI 评估 Brief</button>
+          <button class="btn btn-success" onclick="dispatchBrief()">📤 下发 Brief</button>
+        </div>
+      </div>
+
+      <!-- AI 评估结果 -->
+      <div class="section" id="brief-eval-result" style="display: none;">
+        <div class="section-header">
+          <h2>🤖 AI Brief 评估报告</h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>评估维度</th>
+              <th>状态</th>
+              <th>评估说明</th>
+              <th>建议</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>完整性检查</td>
+              <td><span class="badge badge-success">✅ 通过</span></td>
+              <td>所有必填项完整（8/8）</td>
+              <td>无</td>
+            </tr>
+            <tr>
+              <td>卖点准确性</td>
+              <td><span class="badge badge-success">✅ 通过</span></td>
+              <td>核心卖点与官方资料一致</td>
+              <td>无</td>
+            </tr>
+            <tr>
+              <td>目标合理性</td>
+              <td><span class="badge badge-warning">⚠️ 需优化</span></td>
+              <td>CPUV 目标 15 元略低于行业均值（18 元）</td>
+              <td>建议调整至 16-18 元</td>
+            </tr>
+            <tr>
+              <td>人群清晰度</td>
+              <td><span class="badge badge-success">✅ 通过</span></td>
+              <td>目标人群描述清晰可执行</td>
+              <td>可补充兴趣标签</td>
+            </tr>
+            <tr>
+              <td>内容方向</td>
+              <td><span class="badge badge-warning">⚠️ 需优化</span></td>
+              <td>5 个内容方向占比合计 100%，合理但过于分散</td>
+              <td>建议聚焦 2-3 个核心方向</td>
+            </tr>
+            <tr>
+              <td>竞品分析</td>
+              <td><span class="badge badge-success">✅ 通过</span></td>
+              <td>竞品 List 完整，覆盖主要竞品</td>
+              <td>无</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="action-bar">
+          <button class="btn btn-danger" onclick="returnBrief()">📤 退回 Brief 给上行</button>
+          <button class="btn btn-success" onclick="dispatchBrief()">📤 下发 Brief 给直管</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page: 下行内容 - 智能选号 -->
+    <div id="page-downstream-kol" class="page">
+      <div class="page-header">
+        <h1>🎯 智能选号</h1>
+        <p>AI 基于 Brief 推荐的优质达人 List</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>推荐达人 List</h2>
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>KOL 名称</th>
+              <th>平台</th>
+              <th>主页链接</th>
+              <th>CPM</th>
+              <th>CPE</th>
+              <th>过往 CPUV</th>
+              <th>推荐</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>@面包疙瘩</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="https://www.xiaohongshu.com/user/profile/59abcd355e87e7562012dcb9" target="_blank" style="color: #3182ce;">查看主页</a></td>
+              <td>¥18.5</td>
+              <td>¥2.3</td>
+              <td>¥11.2</td>
+              <td><span class="badge badge-success">强烈推荐</span></td>
+            </tr>
+            <tr>
+              <td><b>@gowithme</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #3182ce;">查看主页</a></td>
+              <td>¥15.2</td>
+              <td>¥1.8</td>
+              <td>¥13.5</td>
+              <td><span class="badge badge-success">推荐</span></td>
+            </tr>
+            <tr>
+              <td><b>@辣妈 celia</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #3182ce;">查看主页</a></td>
+              <td>¥22.0</td>
+              <td>¥2.8</td>
+              <td>¥14.8</td>
+              <td><span class="badge badge-warning">可考虑</span></td>
+            </tr>
+            <tr>
+              <td><b>@白杨刀</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #3182ce;">查看主页</a></td>
+              <td>¥16.8</td>
+              <td>¥2.1</td>
+              <td>¥12.5</td>
+              <td><span class="badge badge-success">推荐</span></td>
+            </tr>
+            <tr>
+              <td><b>@豆豆睡醒了</b></td>
+              <td><span class="badge badge-info">小红书</span></td>
+              <td><a href="#" style="color: #3182ce;">查看主页</a></td>
+              <td>¥14.5</td>
+              <td>¥1.6</td>
+              <td>¥15.2</td>
+              <td><span class="badge badge-warning">可考虑</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Page: 下行内容 - 内容审核 -->
+    <div id="page-downstream-audit" class="page">
+      <div class="page-header">
+        <h1>✅ 内容审核</h1>
+        <p>AI 自动审核达人内容</p>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2>待审核内容</h2>
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+        </div>
+        <div class="audit-result">
+          <h4>🟢 白杨刀 - 视频脚本 - 审核通过</h4>
+          <div class="audit-item">✅ 基础合规：无敏感词/违规内容</div>
+          <div class="audit-item">✅ Brief 符合度：核心卖点传达完整</div>
+          <div class="audit-item">⚠️ 文案准确性：产品名称需修正（水乳套装→面霜）</div>
+          <div class="audit-item">⚠️ 成分描述：需修正（五重生态→五重经典信号肽）</div>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button>
+          <button class="btn btn-primary">📤 推送给商家审核</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Toast 提示 -->
+  <div class="toast" id="toast">
+    <span id="toast-msg">操作成功</span>
+  </div>
+
+  <!-- Loading 遮罩 -->
+  <div class="loading-overlay" id="loading">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <h3 id="loading-text">AI 正在评估 Brief...</h3>
+      <div class="progress-bar"><div class="progress-fill" id="loading-progress" style="width: 0%;"></div></div>
+    </div>
+  </div>
+
+  <script>
+    // 全局状态
+    let currentRole = null;
+    let currentBrand = null;
+    let kolSelections = {};
+
+    // 导航到指定页面
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const page = document.getElementById('page-' + pageId);
+      if (page) page.classList.add('active');
+      updateBreadcrumb(pageId);
+      window.scrollTo(0, 0);
+    }
+
+    // 更新面包屑
+    function updateBreadcrumb(pageId) {
+      const bc = document.getElementById('breadcrumb');
+      let html = '<span class="breadcrumb-item" onclick="goHome()">首页</span>';
+      if (pageId.startsWith('merchant')) {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'merchant-home\')">商家</span>';
+        const names = { 'merchant-brief': '上传 Brief', 'merchant-kol': 'KOL 审核', 'merchant-draft': '稿件审核', 'merchant-review': '查收复盘' };
+        if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
+      } else if (pageId.startsWith('downstream')) {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'downstream-home\')">下行内容</span>';
+        const names = { 'downstream-brief': 'Brief 评估', 'downstream-kol': '智能选号', 'downstream-audit': '内容审核' };
+        if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
+      }
+      bc.innerHTML = html;
+    }
+
+    // 返回首页
+    function goHome() {
+      currentRole = null;
+      currentBrand = null;
+      navigateTo('home');
+    }
+
+    // 选择角色
+    function selectRole(role) {
+      currentRole = role;
+      if (role === 'merchant') {
+        navigateTo('merchant-home');
+        initKolTable();
+      } else if (role === 'downstream') {
+        navigateTo('downstream-home');
+      } else {
+        showToast('该角色页面正在开发中...');
+      }
+    }
+
+    // 初始化 KOL 表格（商家带 YES/NO）
+    function initKolTable() {
+      const data = [
+        { name: '@面包疙瘩', platform: '小红书', link: '#', cpm: '¥18.5', cpe: '¥2.3', cpuv: '¥11.2', recommend: '强烈推荐' },
+        { name: '@gowithme', platform: '小红书', link: '#', cpm: '¥15.2', cpe: '¥1.8', cpuv: '¥13.5', recommend: '推荐' },
+        { name: '@辣妈 celia', platform: '小红书', link: '#', cpm: '¥22.0', cpe: '¥2.8', cpuv: '¥14.8', recommend: '可考虑' },
+        { name: '@白杨刀', platform: '小红书', link: '#', cpm: '¥16.8', cpe: '¥2.1', cpuv: '¥12.5', recommend: '推荐' },
+        { name: '@豆豆睡醒了', platform: '小红书', link: '#', cpm: '¥14.5', cpe: '¥1.6', cpuv: '¥15.2', recommend: '可考虑' }
+      ];
+      const tbody = document.getElementById('kolTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = data.map((d, i) => `
+        <tr>
+          <td><b>${d.name}</b></td>
+          <td><span class="badge badge-info">${d.platform}</span></td>
+          <td><a href="${d.link}" style="color: #3182ce;">查看主页</a></td>
+          <td>${d.cpm}</td>
+          <td>${d.cpe}</td>
+          <td>${d.cpuv}</td>
+          <td><span class="badge badge-${d.recommend === '强烈推荐' ? 'success' : d.recommend === '推荐' ? 'success' : 'warning'}">${d.recommend}</span></td>
+          <td>
+            <span class="select-yes ${kolSelections[i] === 'yes' ? 'selected' : ''}" onclick="selectKol(${i}, 'yes', this)">YES</span>
+            <span class="select-no ${kolSelections[i] === 'no' ? 'selected' : ''}" onclick="selectKol(${i}, 'no', this)">NO</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 选择 KOL
+    function selectKol(index, choice, el) {
+      kolSelections[index] = choice;
+      const row = el.parentElement;
+      row.querySelectorAll('.select-yes, .select-no').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // 确认 KOL 选择
+    function confirmKolSelection() {
+      const yesCount = Object.values(kolSelections).filter(v => v === 'yes').length;
+      if (yesCount === 0) {
+        showToast('请至少选择一位达人');
+        return;
+      }
+      showToast(`✅ 已确认 ${yesCount} 位达人，已推送给执行团队`);
+    }
+
+    // 提交 Brief
+    function submitBrief() {
+      showToast('📤 Brief 已提交，AI 正在评估中...');
+      setTimeout(() => {
+        showToast('✅ Brief 评估完成，请查看评估报告');
+      }, 2000);
+    }
+
+    // 稿件修正
+    function fixDraft(el, correctText) {
+      el.textContent = correctText;
+      el.className = 'correct';
+      el.onclick = null;
+      el.style.textDecoration = 'none';
+    }
+
+    // 确认提交稿件
+    function approveDraft() {
+      if (confirm('确认提交此稿件吗？\n\n稿件将推送给达人进行发布')) {
+        showToast('✅ 稿件已确认，已推送给达人');
+      }
+    }
+
+    // 选择品牌
+    function selectBrand(brand) {
+      currentBrand = brand;
+      const names = { proya: '珀莱雅', winona: '薇诺娜', marubi: '丸美', chando: '自然堂' };
+      document.getElementById('downstream-brand-title').textContent = `📤 ${names[brand]}工作台`;
+      setTimeout(() => navigateTo('downstream-workspace'), 300);
+    }
+
+    // AI 评估 Brief
+    function evaluateBrief() {
+      const loading = document.getElementById('loading');
+      const progress = document.getElementById('loading-progress');
+      const text = document.getElementById('loading-text');
+      loading.classList.add('show');
+      const steps = ['正在分析 Brief 完整性...', '核对卖点准确性...', '评估目标合理性...', '检查人群清晰度...', '生成评估报告...'];
+      let p = 0, s = 0;
+      const interval = setInterval(() => {
+        p += 20;
+        progress.style.width = p + '%';
+        if (s < steps.length) text.textContent = steps[s++];
+        if (p >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            loading.classList.remove('show');
+            document.getElementById('brief-eval-result').style.display = 'block';
+            showToast('✅ Brief 评估完成');
+          }, 500);
+        }
+      }, 800);
+    }
+
+    // 下发 Brief
+    function dispatchBrief() {
+      if (confirm('确认下发 Brief 给直管吗？')) {
+        showToast('📤 Brief 已下发给直管');
+      }
+    }
+
+    // 退回 Brief
+    function returnBrief() {
+      if (confirm('确认退回 Brief 给上行吗？')) {
+        showToast('📤 Brief 已退回给上行内容团队');
+      }
+    }
+
+    // Toast 提示
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // 初始化
+    navigateTo('home');
+  </script>
+</body>
+</html>

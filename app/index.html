@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>淘宝种草 AI 协作平台</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f5f7fa; color: #1d2129; line-height: 1.5; font-size: 14px; }
@@ -103,6 +106,9 @@
     .login-container .btn { width: 100%; padding: 0.7rem; font-size: 0.9rem; }
     .empty-state { text-align: center; padding: 2rem; color: #86909c; }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .todo-badge { position: absolute; top: -5px; right: -5px; background: #f53f3f; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+    .module-card { position: relative; }
+    .nav-badge { background: #f53f3f; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 8px; margin-left: 0.3rem; }
     @media (max-width: 768px) { .top-nav { flex-direction: column; gap: 0.4rem; } .module-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -138,6 +144,7 @@
       <div class="breadcrumb" id="breadcrumb"><span class="breadcrumb-item" onclick="goHome()">首页</span></div>
       <div class="user-info">
         <span id="user-display-name">用户</span>
+        <span id="nav-todo-badge" class="nav-badge" style="display: none;">0</span>
         <button class="btn-logout" onclick="handleLogout()">退出</button>
       </div>
     </nav>
@@ -147,8 +154,17 @@
       <div id="page-home" class="page">
         <div class="page-header"><h1>👋 欢迎使用淘宝种草 AI 协作平台</h1><p>选择你的工作台</p></div>
         <div class="module-grid">
-          <div class="module-card" onclick="navigateTo('downstream-workspace')"><div class="module-icon">📤</div><h3>下行内容工作台</h3><p>Brief 评估 / 智能选号 / 内容审核 / 发布监测 / 投后复盘</p></div>
-          <div class="module-card" onclick="navigateTo('supervisor-dashboard')"><div class="module-icon">✅</div><h3>直管执行看板</h3><p>项目总览 / 进度监控 / 审核确认</p></div>
+          <div class="module-card" onclick="navigateTo('downstream-workspace')">
+            <div class="module-icon">📤</div>
+            <h3>下行内容工作台</h3>
+            <p>Brief 评估 / 智能选号 / 内容审核 / 发布监测 / 投后复盘</p>
+          </div>
+          <div class="module-card" onclick="navigateTo('supervisor-dashboard')" style="position: relative;">
+            <div class="module-icon">✅</div>
+            <h3>直管执行看板</h3>
+            <p>项目总览 / 进度监控 / 审核确认</p>
+            <span id="module-todo-badge" class="todo-badge" style="display: none;">0</span>
+          </div>
         </div>
       </div>
 
@@ -167,10 +183,29 @@
       <!-- 直管执行看板 -->
       <div id="page-supervisor-dashboard" class="page">
         <div class="page-header"><h1>✅ 直管执行看板</h1><p>全流程进度监控</p></div>
+        
+        <!-- 待办Brief列表 -->
+        <div class="card" id="supervisor-todo-section">
+          <div class="card-header"><h2>📥 待办 Brief</h2><button class="btn btn-outline" onclick="goHome()">返回</button></div>
+          <div id="supervisor-brief-list">
+            <div class="empty-state">
+              <div class="icon">📭</div>
+              <p>暂无待办 Brief</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 项目总览 -->
         <div class="card">
-          <div class="card-header"><h2>项目总览</h2><button class="btn btn-outline" onclick="goHome()">返回</button></div>
+          <div class="card-header"><h2>项目总览</h2></div>
           <div id="supervisor-projects-list"></div>
         </div>
+      </div>
+      
+      <!-- 直管查看Brief详情 -->
+      <div id="page-supervisor-brief-detail" class="page">
+        <div class="page-header"><h1>📋 Brief 详情</h1><p>查看下行下发的 Brief 和 AI 评估报告</p></div>
+        <div class="card" id="supervisor-brief-detail-content"></div>
       </div>
 
       <!-- 下行 - Brief 评估 -->
@@ -570,6 +605,20 @@
   </div>
 
   <script>
+    // ==================== Firebase 初始化 ====================
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcqV5k8fus0xRLzBXXCbA6_UDtd4ZkWMo",
+      authDomain: "taobao-zhongcao-ai.firebaseapp.com",
+      databaseURL: "https://taobao-zhongcao-ai-default-rtdb.firebaseio.com",
+      projectId: "taobao-zhongcao-ai",
+      storageBucket: "taobao-zhongcao-ai.firebasestorage.app",
+      messagingSenderId: "239861095082",
+      appId: "1:239861095082:web:37ccf8c0cd62bcd26e4ed3"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
     // ==================== 数据存储 ====================
     const Storage = {
       get(key, defaultValue = null) {
@@ -582,6 +631,80 @@
         try { localStorage.setItem('taobao_zhongcao_' + key, JSON.stringify(value)); } catch (e) {}
       }
     };
+    
+    // ==================== Firebase 数据同步 ====================
+    let todoCount = 0;
+    
+    // 监听Brief下发
+    function listenToBriefDispatch() {
+      if (!currentUser || currentUser.role !== 'supervisor') return;
+      
+      const briefsRef = db.ref('briefs/dispatched');
+      briefsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const briefs = Object.values(data);
+          const unreadCount = briefs.filter(b => !b.readBySupervisor).length;
+          todoCount = unreadCount;
+          updateTodoBadge();
+        } else {
+          todoCount = 0;
+          updateTodoBadge();
+        }
+      });
+    }
+    
+    // 更新待办徽章
+    function updateTodoBadge() {
+      // 更新导航栏徽章
+      const navBadge = document.getElementById('nav-todo-badge');
+      if (navBadge) {
+        navBadge.textContent = todoCount;
+        navBadge.style.display = todoCount > 0 ? 'inline' : 'none';
+      }
+      
+      // 更新模块卡片徽章
+      const moduleBadge = document.getElementById('module-todo-badge');
+      if (moduleBadge) {
+        moduleBadge.textContent = todoCount;
+        moduleBadge.style.display = todoCount > 0 ? 'block' : 'none';
+      }
+    }
+    
+    // 下发Brief给直管
+    function dispatchBriefToSupervisor(brief, evalReport) {
+      if (!currentUser || currentUser.role !== 'downstream') {
+        showToast('⚠️ 只有下行内容角色可以下发Brief');
+        return;
+      }
+      
+      const briefId = db.ref('briefs/dispatched').push().key;
+      const dispatchData = {
+        id: briefId,
+        brief: brief,
+        evalReport: evalReport,
+        dispatchedBy: currentUser.username,
+        dispatchedAt: new Date().toISOString(),
+        readBySupervisor: false,
+        status: 'pending'
+      };
+      
+      db.ref('briefs/dispatched/' + briefId).set(dispatchData)
+        .then(() => {
+          showToast('📤 Brief已下发给直管');
+          // 同时保存到本地
+          Storage.set('current_brief', brief);
+        })
+        .catch(err => {
+          console.error('下发失败：', err);
+          showToast('⚠️ 下发失败，请检查网络');
+        });
+    }
+    
+    // 标记Brief为已读
+    function markBriefAsRead(briefId) {
+      db.ref('briefs/dispatched/' + briefId + '/readBySupervisor').set(true);
+    }
 
     // ==================== 认证系统 ====================
     let currentUser = null;
@@ -606,6 +729,11 @@
       document.getElementById('app-container').style.display = 'block';
       document.getElementById('user-display-name').textContent = `${currentUser.username} (${currentUser.role === 'downstream' ? '下行内容' : '直管执行'})`;
       navigateTo('home');
+      
+      // 启动 Firebase 监听
+      if (currentUser.role === 'supervisor') {
+        listenToBriefDispatch();
+      }
     }
 
     // ==================== 页面导航 ====================
@@ -617,7 +745,10 @@
       window.scrollTo(0, 0);
       if (pageId === 'downstream-kol') initKolTable();
       if (pageId === 'downstream-monitor') initMonitorTable();
-      if (pageId === 'supervisor-dashboard') initSupervisorDashboard();
+      if (pageId === 'supervisor-dashboard') {
+        initSupervisorDashboard();
+        loadSupervisorTodo();
+      }
       if (pageId === 'downstream-brief') loadSavedBrief();
       if (pageId === 'downstream-audit') resetDraftAuditPage();
     }
@@ -643,8 +774,11 @@
           'monitor-deploy-detail': '投放进度详情'
         };
         if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
-      } else if (pageId === 'supervisor-dashboard') {
-        html += '<span class="breadcrumb-item">直管看板</span>';
+      } else if (pageId.startsWith('supervisor')) {
+        html += '<span class="breadcrumb-item" onclick="navigateTo(\'supervisor-dashboard\')">直管看板</span>';
+        if (pageId === 'supervisor-brief-detail') {
+          html += '<span class="breadcrumb-item">Brief 详情</span>';
+        }
       }
       bc.innerHTML = html;
     }
@@ -775,6 +909,93 @@
         </div>
       `;
     }
+    
+    // 加载直管待办Brief
+    function loadSupervisorTodo() {
+      if (!currentUser || currentUser.role !== 'supervisor') return;
+      
+      const briefsRef = db.ref('briefs/dispatched');
+      briefsRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        const container = document.getElementById('supervisor-brief-list');
+        if (!container) return;
+        
+        if (!data) {
+          container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待办 Brief</p></div>';
+          return;
+        }
+        
+        const briefs = Object.entries(data).reverse(); // 最新的在前
+        container.innerHTML = briefs.map(([id, brief]) => `
+          <div style="background: ${brief.readBySupervisor ? '#f7f8fa' : '#f0f5ff'}; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem; cursor: pointer; border-left: 3px solid ${brief.readBySupervisor ? '#e5e6eb' : '#1d39c4'};" onclick="viewSupervisorBrief('${id}')">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h4 style="margin-bottom: 0.3rem;">${brief.brief.brand} - ${brief.brief.product}</h4>
+                <p style="font-size: 0.8rem; color: #86909c;">下发人：${brief.dispatchedBy} | 下发时间：${new Date(brief.dispatchedAt).toLocaleString('zh-CN')}</p>
+              </div>
+              <div>
+                ${!brief.readBySupervisor ? '<span class="badge badge-danger">待查看</span>' : '<span class="badge badge-success">已查看</span>'}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      });
+    }
+    
+    // 查看Brief详情
+    function viewSupervisorBrief(briefId) {
+      const briefRef = db.ref('briefs/dispatched/' + briefId);
+      briefRef.once('value', (snapshot) => {
+        const brief = snapshot.val();
+        if (!brief) {
+          showToast('⚠️ Brief不存在');
+          return;
+        }
+        
+        // 标记为已读
+        markBriefAsRead(briefId);
+        
+        const container = document.getElementById('supervisor-brief-detail-content');
+        container.innerHTML = `
+          <div class="card-header">
+            <h2>${brief.brief.brand} - ${brief.brief.product}</h2>
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
+          </div>
+          
+          <table style="margin-bottom: 1.5rem;">
+            <tr><th style="width: 120px;">品牌</th><td>${brief.brief.brand}</td></tr>
+            <tr><th>产品</th><td>${brief.brief.product}</td></tr>
+            <tr><th>核心卖点</th><td>${brief.brief.sellingPoints || '-'}</td></tr>
+            <tr><th>目标人群</th><td>${brief.brief.targetAudience || '-'}</td></tr>
+            <tr><th>CPUV 目标</th><td>${brief.brief.cpuvTarget ? '¥' + brief.brief.cpuvTarget : '-'}</td></tr>
+            <tr><th>进店率目标</th><td>${brief.brief.shopRateTarget ? brief.brief.shopRateTarget + '%' : '-'}</td></tr>
+            <tr><th>内容方向</th><td>${brief.brief.contentDirection || '-'}</td></tr>
+          </table>
+          
+          <h3 style="margin-bottom: 1rem; color: #1d39c4;">🤖 AI 评估报告</h3>
+          <table>
+            <thead><tr><th>评估维度</th><th>状态</th><th>评估说明</th><th>建议</th></tr></thead>
+            <tbody>
+              ${brief.evalReport ? brief.evalReport.map(r => `
+                <tr>
+                  <td>${r.dim}</td>
+                  <td><span class="badge badge-${r.status}">${r.label}</span></td>
+                  <td>${r.desc}</td>
+                  <td>${r.suggest}</td>
+                </tr>
+              `).join('') : '<tr><td colspan="4" style="text-align: center; color: #86909c;">暂无评估报告</td></tr>'}
+            </tbody>
+          </table>
+          
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
+            <button class="btn btn-success" onclick="showToast('✅ Brief已确认')">✅ 确认接收</button>
+          </div>
+        `;
+        
+        navigateTo('supervisor-brief-detail');
+      });
+    }
 
     // ==================== 交互函数 ====================
     function toggleDropdown(btn) {
@@ -865,7 +1086,30 @@
     }
 
     function dispatchBrief() {
-      if (confirm('确认下发 Brief 给直管吗？')) showToast('📤 Brief 已下发给直管');
+      const brief = Storage.get('current_brief');
+      if (!brief) {
+        showToast('⚠️ 请先保存 Brief');
+        return;
+      }
+      
+      if (confirm('确认下发 Brief 给直管吗？')) {
+        // 获取评估报告
+        const evalResults = [];
+        const tbody = document.getElementById('brief-eval-tbody');
+        if (tbody && tbody.rows.length > 0) {
+          for (let row of tbody.rows) {
+            evalResults.push({
+              dim: row.cells[0].textContent,
+              status: row.cells[1].querySelector('.badge')?.className.match(/badge-(\w+)/)?.[1] || 'info',
+              label: row.cells[1].textContent.trim(),
+              desc: row.cells[2].textContent,
+              suggest: row.cells[3].textContent
+            });
+          }
+        }
+        
+        dispatchBriefToSupervisor(brief, evalResults);
+      }
     }
 
     function returnBrief() {

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>淘宝种草 AI 助手 - 完整流程 Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      color: #2d3748;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .top-nav {
+      background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .nav-brand { color: white; font-size: 1.5rem; font-weight: bold; }
+    .breadcrumb { display: flex; gap: 0.5rem; color: rgba(255,255,255,0.8); }
+    .btn-home {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .main-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    .level-section { display: none; animation: slideIn 0.5s ease-out; }
+    .level-section.active { display: block; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .section-header h1 { color: #1a365d; font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .section-header p { color: #4a5568; font-size: 1.1rem; }
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .role-card {
+      background: white;
+      border: 3px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .role-card:hover {
+      transform: translateY(-8px);
+      border-color: #4299e1;
+      box-shadow: 0 12px 24px rgba(66,153,225,0.2);
+    }
+    .role-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .role-card h3 { color: #1a365d; font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .role-card p { color: #4a5568; font-size: 0.95rem; }
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .task-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .task-card:hover {
+      transform: translateY(-4px);
+      border-color: #48bb78;
+      box-shadow: 0 8px 16px rgba(72,187,120,0.15);
+    }
+    .task-icon { font-size: 3rem; margin-bottom: 0.8rem; }
+    .task-card h3 { color: #1a365d; font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .task-card p { color: #4a5568; font-size: 0.9rem; }
+    .upload-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .upload-module { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 2px dashed #e2e8f0; }
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .module-header h3 { color: #1a365d; font-size: 1.3rem; }
+    .module-status {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .module-status.uploaded { background: #c6f6d5; color: #276749; }
+    .upload-area {
+      border: 3px dashed #cbd5e0;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      background: #f7fafc;
+    }
+    .upload-area:hover { border-color: #4299e1; background: #ebf8ff; }
+    .upload-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .upload-area p { color: #1a365d; font-size: 1.1rem; font-weight: bold; }
+    .upload-hint { color: #4a5568; font-size: 0.9rem !important; }
+    .uploaded-file {
+      display: none;
+      background: #f0fff4;
+      border: 2px solid #9ae6b4;
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .file-icon { font-size: 1.5rem; }
+    .file-name { flex: 1; color: #276749; font-weight: bold; }
+    .btn-replace {
+      background: #cbd5e0;
+      border: none;
+      color: #2d3748;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .check-items {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background: #ebf8ff;
+      border-radius: 12px;
+      border-left: 4px solid #3182ce;
+    }
+    .check-items h4 { color: #1a365d; font-size: 1.1rem; margin-bottom: 0.8rem; }
+    .check-list { list-style: none; }
+    .check-list li { padding: 0.4rem 0; color: #2d3748; }
+    .action-area { text-align: center; margin-top: 2rem; }
+    .btn-start-audit {
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      border: none;
+      color: white;
+      padding: 1rem 3rem;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-start-audit:disabled { background: #cbd5e0; cursor: not-allowed; }
+    .audit-hint { color: #4a5568; margin-top: 0.8rem; }
+    .auditing-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auditing-content {
+      background: white;
+      padding: 3rem;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .loading-spinner {
+      width: 60px; height: 60px;
+      border: 5px solid #e2e8f0;
+      border-top-color: #48bb78;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .progress-bar {
+      width: 100%; height: 12px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #48bb78, #38a169);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .result-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+    }
+    .overall-score {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      border: 2px solid #9ae6b4;
+    }
+    .score-circle {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: white;
+      border: 6px solid #48bb78;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .score-number { font-size: 2.5rem; font-weight: bold; color: #1a365d; }
+    .score-label { font-size: 0.85rem; color: #4a5568; }
+    .score-summary h3 { color: #1a365d; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .score-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .detail-card {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #cbd5e0;
+      padding-bottom: 0.8rem;
+    }
+    .detail-header h4 { color: #1a365d; font-size: 1.1rem; }
+    .detail-score {
+      font-weight: bold;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+    }
+    .detail-score.pass { background: #c6f6d5; color: #276749; }
+    .detail-score.warning { background: #feebc8; color: #c05621; }
+    .detail-card ul { list-style: none; }
+    .detail-card li { padding: 0.4rem 0; font-size: 0.9rem; }
+    .improvement-section h3 { color: #1a365d; font-size: 1.3rem; margin-bottom: 1rem; }
+    .suggestion-item {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid #cbd5e0;
+    }
+    .suggestion-item.high { background: #fff5f5; border-left-color: #f56565; }
+    .suggestion-item.medium { background: #fffaf0; border-left-color: #ed8936; }
+    .suggestion-item.low { background: #f0fff4; border-left-color: #48bb78; }
+    .priority-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .priority-badge.high { background: #fed7d7; color: #c53030; }
+    .priority-badge.medium { background: #feebc8; color: #c05621; }
+    .priority-badge.low { background: #c6f6d5; color: #276749; }
+    .decision-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .btn-reject, .btn-approve {
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-reject {
+      background: #fed7d7;
+      color: #c53030;
+      border: 2px solid #f56565;
+    }
+    .btn-approve {
+      background: #c6f6d5;
+      color: #276749;
+      border: 2px solid #48bb78;
+    }
+    .result-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-brand">🌱 淘宝种草 AI 助手</div>
+    <div class="breadcrumb" id="breadcrumb"><span class="breadcrumb-item">首页</span></div>
+    <button class="btn-home" onclick="goHome()">🏠 返回首页</button>
+  </nav>
+
+  <main class="main-container">
+    <!-- Level 1 -->
+    <section id="level1" class="level-section active">
+      <div class="section-header">
+        <h1>请选择你的角色</h1>
+        <p>不同角色有不同的工作台和权限</p>
+      </div>
+      <div class="role-grid">
+        <div class="role-card" onclick="selectRole('merchant')"><div class="role-icon">🏪</div><h3>商家</h3><p>品牌方/广告主</p></div>
+        <div class="role-card" onclick="selectRole('upstream-content')"><div class="role-icon">📝</div><h3>上行内容</h3><p>负责内容创作</p></div>
+        <div class="role-card" onclick="selectRole('downstream-content')"><div class="role-icon">📤</div><h3>下行内容</h3><p>负责分发管理</p></div>
+        <div class="role-card" onclick="selectRole('downstream-ad')"><div class="role-icon">📊</div><h3>下行投流</h3><p>负责广告投放</p></div>
+        <div class="role-card" onclick="selectRole('direct-supervisor')"><div class="role-icon">✅</div><h3>直管</h3><p>统筹全流程</p></div>
+      </div>
+    </section>
+
+    <!-- Level 2 -->
+    <section id="level2" class="level-section">
+      <div class="section-header">
+        <h1 id="role-title">选择任务</h1>
+        <p>请选择你要完成的工作</p>
+      </div>
+      <div class="task-grid">
+        <div class="task-card" onclick="selectTask('brief')"><div class="task-icon">📋</div><h3>Brief 评估</h3></div>
+        <div class="task-card" onclick="selectTask('creator')"><div class="task-icon">🎯</div><h3>智能选号</h3></div>
+        <div class="task-card" onclick="selectTask('audit')"><div class="task-icon">✅</div><h3>内容审核</h3></div>
+        <div class="task-card" onclick="selectTask('publish')"><div class="task-icon">📅</div><h3>发布监测</h3></div>
+        <div class="task-card" onclick="selectTask('evaluate')"><div class="task-icon">📈</div><h3>投放评估</h3></div>
+        <div class="task-card" onclick="selectTask('monitor')"><div class="task-icon">🎬</div><h3>投流监测</h3></div>
+        <div class="task-card" onclick="selectTask('review')"><div class="task-icon">🔄</div><h3>投后复盘</h3></div>
+      </div>
+    </section>
+
+    <!-- Level 3 -->
+    <section id="level3" class="level-section">
+      <div class="section-header">
+        <h1>内容审核</h1>
+        <p>上传 Brief 和内容文档，AI 将自动审核</p>
+      </div>
+      <div class="upload-container">
+        <div class="upload-module">
+          <div class="module-header">
+            <h3>📋 1. 上传 Brief</h3>
+            <span class="module-status" id="brief-status">未上传</span>
+          </div>
+          <div class="upload-area" id="brief-upload" onclick="upload('brief')">
+            <div class="upload-icon">📄</div>
+            <p>点击上传 Brief 文档</p>
+            <p class="upload-hint">支持 Word、PDF、Excel</p>
+          </div>
+          <div class="uploaded-file" id="brief-file" style="display:none;">
+            <span class="file-icon">📎</span>
+            <span class="file-name" id="brief-name">xxx.docx</span>
+            <button class="btn-replace" onclick="upload('brief')">替换</button>
+          </div>
+        </div>
+        <div class="upload-module">
+          <div class="module-header">
+            <h3>🎬 2. 上传内容</h3>
+            <span class="module-status" id="content-status">未上传</span>
+          </div>
+          <div class="upload-area" id="content-upload" onclick="upload('content')">
+            <div class="upload-icon">🎥</div>
+            <p>点击上传视频/图文</p>
+            <p class="upload-hint">支持 MP4、图片、文档</p>
+          </div>
+          <div class="uploaded-file" id="content-file" style="display:none;">
+            <span class="file-icon">📎</span>
+            <span class="file-name" id="content-name">xxx.mp4</span>
+            <button class="btn-replace" onclick="upload('content')">替换</button>
+          </div>
+          <div class="check-items">
+            <h4>🔍 检查项：</h4>
+            <ul class="check-list">
+              <li>✅ 基础合规：政治/暴力/色情/敏感词</li>
+              <li>✅ Brief 符合度：核心卖点传达</li>
+              <li>✅ 文案准确性：错别字/商品名</li>
+              <li>✅ 内容质量：黄金前 3 秒/CTA</li>
+            </ul>
+          </div>
+        </div>
+        <div class="action-area">
+          <button class="btn-start-audit" id="auditBtn" disabled onclick="startAudit()">🚀 开始智能审核</button>
+          <p class="audit-hint">💡 AI 将在 30 秒内完成审核</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Level 4 -->
+    <section id="level4" class="level-section">
+      <div class="section-header">
+        <h1>审核结果</h1>
+      </div>
+      <div class="result-container">
+        <div class="overall-score">
+          <div class="score-circle">
+            <div class="score-number">85</div>
+            <div class="score-label">综合评分</div>
+          </div>
+          <div class="score-summary">
+            <h3>🟢 审核通过 - 可直接发布</h3>
+            <p>内容整体质量优秀，符合投放标准</p>
+          </div>
+        </div>
+        <div class="score-details">
+          <div class="detail-card">
+            <div class="detail-header"><h4>基础合规</h4><span class="detail-score pass">95 分</span></div>
+            <ul><li>✅ 无敏感内容</li><li>⚠️ 需补充广告标识</li></ul>
+          </div>
+          <div class="detail-card">
+            <div class="detail-header"><h4>Brief 符合度</h4><span class="detail-score pass">90 分</span></div>
+            <ul><li>✅ 核心卖点完整</li><li>⚠️ 场景展示可加强</li></ul>
+          </div>
+          <div class="detail-card">
+            <div class="detail-header"><h4>文案准确性</h4><span class="detail-score pass">100 分</span></div>
+            <ul><li>✅ 无错别字</li><li>✅ 商品名正确</li></ul>
+          </div>
+          <div class="detail-card">
+            <div class="detail-header"><h4>内容质量</h4><span class="detail-score warning">75 分</span></div>
+            <ul><li>✅ 前 3 秒吸引力强</li><li>⚠️ 产品展示时间较短</li></ul>
+          </div>
+        </div>
+        <div class="improvement-section">
+          <h3>💡 改进建议</h3>
+          <div class="suggestion-item high">
+            <span class="priority-badge high">高优先级</span>
+            <p><b>补充广告标识</b>：在视频开头添加"广告"或"合作"标识</p>
+          </div>
+          <div class="suggestion-item medium">
+            <span class="priority-badge medium">中优先级</span>
+            <p><b>延长产品展示</b>：建议从 18 秒延长至 30 秒以上</p>
+          </div>
+        </div>
+        <div class="decision-buttons">
+          <button class="btn-reject" onclick="reject()">❌ 退回给直管</button>
+          <button class="btn-approve" onclick="approve()">✅ 通过推送给商家</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="auditing-overlay" id="overlay" style="display:none;">
+    <div class="auditing-content">
+      <div class="loading-spinner"></div>
+      <h3>正在智能审核中...</h3>
+      <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+      <p id="statusText">正在分析内容...</p>
+    </div>
+  </div>
+
+  <div class="result-toast" id="toast" style="display:none;">
+    <div class="toast-content">
+      <span id="toastIcon">✅</span>
+      <span id="toastMsg">操作成功</span>
+    </div>
+  </div>
+
+  <script>
+    let currentRole = '', currentTask = '';
+    let uploaded = { brief: false, content: false };
+
+    function navigate(level) {
+      document.querySelectorAll('.level-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('level' + level).classList.add('active');
+      updateBreadcrumb(level);
+    }
+
+    function updateBreadcrumb(level) {
+      const bc = document.getElementById('breadcrumb');
+      let html = '<span class="breadcrumb-item">首页</span>';
+      if (level >= 2 && currentRole) html += '<span class="breadcrumb-item">' + currentRole + '</span>';
+      if (level >= 3) html += '<span class="breadcrumb-item">内容审核</span>';
+      bc.innerHTML = html;
+    }
+
+    function goHome() {
+      currentRole = '';
+      uploaded = { brief: false, content: false };
+      resetUpload();
+      navigate(1);
+    }
+
+    function selectRole(role) {
+      currentRole = role;
+      document.getElementById('role-title').textContent = role + ' - 选择任务';
+      setTimeout(() => navigate(2), 300);
+    }
+
+    function selectTask(task) {
+      if (task === 'audit') {
+        navigate(3);
+      } else {
+        alert('"' + task + '"功能开发中...当前 Demo 仅展示"内容审核"');
+      }
+    }
+
+    function upload(type) {
+      const names = { brief: ['产品 Brief.docx', '需求.pdf'], content: ['视频.mp4', '图文.jpg'] };
+      const name = names[type][Math.floor(Math.random() * names[type].length)];
+      document.getElementById(type + '-upload').style.display = 'none';
+      document.getElementById(type + '-file').style.display = 'flex';
+      document.getElementById(type + '-name').textContent = name;
+      document.getElementById(type + '-status').textContent = '已上传';
+      document.getElementById(type + '-status').className = 'module-status uploaded';
+      uploaded[type] = true;
+      checkBtn();
+    }
+
+    function resetUpload() {
+      ['brief', 'content'].forEach(t => {
+        document.getElementById(t + '-upload').style.display = 'block';
+        document.getElementById(t + '-file').style.display = 'none';
+        document.getElementById(t + '-status').textContent = '未上传';
+        document.getElementById(t + '-status').className = 'module-status';
+      });
+    }
+
+    function checkBtn() {
+      document.getElementById('auditBtn').disabled = !(uploaded.brief && uploaded.content);
+    }
+
+    function startAudit() {
+      document.getElementById('overlay').style.display = 'flex';
+      let p = 0;
+      const steps = ['分析内容...', '检测敏感词...', '核对 Brief...', '检查文案...', '生成报告...'];
+      const interval = setInterval(() => {
+        p += 20;
+        document.getElementById('progress').style.width = p + '%';
+        if (p >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            document.getElementById('overlay').style.display = 'none';
+            navigate(4);
+          }, 500);
+        }
+      }, 600);
+    }
+
+    function reject() {
+      if (confirm('确认退回给直管？')) showToast('❌', '已退回给直管');
+    }
+
+    function approve() {
+      if (confirm('确认审核通过？')) showToast('✅', '已推送给商家');
+    }
+
+    function showToast(icon, msg) {
+      document.getElementById('toastIcon').textContent = icon;
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toast').style.display = 'block';
+      setTimeout(() => document.getElementById('toast').style.display = 'none', 3000);
+    }
+
+    navigate(1);
+  </script>
+</body>
+</html>

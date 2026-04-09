@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>淘宝种草 AI 助手 - 完整流程 Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <nav class="top-nav">
+    <div class="nav-brand">🌱 淘宝种草 AI 助手</div>
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="breadcrumb-item">首页</span>
+    </div>
+    <button class="btn-home" onclick="goHome()">🏠 返回首页</button>
+  </nav>
+
+  <!-- 主容器 -->
+  <main class="main-container">
+    
+    <!-- Level 1: 角色选择 -->
+    <section id="level1-roles" class="level-section active">
+      <div class="section-header">
+        <h1>请选择你的角色</h1>
+        <p>不同角色有不同的工作台和权限</p>
+      </div>
+      
+      <div class="role-grid">
+        <div class="role-card" data-role="merchant" onclick="selectRole('merchant')">
+          <div class="role-icon">🏪</div>
+          <h3>商家</h3>
+          <p>品牌方/广告主，发起种草需求</p>
+        </div>
+        
+        <div class="role-card" data-role="upstream-content" onclick="selectRole('upstream-content')">
+          <div class="role-icon">📝</div>
+          <h3>上行内容</h3>
+          <p>负责内容创作和审核</p>
+        </div>
+        
+        <div class="role-card" data-role="downstream-content" onclick="selectRole('downstream-content')">
+          <div class="role-icon">📤</div>
+          <h3>下行内容</h3>
+          <p>负责内容分发和管理</p>
+        </div>
+        
+        <div class="role-card" data-role="downstream-ad" onclick="selectRole('downstream-ad')">
+          <div class="role-icon">📊</div>
+          <h3>下行投流</h3>
+          <p>负责广告投放和效果优化</p>
+        </div>
+        
+        <div class="role-card" data-role="direct-supervisor" onclick="selectRole('direct-supervisor')">
+          <div class="role-icon">✅</div>
+          <h3>直管</h3>
+          <p>统筹管理全流程</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Level 2: 任务选择 -->
+    <section id="level2-tasks" class="level-section">
+      <div class="section-header">
+        <h1 id="selected-role-title">选择任务</h1>
+        <p>请选择你要完成的工作</p>
+      </div>
+      
+      <div class="task-grid">
+        <div class="task-card" onclick="selectTask('brief')">
+          <div class="task-icon">📋</div>
+          <h3>Brief 评估</h3>
+          <p>检查 Brief 完整性、合理性</p>
+        </div>
+        
+        <div class="task-card" onclick="selectTask('creator-selection')">
+          <div class="task-icon">🎯</div>
+          <h3>智能选号</h3>
+          <p>推荐达人、评估账号质量</p>
+        </div>
+        
+        <div class="task-card" onclick="selectTask('content-audit')">
+          <div class="task-icon">✅</div>
+          <h3>内容审核</h3>
+          <p>自动审核内容合规性</p>
+        </div>
+        
+        <div class="task-card" onclick="selectTask('publish-monitor')">
+          <div class="task-icon">📅</div>
+          <h3>发布节奏监测</h3>
+          <p>监控内容发布进度</p>
+        </div>
+        
+        <div class="task-card" onclick="selectTask('ad-evaluation')">
+          <div class="task-icon">📈</div>
+          <h3>投放评估</h3>
+          <p>评估内容投放潜力</p>
+        </div>
+        
+        <div class="task-card" onclick="selectTask('ad-monitor')">
+          <div class="task-icon">🎬</div>
+          <h3>投流进度监测</h3>
+          <p>实时追踪投放效果</p>
+        </div>
+        
+        <div class="task-card" onclick="selectTask('review')">
+          <div class="task-icon">🔄</div>
+          <h3>投后复盘</h3>
+          <p>分析投放效果，总结经验</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Level 3: 功能演示（以内容审核为例） -->
+    <section id="level3-function" class="level-section">
+      <div class="section-header">
+        <h1>内容审核</h1>
+        <p>上传 Brief 和内容文档，AI 将自动审核</p>
+      </div>
+      
+      <div class="upload-container">
+        <!-- 模块 1: 上传 Brief -->
+        <div class="upload-module">
+          <div class="module-header">
+            <h3>📋 1. 上传 Brief</h3>
+            <span class="module-status" id="brief-status">未上传</span>
+          </div>
+          <div class="upload-area" id="brief-upload" onclick="simulateUpload('brief')">
+            <div class="upload-icon">📄</div>
+            <p>点击上传 Brief 文档</p>
+            <p class="upload-hint">支持 Word、PDF、Excel 格式</p>
+          </div>
+          <div class="uploaded-file" id="brief-file" style="display: none;">
+            <span class="file-icon">📎</span>
+            <span class="file-name" id="brief-filename">xxx_brief.docx</span>
+            <button class="btn-replace" onclick="simulateUpload('brief')">替换</button>
+          </div>
+        </div>
+        
+        <!-- 模块 2: 上传内容文档 -->
+        <div class="upload-module">
+          <div class="module-header">
+            <h3>🎬 2. 上传内容文档</h3>
+            <span class="module-status" id="content-status">未上传</span>
+          </div>
+          <div class="upload-area" id="content-upload" onclick="simulateUpload('content')">
+            <div class="upload-icon">🎥</div>
+            <p>点击上传视频/图文内容</p>
+            <p class="upload-hint">支持 MP4、图片、文档格式</p>
+          </div>
+          <div class="uploaded-file" id="content-file" style="display: none;">
+            <span class="file-icon">📎</span>
+            <span class="file-name" id="content-filename">xxx_content.mp4</span>
+            <button class="btn-replace" onclick="simulateUpload('content')">替换</button>
+          </div>
+          
+          <!-- 检查项说明 -->
+          <div class="check-items">
+            <h4>🔍 将会检查以下方面：</h4>
+            <ul class="check-list">
+              <li>✅ 基础合规：政治/暴力/色情/敏感词检测</li>
+              <li>✅ Brief 符合度：核心卖点是否完整传达</li>
+              <li>✅ 文案准确性：错别字、商品名、型号规格</li>
+              <li>✅ 内容质量：黄金前 3 秒、关键转折点、CTA 效果</li>
+              <li>✅ 投放适宜性：是否适合付费推广</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- 开始审核按钮 -->
+        <div class="action-area">
+          <button class="btn-start-audit" onclick="startAudit()" id="startAuditBtn" disabled>
+            🚀 开始智能审核
+          </button>
+          <p class="audit-hint">💡 AI 将在 30 秒内完成审核并生成报告</p>
+        </div>
+      </div>
+      
+      <!-- 审核中动画 -->
+      <div class="auditing-overlay" id="auditingOverlay" style="display: none;">
+        <div class="auditing-content">
+          <div class="loading-spinner"></div>
+          <h3>正在智能审核中...</h3>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="status-text" id="statusText">正在分析内容...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Level 4: 审核结果 -->
+    <section id="level4-result" class="level-section">
+      <div class="section-header">
+        <h1>审核结果</h1>
+        <p>AI 已完成内容审核，以下是详细报告</p>
+      </div>
+      
+      <div class="result-container">
+        <!-- 总体评分 -->
+        <div class="overall-score" id="overallScore">
+          <div class="score-circle pass">
+            <div class="score-number">85</div>
+            <div class="score-label">综合评分</div>
+          </div>
+          <div class="score-summary">
+            <h3>🟢 审核通过 - 可直接发布</h3>
+            <p>内容整体质量优秀，符合投放标准</p>
+          </div>
+        </div>
+        
+        <!-- 详细评分维度 -->
+        <div class="score-details">
+          <div class="detail-card">
+            <div class="detail-header">
+              <h4>基础合规</h4>
+              <span class="detail-score pass">95 分</span>
+            </div>
+            <ul>
+              <li>✅ 无政治/暴力/敏感内容</li>
+              <li>✅ 无色情/低俗内容</li>
+              <li>✅ 无歧视性言论</li>
+              <li>⚠️ 广告标识需补充（已标注）</li>
+            </ul>
+          </div>
+          
+          <div class="detail-card">
+            <div class="detail-header">
+              <h4>Brief 符合度</h4>
+              <span class="detail-score pass">90 分</span>
+            </div>
+            <ul>
+              <li>✅ 核心卖点 1：控油 48 小时 ✓</li>
+              <li>✅ 核心卖点 2：温和不刺激 ✓</li>
+              <li>✅ 核心卖点 3：适合敏感肌 ✓</li>
+              <li>⚠️ 使用场景展示可加强</li>
+            </ul>
+          </div>
+          
+          <div class="detail-card">
+            <div class="detail-header">
+              <h4>文案准确性</h4>
+              <span class="detail-score pass">100 分</span>
+            </div>
+            <ul>
+              <li>✅ 无错别字</li>
+              <li>✅ 商品名称准确</li>
+              <li>✅ 型号规格正确</li>
+              <li>✅ 语句通顺流畅</li>
+            </ul>
+          </div>
+          
+          <div class="detail-card">
+            <div class="detail-header">
+              <h4>内容质量</h4>
+              <span class="detail-score warning">75 分</span>
+            </div>
+            <ul>
+              <li>✅ 黄金前 3 秒吸引力强</li>
+              <li>⚠️ 第 25 秒产品展示时长较短（18 秒）</li>
+              <li>✅ CTA 引导清晰</li>
+              <li>⚠️ 结尾转化钩子可优化</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- 改进建议 -->
+        <div class="improvement-section">
+          <h3>💡 改进建议</h3>
+          <div class="suggestion-list">
+            <div class="suggestion-item high">
+              <span class="priority-badge high">高优先级</span>
+              <p><b>补充广告标识</b>：在视频开头或简介中添加"广告"或"合作"标识，符合广告法要求</p>
+            </div>
+            
+            <div class="suggestion-item medium">
+              <span class="priority-badge medium">中优先级</span>
+              <p><b>延长产品展示时长</b>：建议将第 25 秒的产品特写从 18 秒延长至 30 秒以上，提升转化效果</p>
+            </div>
+            
+            <div class="suggestion-item low">
+              <span class="priority-badge low">低优先级</span>
+              <p><b>优化结尾 CTA</b>：可在结尾增加限时优惠信息，如"前 100 名下单立减 20 元"</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="decision-buttons">
+          <button class="btn-reject" onclick="rejectContent()">
+            ❌ 退回内容给直管
+          </button>
+          <button class="btn-approve" onclick="approveContent()">
+            ✅ 审核通过推送给商家
+          </button>
+        </div>
+        
+        <!-- 处理结果提示 -->
+        <div class="result-toast" id="resultToast" style="display: none;">
+          <div class="toast-content">
+            <span class="toast-icon" id="toastIcon">✅</span>
+            <span class="toast-message" id="toastMessage">操作成功</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
