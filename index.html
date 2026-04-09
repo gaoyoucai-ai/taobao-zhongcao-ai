@@ -165,29 +165,32 @@
       <div id="page-home" class="page">
         <div class="page-header"><h1>👋 欢迎使用淘宝种草 AI 协作平台</h1><p>选择你的工作台</p></div>
         <div class="module-grid">
-          <div class="module-card" onclick="navigateTo('downstream-workspace')">
-            <div class="module-icon">📤</div>
-            <h3>下行内容工作台</h3>
-            <p>Brief 评估 / 智能选号 / 内容审核 / 发布监测 / 投后复盘</p>
-          </div>
-          <div class="module-card" onclick="navigateTo('supervisor-dashboard')" style="position: relative;">
-            <div class="module-icon">✅</div>
-            <h3>直管执行看板</h3>
-            <p>项目总览 / 进度监控 / 审核确认</p>
+          <div class="module-card" onclick="navigateTo('supervisor-dashboard')" style="position: relative; border-color: #00b42a;">
+            <div class="module-icon" style="color: #00b42a;">✅</div>
+            <h3 style="color: #00b42a;">直管执行工作台</h3>
+            <p>上传 Brief / 智能选号 / 内容审核 / 发布监测</p>
             <span id="module-todo-badge" class="todo-badge" style="display: none;">0</span>
+          </div>
+          <div class="module-card" onclick="navigateTo('downstream-workspace')" style="border-color: #1d39c4;">
+            <div class="module-icon" style="color: #1d39c4;">📤</div>
+            <h3 style="color: #1d39c4;">下行内容审批台</h3>
+            <p>审批 Brief / 确认选号 / 审核内容 / 投流确认</p>
           </div>
         </div>
       </div>
 
       <!-- 下行内容 - 品牌工作台 -->
       <div id="page-downstream-workspace" class="page">
-        <div class="page-header"><h1 id="downstream-brand-title">📤 下行内容工作台</h1><p>管理种草投放全流程</p></div>
+        <div class="page-header" style="background: linear-gradient(135deg, #1d39c4 0%, #162da8 100%); color: white;">
+          <h1 id="downstream-brand-title" style="color: white;">📤 下行内容审批台</h1>
+          <p style="color: rgba(255,255,255,0.85);">审批直管提交的工作并确认</p>
+        </div>
         <div class="module-grid">
-          <div class="module-card" onclick="navigateTo('downstream-brief')"><div class="module-icon">📋</div><h3>1. Brief 评估</h3><p>评估并下发 Brief</p></div>
-          <div class="module-card" onclick="navigateTo('downstream-kol')"><div class="module-icon">🎯</div><h3>2. 智能选号</h3><p>AI 推荐优质达人</p></div>
-          <div class="module-card" onclick="navigateTo('downstream-audit')"><div class="module-icon">✅</div><h3>3. 内容审核</h3><p>自动审核内容</p></div>
-          <div class="module-card" onclick="navigateTo('downstream-monitor')"><div class="module-icon">📊</div><h3>4. 发布&投流监测</h3><p>监控发布进度与投放效果</p></div>
-          <div class="module-card" onclick="navigateTo('downstream-review')"><div class="module-icon">🔄</div><h3>5. 投后复盘</h3><p>分析投放效果</p></div>
+          <div class="module-card" onclick="navigateTo('downstream-brief')" style="border-color: #1d39c4; position: relative;"><div class="module-icon" style="color: #1d39c4;">📋</div><h3 style="color: #1d39c4;">1. Brief 审批</h3><p>审批直管提交的 Brief</p><span class="todo-badge" id="downstream-brief-badge" style="display: none;">0</span></div>
+          <div class="module-card" onclick="navigateTo('downstream-kol')" style="border-color: #722ed1; position: relative;"><div class="module-icon" style="color: #722ed1;">🎯</div><h3 style="color: #722ed1;">2. 选号确认</h3><p>确认直管推荐的达人</p><span class="todo-badge" id="downstream-kol-badge" style="display: none;">0</span></div>
+          <div class="module-card" onclick="navigateTo('downstream-audit')" style="border-color: #ff7d00; position: relative;"><div class="module-icon" style="color: #ff7d00;">✅</div><h3 style="color: #ff7d00;">3. 内容审核</h3><p>审批直管提交的内容</p><span class="todo-badge" id="downstream-audit-badge" style="display: none;">0</span></div>
+          <div class="module-card" onclick="navigateTo('downstream-monitor')" style="border-color: #165dff; position: relative;"><div class="module-icon" style="color: #165dff;">📊</div><h3 style="color: #165dff;">4. 投流确认</h3><p>确认推荐的投流笔记</p><span class="todo-badge" id="downstream-monitor-badge" style="display: none;">0</span></div>
+          <div class="module-card" onclick="navigateTo('downstream-review')" style="border-color: #f53f3f;"><div class="module-icon" style="color: #f53f3f;">🔄</div><h3 style="color: #f53f3f;">5. 投后复盘</h3><p>分析投放效果（仅下行）</p></div>
         </div>
       </div>
 
@@ -195,127 +198,103 @@
       <div id="page-supervisor-dashboard" class="page">
         <div class="page-header" style="background: linear-gradient(135deg, #00b42a 0%, #009a29 100%); color: white;">
           <h1 style="color: white;">✅ 直管执行工作台</h1>
-          <p style="color: rgba(255,255,255,0.85);">全流程执行管理与监控</p>
+          <p style="color: rgba(255,255,255,0.85);">上传、解析、修改并提交给下行审批</p>
         </div>
         <div class="module-grid">
-          <div class="module-card supervisor-module" onclick="showBriefEvalModal()" style="border-color: #00b42a; position: relative;">
-            <div class="module-icon">📋</div>
+          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-brief')" style="border-color: #00b42a; position: relative;">
+            <div class="module-icon" style="color: #00b42a;">📋</div>
             <h3 style="color: #00b42a;">1. Brief 评估</h3>
-            <p>查看上行下发的 Brief</p>
-            <span id="supervisor-brief-badge" class="todo-badge" style="display: none;">0</span>
+            <p>上传 Brief → AI 解析 → 提交审批</p>
+            <span class="todo-badge" id="supervisor-brief-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="showToast('🎯 智能选号 - 直管版 5月上线')" style="border-color: #722ed1;">
+          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-kol')" style="border-color: #722ed1; position: relative;">
             <div class="module-icon" style="color: #722ed1;">🎯</div>
-            <h3 style="color: #722ed1;">2. 达人管理</h3>
-            <p>达人筛选与档期确认</p>
+            <h3 style="color: #722ed1;">2. 智能选号</h3>
+            <p>AI 推荐 → 筛选 → 提交确认</p>
+            <span class="todo-badge" id="supervisor-kol-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="showToast('✅ 内容审核 - 直管版 5月上线')" style="border-color: #ff7d00;">
+          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-audit')" style="border-color: #ff7d00; position: relative;">
             <div class="module-icon" style="color: #ff7d00;">✅</div>
-            <h3 style="color: #ff7d00;">3. 内容确认</h3>
-            <p>审核确认达人稿件</p>
+            <h3 style="color: #ff7d00;">3. 内容审核</h3>
+            <p>上传稿件 → AI 检查 → 提交审批</p>
+            <span class="todo-badge" id="supervisor-audit-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="showToast('📊 发布监测 - 直管版 5月上线')" style="border-color: #165dff;">
+          <div class="module-card supervisor-module" onclick="navigateTo('supervisor-monitor')" style="border-color: #165dff; position: relative;">
             <div class="module-icon" style="color: #165dff;">📊</div>
-            <h3 style="color: #165dff;">4. 进度监控</h3>
-            <p>监控发布与投放进度</p>
+            <h3 style="color: #165dff;">4. 发布&投流监测</h3>
+            <p>上传数据 → 推荐投流 → 提交确认</p>
+            <span class="todo-badge" id="supervisor-monitor-badge" style="display: none;">0</span>
           </div>
-          <div class="module-card supervisor-module" onclick="showToast('🔄 投后复盘 - 直管版 5月上线')" style="border-color: #f53f3f;">
+          <div class="module-card supervisor-module" onclick="showToast('🔄 执行复盘 5月上线')" style="border-color: #f53f3f;">
             <div class="module-icon" style="color: #f53f3f;">🔄</div>
             <h3 style="color: #f53f3f;">5. 执行复盘</h3>
-            <p>执行效率分析与优化</p>
+            <p>执行效率分析（5月开放）</p>
           </div>
         </div>
       </div>
       
-      <!-- Brief 评估弹窗 -->
-      <div id="modal-brief-eval" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
-          <h3 style="margin-bottom: 1.5rem; color: #00b42a; font-size: 1.2rem;">📋 Brief 评估</h3>
-          <div style="display: grid; gap: 1rem;">
-            <div class="modal-option-card" onclick="showIndustrySelect()" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.2rem; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏭</div>
-              <h4 style="color: #1d2129; margin-bottom: 0.3rem;">选择行业</h4>
-              <p style="font-size: 0.8rem; color: #86909c; margin: 0;">按行业筛选 Brief</p>
-            </div>
-            <div class="modal-option-card" onclick="showBrandSelect()" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.2rem; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏢</div>
-              <h4 style="color: #1d2129; margin-bottom: 0.3rem;">选择品牌</h4>
-              <p style="font-size: 0.8rem; color: #86909c; margin: 0;">按品牌筛选 Brief</p>
-            </div>
-            <div class="modal-option-card" onclick="showBriefTodoList()" style="background: #f0f5ff; border: 2px solid #1d39c4; border-radius: 8px; padding: 1.2rem; cursor: pointer; transition: all 0.2s; position: relative;">
-              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📥</div>
-              <h4 style="color: #1d2129; margin-bottom: 0.3rem;">查看 Brief 代办事项</h4>
-              <p style="font-size: 0.8rem; color: #86909c; margin: 0;">查看上行下发的 Brief 列表</p>
-              <span id="brief-todo-badge" class="todo-badge" style="display: none;">0</span>
-            </div>
-          </div>
-          <div class="action-bar" style="margin-top: 1.5rem;">
-            <button class="btn btn-outline" onclick="closeBriefEvalModal()">关闭</button>
-          </div>
+      <!-- 直管 - Brief 评估上传页 -->
+      <div id="page-supervisor-brief" class="page">
+        <div class="page-header"><h1>📋 Brief 评估与上传</h1><p>上传 Word Brief，AI 自动解析后提交给下行审批</p></div>
+
+        <!-- 已提交Brief状态 -->
+        <div class="card" id="supervisor-brief-status-section" style="display: none;">
+          <div class="card-header"><h2>📊 Brief 审批状态</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+          <div id="supervisor-brief-status-content"></div>
         </div>
-      </div>
-      
-      <!-- 行业选择弹窗 -->
-      <div id="modal-industry-select" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2001; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
-          <h3 style="margin-bottom: 1.5rem; color: #722ed1; font-size: 1.2rem;">🏭 选择行业</h3>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-            <div class="industry-card" onclick="selectIndustry('美妆')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">💄</div>
-              <h4 style="color: #1d2129;">美妆</h4>
+
+        <!-- Brief 上传区域 -->
+        <div class="card" id="supervisor-brief-upload-section">
+          <div class="card-header"><h2>📤 上传 Brief</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+          
+          <div style="border: 2px dashed #00b42a; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('supervisor-brief-file').click()">
+            <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
+            <p style="color: #00b42a; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传 Word Brief 文档</p>
+            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，AI 将自动解析品牌、产品、卖点等信息</p>
+            <input type="file" id="supervisor-brief-file" accept=".docx" style="display: none;" onchange="handleSupervisorBriefUpload(this)">
+          </div>
+          <p id="supervisor-brief-file-name" style="font-size: 0.85rem; color: #00b42a; margin-top: 0.8rem; display: none;"></p>
+          
+          <!-- 解析结果预览 -->
+          <div id="supervisor-brief-parse-preview" style="display: none; margin-top: 1.5rem; background: #e8ffea; padding: 1rem; border-radius: 6px; border: 1px solid #b7f5c8;">
+            <h4 style="margin-bottom: 0.8rem; color: #00b42a;">📋 AI 解析结果（请检查并修正）</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+              <div class="form-group">
+                <label>品牌名称</label>
+                <input type="text" id="supervisor-brief-brand" placeholder="AI 自动解析">
+              </div>
+              <div class="form-group">
+                <label>产品名称</label>
+                <input type="text" id="supervisor-brief-product" placeholder="AI 自动解析">
+              </div>
             </div>
-            <div class="industry-card" onclick="selectIndustry('服饰')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">👗</div>
-              <h4 style="color: #1d2129;">服饰</h4>
+            <div class="form-group">
+              <label>核心卖点</label>
+              <textarea id="supervisor-brief-selling-points" placeholder="AI 自动解析"></textarea>
             </div>
-            <div class="industry-card" onclick="selectIndustry('食品')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🍔</div>
-              <h4 style="color: #1d2129;">食品</h4>
+            <div class="form-group">
+              <label>目标人群</label>
+              <textarea id="supervisor-brief-target-audience" placeholder="AI 自动解析"></textarea>
             </div>
-            <div class="industry-card" onclick="selectIndustry('数码')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>
-              <h4 style="color: #1d2129;">数码</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+              <div class="form-group">
+                <label>CPUV 目标（元）</label>
+                <input type="number" id="supervisor-brief-cpuv-target" placeholder="AI 自动解析">
+              </div>
+              <div class="form-group">
+                <label>进店率目标（%）</label>
+                <input type="number" id="supervisor-brief-shop-rate-target" step="0.01" placeholder="AI 自动解析">
+              </div>
             </div>
-            <div class="industry-card" onclick="selectIndustry('家居')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏠</div>
-              <h4 style="color: #1d2129;">家居</h4>
-            </div>
-            <div class="industry-card" onclick="selectIndustry('母婴')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-              <div style="font-size: 2rem; margin-bottom: 0.5rem;">👶</div>
-              <h4 style="color: #1d2129;">母婴</h4>
+            <div class="form-group">
+              <label>内容方向要求</label>
+              <textarea id="supervisor-brief-content-direction" placeholder="AI 自动解析"></textarea>
             </div>
           </div>
+          
           <div class="action-bar">
-            <button class="btn btn-outline" onclick="closeIndustrySelect()">返回</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- 品牌选择弹窗 -->
-      <div id="modal-brand-select" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2001; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
-          <h3 style="margin-bottom: 1.5rem; color: #165dff; font-size: 1.2rem;">🏢 选择品牌</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;" id="brand-list-container">
-            <!-- 品牌列表将动态生成 -->
-          </div>
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="closeBrandSelect()">返回</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Brief 代办事项弹窗 -->
-      <div id="modal-brief-todo" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2001; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h3 style="color: #1d39c4; font-size: 1.2rem; margin: 0;">📥 Brief 代办事项</h3>
-            <span id="brief-todo-count" class="badge badge-danger" style="font-size: 0.9rem; padding: 0.3rem 0.8rem;">0 条待办</span>
-          </div>
-          <div id="brief-todo-list-container">
-            <!-- Brief 列表将动态生成 -->
-          </div>
-          <div class="action-bar" style="margin-top: 1.5rem;">
-            <button class="btn btn-outline" onclick="closeBriefTodoList()">关闭</button>
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
+            <button class="btn btn-success" onclick="submitSupervisorBrief()" id="supervisor-brief-submit-btn" style="display: none;">📤 提交给下行审批</button>
           </div>
         </div>
       </div>
