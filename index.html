@@ -109,6 +109,17 @@
     .todo-badge { position: absolute; top: -5px; right: -5px; background: #f53f3f; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
     .module-card { position: relative; }
     .nav-badge { background: #f53f3f; color: white; font-size: 0.65rem; padding: 1px 5px; border-radius: 8px; margin-left: 0.3rem; }
+    
+    /* 直管模块样式 */
+    .supervisor-module:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .modal-option-card:hover { border-color: #00b42a !important; background: #f0f5ff !important; }
+    .industry-card:hover { border-color: #722ed1 !important; background: #f5e8ff !important; }
+    .brand-card-supervisor { background: white; border: 1px solid #e5e6eb; border-radius: 8px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .brand-card-supervisor:hover { border-color: #165dff; background: #e8f3ff; }
+    .brief-todo-item { background: #f7f8fa; border-left: 3px solid #1d39c4; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem; cursor: pointer; transition: all 0.2s; }
+    .brief-todo-item:hover { background: #f0f5ff; border-left-color: #00b42a; }
+    .brief-todo-item.unread { background: #f0f5ff; border-left-color: #f53f3f; }
+    
     @media (max-width: 768px) { .top-nav { flex-direction: column; gap: 0.4rem; } .module-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -182,23 +193,130 @@
 
       <!-- 直管执行看板 -->
       <div id="page-supervisor-dashboard" class="page">
-        <div class="page-header"><h1>✅ 直管执行看板</h1><p>全流程进度监控</p></div>
-        
-        <!-- 待办Brief列表 -->
-        <div class="card" id="supervisor-todo-section">
-          <div class="card-header"><h2>📥 待办 Brief</h2><button class="btn btn-outline" onclick="goHome()">返回</button></div>
-          <div id="supervisor-brief-list">
-            <div class="empty-state">
-              <div class="icon">📭</div>
-              <p>暂无待办 Brief</p>
-            </div>
+        <div class="page-header" style="background: linear-gradient(135deg, #00b42a 0%, #009a29 100%); color: white;">
+          <h1 style="color: white;">✅ 直管执行工作台</h1>
+          <p style="color: rgba(255,255,255,0.85);">全流程执行管理与监控</p>
+        </div>
+        <div class="module-grid">
+          <div class="module-card supervisor-module" onclick="showBriefEvalModal()" style="border-color: #00b42a; position: relative;">
+            <div class="module-icon">📋</div>
+            <h3 style="color: #00b42a;">1. Brief 评估</h3>
+            <p>查看上行下发的 Brief</p>
+            <span id="supervisor-brief-badge" class="todo-badge" style="display: none;">0</span>
+          </div>
+          <div class="module-card supervisor-module" onclick="showToast('🎯 智能选号 - 直管版 5月上线')" style="border-color: #722ed1;">
+            <div class="module-icon" style="color: #722ed1;">🎯</div>
+            <h3 style="color: #722ed1;">2. 达人管理</h3>
+            <p>达人筛选与档期确认</p>
+          </div>
+          <div class="module-card supervisor-module" onclick="showToast('✅ 内容审核 - 直管版 5月上线')" style="border-color: #ff7d00;">
+            <div class="module-icon" style="color: #ff7d00;">✅</div>
+            <h3 style="color: #ff7d00;">3. 内容确认</h3>
+            <p>审核确认达人稿件</p>
+          </div>
+          <div class="module-card supervisor-module" onclick="showToast('📊 发布监测 - 直管版 5月上线')" style="border-color: #165dff;">
+            <div class="module-icon" style="color: #165dff;">📊</div>
+            <h3 style="color: #165dff;">4. 进度监控</h3>
+            <p>监控发布与投放进度</p>
+          </div>
+          <div class="module-card supervisor-module" onclick="showToast('🔄 投后复盘 - 直管版 5月上线')" style="border-color: #f53f3f;">
+            <div class="module-icon" style="color: #f53f3f;">🔄</div>
+            <h3 style="color: #f53f3f;">5. 执行复盘</h3>
+            <p>执行效率分析与优化</p>
           </div>
         </div>
-        
-        <!-- 项目总览 -->
-        <div class="card">
-          <div class="card-header"><h2>项目总览</h2></div>
-          <div id="supervisor-projects-list"></div>
+      </div>
+      
+      <!-- Brief 评估弹窗 -->
+      <div id="modal-brief-eval" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
+          <h3 style="margin-bottom: 1.5rem; color: #00b42a; font-size: 1.2rem;">📋 Brief 评估</h3>
+          <div style="display: grid; gap: 1rem;">
+            <div class="modal-option-card" onclick="showIndustrySelect()" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.2rem; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏭</div>
+              <h4 style="color: #1d2129; margin-bottom: 0.3rem;">选择行业</h4>
+              <p style="font-size: 0.8rem; color: #86909c; margin: 0;">按行业筛选 Brief</p>
+            </div>
+            <div class="modal-option-card" onclick="showBrandSelect()" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.2rem; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏢</div>
+              <h4 style="color: #1d2129; margin-bottom: 0.3rem;">选择品牌</h4>
+              <p style="font-size: 0.8rem; color: #86909c; margin: 0;">按品牌筛选 Brief</p>
+            </div>
+            <div class="modal-option-card" onclick="showBriefTodoList()" style="background: #f0f5ff; border: 2px solid #1d39c4; border-radius: 8px; padding: 1.2rem; cursor: pointer; transition: all 0.2s; position: relative;">
+              <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📥</div>
+              <h4 style="color: #1d2129; margin-bottom: 0.3rem;">查看 Brief 代办事项</h4>
+              <p style="font-size: 0.8rem; color: #86909c; margin: 0;">查看上行下发的 Brief 列表</p>
+              <span id="brief-todo-badge" class="todo-badge" style="display: none;">0</span>
+            </div>
+          </div>
+          <div class="action-bar" style="margin-top: 1.5rem;">
+            <button class="btn btn-outline" onclick="closeBriefEvalModal()">关闭</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 行业选择弹窗 -->
+      <div id="modal-industry-select" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2001; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
+          <h3 style="margin-bottom: 1.5rem; color: #722ed1; font-size: 1.2rem;">🏭 选择行业</h3>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="industry-card" onclick="selectIndustry('美妆')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">💄</div>
+              <h4 style="color: #1d2129;">美妆</h4>
+            </div>
+            <div class="industry-card" onclick="selectIndustry('服饰')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">👗</div>
+              <h4 style="color: #1d2129;">服饰</h4>
+            </div>
+            <div class="industry-card" onclick="selectIndustry('食品')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🍔</div>
+              <h4 style="color: #1d2129;">食品</h4>
+            </div>
+            <div class="industry-card" onclick="selectIndustry('数码')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">📱</div>
+              <h4 style="color: #1d2129;">数码</h4>
+            </div>
+            <div class="industry-card" onclick="selectIndustry('家居')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏠</div>
+              <h4 style="color: #1d2129;">家居</h4>
+            </div>
+            <div class="industry-card" onclick="selectIndustry('母婴')" style="background: #f7f8fa; border: 2px solid #e5e6eb; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">👶</div>
+              <h4 style="color: #1d2129;">母婴</h4>
+            </div>
+          </div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="closeIndustrySelect()">返回</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 品牌选择弹窗 -->
+      <div id="modal-brand-select" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2001; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
+          <h3 style="margin-bottom: 1.5rem; color: #165dff; font-size: 1.2rem;">🏢 选择品牌</h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;" id="brand-list-container">
+            <!-- 品牌列表将动态生成 -->
+          </div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="closeBrandSelect()">返回</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Brief 代办事项弹窗 -->
+      <div id="modal-brief-todo" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2001; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.15);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="color: #1d39c4; font-size: 1.2rem; margin: 0;">📥 Brief 代办事项</h3>
+            <span id="brief-todo-count" class="badge badge-danger" style="font-size: 0.9rem; padding: 0.3rem 0.8rem;">0 条待办</span>
+          </div>
+          <div id="brief-todo-list-container">
+            <!-- Brief 列表将动态生成 -->
+          </div>
+          <div class="action-bar" style="margin-top: 1.5rem;">
+            <button class="btn btn-outline" onclick="closeBriefTodoList()">关闭</button>
+          </div>
         </div>
       </div>
       
@@ -669,6 +787,9 @@
         moduleBadge.textContent = todoCount;
         moduleBadge.style.display = todoCount > 0 ? 'block' : 'none';
       }
+      
+      // 更新直管Brief徽章
+      updateBriefTodoBadge();
     }
     
     // 下发Brief给直管
@@ -747,7 +868,6 @@
       if (pageId === 'downstream-monitor') initMonitorTable();
       if (pageId === 'supervisor-dashboard') {
         initSupervisorDashboard();
-        loadSupervisorTodo();
       }
       if (pageId === 'downstream-brief') loadSavedBrief();
       if (pageId === 'downstream-audit') resetDraftAuditPage();
@@ -894,52 +1014,8 @@
 
     // ==================== 直管看板 ====================
     function initSupervisorDashboard() {
-      const container = document.getElementById('supervisor-projects-list');
-      if (!container) return;
-      container.innerHTML = `
-        <div class="review-deck">
-          <h4>珀莱雅红宝石面霜 - 2026年3月投放项目</h4>
-          <div class="meta">当前进度：<span class="badge badge-success">发布&投流监测中</span></div>
-          <div style="margin-top: 0.8rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-            <div style="background: white; padding: 0.6rem 1rem; border-radius: 4px; font-size: 0.85rem;"><b>Brief 评估</b> <span class="badge badge-success">✅ 已通过</span></div>
-            <div style="background: white; padding: 0.6rem 1rem; border-radius: 4px; font-size: 0.85rem;"><b>智能选号</b> <span class="badge badge-success">✅ 5 位已确认</span></div>
-            <div style="background: white; padding: 0.6rem 1rem; border-radius: 4px; font-size: 0.85rem;"><b>内容审核</b> <span class="badge badge-success">✅ 3 位已发送</span></div>
-            <div style="background: white; padding: 0.6rem 1rem; border-radius: 4px; font-size: 0.85rem;"><b>发布监测</b> <span class="badge badge-warning">⏳ 进行中</span></div>
-          </div>
-        </div>
-      `;
-    }
-    
-    // 加载直管待办Brief
-    function loadSupervisorTodo() {
-      if (!currentUser || currentUser.role !== 'supervisor') return;
-      
-      const briefsRef = db.ref('briefs/dispatched');
-      briefsRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        const container = document.getElementById('supervisor-brief-list');
-        if (!container) return;
-        
-        if (!data) {
-          container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待办 Brief</p></div>';
-          return;
-        }
-        
-        const briefs = Object.entries(data).reverse(); // 最新的在前
-        container.innerHTML = briefs.map(([id, brief]) => `
-          <div style="background: ${brief.readBySupervisor ? '#f7f8fa' : '#f0f5ff'}; border-radius: 6px; padding: 1rem; margin-bottom: 0.8rem; cursor: pointer; border-left: 3px solid ${brief.readBySupervisor ? '#e5e6eb' : '#1d39c4'};" onclick="viewSupervisorBrief('${id}')">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <h4 style="margin-bottom: 0.3rem;">${brief.brief.brand} - ${brief.brief.product}</h4>
-                <p style="font-size: 0.8rem; color: #86909c;">下发人：${brief.dispatchedBy} | 下发时间：${new Date(brief.dispatchedAt).toLocaleString('zh-CN')}</p>
-              </div>
-              <div>
-                ${!brief.readBySupervisor ? '<span class="badge badge-danger">待查看</span>' : '<span class="badge badge-success">已查看</span>'}
-              </div>
-            </div>
-          </div>
-        `).join('');
-      });
+      // 更新Brief代办徽章
+      updateBriefTodoBadge();
     }
     
     // 查看Brief详情
@@ -1481,6 +1557,133 @@
       if (file) {
         document.getElementById('draft-file-name').style.display = 'block';
       }
+    }
+    
+    // ==================== 直管 Brief 评估弹窗 ====================
+    function showBriefEvalModal() {
+      document.getElementById('modal-brief-eval').style.display = 'flex';
+      updateBriefTodoBadge();
+    }
+    
+    function closeBriefEvalModal() {
+      document.getElementById('modal-brief-eval').style.display = 'none';
+    }
+    
+    function showIndustrySelect() {
+      document.getElementById('modal-industry-select').style.display = 'flex';
+    }
+    
+    function closeIndustrySelect() {
+      document.getElementById('modal-industry-select').style.display = 'none';
+    }
+    
+    function selectIndustry(industry) {
+      showToast(`🏭 已选择行业：${industry}，5月上线完整功能`);
+      closeIndustrySelect();
+    }
+    
+    function showBrandSelect() {
+      // 生成品牌列表
+      const brands = [
+        { name: '珀莱雅', icon: '💄' },
+        { name: '薇诺娜', icon: '🌿' },
+        { name: '花西子', icon: '🌸' },
+        { name: '完美日记', icon: '✨' },
+        { name: '华熙生物', icon: '🧬' },
+        { name: '自然堂', icon: '🏔️' }
+      ];
+      
+      const container = document.getElementById('brand-list-container');
+      container.innerHTML = brands.map(b => `
+        <div class="brand-card-supervisor" onclick="selectBrand('${b.name}')">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">${b.icon}</div>
+          <h4 style="color: #1d2129; margin: 0;">${b.name}</h4>
+        </div>
+      `).join('');
+      
+      document.getElementById('modal-brand-select').style.display = 'flex';
+    }
+    
+    function closeBrandSelect() {
+      document.getElementById('modal-brand-select').style.display = 'none';
+    }
+    
+    function selectBrand(brand) {
+      showToast(`🏢 已选择品牌：${brand}，5月上线完整功能`);
+      closeBrandSelect();
+    }
+    
+    function showBriefTodoList() {
+      loadSupervisorBriefTodoList();
+      document.getElementById('modal-brief-todo').style.display = 'flex';
+    }
+    
+    function closeBriefTodoList() {
+      document.getElementById('modal-brief-todo').style.display = 'none';
+    }
+    
+    // 更新Brief代办徽章
+    function updateBriefTodoBadge() {
+      const badges = ['supervisor-brief-badge', 'brief-todo-badge'];
+      badges.forEach(id => {
+        const badge = document.getElementById(id);
+        if (badge) {
+          badge.textContent = todoCount;
+          badge.style.display = todoCount > 0 ? 'block' : 'none';
+        }
+      });
+      
+      // 更新代办计数
+      const countEl = document.getElementById('brief-todo-count');
+      if (countEl) {
+        countEl.textContent = `${todoCount} 条待办`;
+      }
+    }
+    
+    // 加载直管Brief代办列表
+    function loadSupervisorBriefTodoList() {
+      if (!currentUser || currentUser.role !== 'supervisor') return;
+      
+      const briefsRef = db.ref('briefs/dispatched');
+      briefsRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        const container = document.getElementById('brief-todo-list-container');
+        if (!container) return;
+        
+        if (!data) {
+          container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待办 Brief</p></div>';
+          updateBriefTodoBadge();
+          return;
+        }
+        
+        const briefs = Object.entries(data).reverse();
+        container.innerHTML = briefs.map(([id, brief]) => `
+          <div class="brief-todo-item ${!brief.readBySupervisor ? 'unread' : ''}" onclick="viewSupervisorBriefFromModal('${id}')">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h4 style="margin-bottom: 0.3rem; color: ${!brief.readBySupervisor ? '#1d39c4' : '#1d2129'};">
+                  ${!brief.readBySupervisor ? '🔴' : ''} ${brief.brief.brand} - ${brief.brief.product}
+                </h4>
+                <p style="font-size: 0.8rem; color: #86909c; margin: 0;">
+                  下发人：${brief.dispatchedBy} | 下发时间：${new Date(brief.dispatchedAt).toLocaleString('zh-CN')}
+                </p>
+              </div>
+              <div>
+                ${!brief.readBySupervisor ? '<span class="badge badge-danger">待查看</span>' : '<span class="badge badge-success">已查看</span>'}
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        updateBriefTodoBadge();
+      });
+    }
+    
+    // 从弹窗查看Brief详情
+    function viewSupervisorBriefFromModal(briefId) {
+      closeBriefTodoList();
+      closeBriefEvalModal();
+      viewSupervisorBrief(briefId);
     }
   </script>
 </body>
