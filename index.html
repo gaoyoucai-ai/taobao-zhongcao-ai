@@ -457,6 +457,11 @@
     const QWEN_MODEL = 'qwen-turbo';
     // 使用 CORS 代理解决跨域问题
     const CORS_PROXY = 'https://corsproxy.io/?';
+    
+    console.log('=== AI API 配置 ===');
+    console.log('API URL:', QWEN_API_URL);
+    console.log('CORS Proxy:', CORS_PROXY);
+    console.log('实际请求地址:', CORS_PROXY + encodeURIComponent(QWEN_API_URL));
 
     // 通义千问 API 调用函数（通过 CORS 代理）
     async function callQwenAPI(prompt, systemPrompt = '') {
