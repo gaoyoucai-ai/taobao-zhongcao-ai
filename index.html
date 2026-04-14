@@ -453,22 +453,11 @@
   <script>
     // ==================== 通义千问 AI API 配置 ====================
     const QWEN_API_KEY = 'sk-c71e67abd1c04b57a788e7391956b227';
-    const QWEN_API_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
     const QWEN_MODEL = 'qwen-turbo';
-    // 使用 CORS 代理解决跨域问题（使用多个备选代理）
-    const CORS_PROXIES = [
-      'https://api.allorigins.win/raw?url=',
-      'https://corsproxy.org/?',
-      'https://api.codetabs.com/v1/proxy?quest='
-    ];
-    let currentProxyIndex = 0;
-    
-    console.log('=== AI API 配置 ===');
-    console.log('API URL:', QWEN_API_URL);
-    console.log('CORS Proxy:', CORS_PROXY);
-    console.log('实际请求地址:', CORS_PROXY + encodeURIComponent(QWEN_API_URL));
+    // Vercel API 代理地址（部署后替换为实际地址）
+    const API_PROXY_URL = '/api/qwen-proxy';
 
-    // 通义千问 API 调用函数（通过 CORS 代理）
+    // 通义千问 API 调用函数（通过 Vercel API 代理）
     async function callQwenAPI(prompt, systemPrompt = '') {
       const messages = [];
       if (systemPrompt) {
@@ -476,42 +465,31 @@
       }
       messages.push({ role: 'user', content: prompt });
 
-      // 尝试多个 CORS 代理
-      for (let i = 0; i < CORS_PROXIES.length; i++) {
-        const proxy = CORS_PROXIES[i];
-        const targetUrl = proxy + encodeURIComponent(QWEN_API_URL);
-        console.log(`尝试代理 ${i + 1}:`, targetUrl);
-        
-        try {
-          const response = await fetch(targetUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${QWEN_API_KEY}`,
-              'X-DashScope-SSE': 'disable'
-            },
-            body: JSON.stringify({
-              model: QWEN_MODEL,
-              input: { messages: messages },
-              parameters: {
-                result_format: 'message',
-                max_tokens: 4000,
-                temperature: 0.3
-              }
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            return data.output.choices[0].message.content;
-          }
-        } catch (error) {
-          console.warn(`代理 ${i + 1} 失败:`, error.message);
-          continue;
-        }
-      }
+      console.log('调用 Vercel API 代理...');
       
-      throw new Error('所有 CORS 代理都失败了');
+      const response = await fetch(API_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: QWEN_MODEL,
+          input: { messages: messages },
+          parameters: {
+            result_format: 'message',
+            max_tokens: 4000,
+            temperature: 0.3
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `API请求失败: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.output.choices[0].message.content;
     }
 
     // ==================== Firebase 初始化 ====================
