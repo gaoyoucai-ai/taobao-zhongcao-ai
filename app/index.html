@@ -1129,11 +1129,11 @@
         const data = snap.val();
         const container = document.getElementById('ds-audit-list');
         if (!data) { container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无待审批内容</p></div>'; return; }
-        const drafts = Object.values(data).filter(d => d.status === 'pending').reverse();
+        const drafts = Object.entries(data).filter(([_, d]) => d.status === 'pending').reverse();
         container.innerHTML = drafts.length === 0 
           ? '<div class="empty-state"><div class="icon">✅</div><p>所有内容已审批完成</p></div>'
-          : drafts.map(d => `
-            <div class="approval-item pending" onclick="viewDownstreamAuditDetail('${d.id}')">
+          : drafts.map(([id, d]) => `
+            <div class="approval-item pending" onclick="viewDownstreamAuditDetail('${id}')" style="cursor: pointer;">
               <div class="approval-header">
                 <h4>达人稿件 - ${d.creator}</h4>
                 <span class="badge badge-warning">待审批</span>
