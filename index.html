@@ -981,6 +981,8 @@ ${rawText.substring(0, 5000)}
       showLoading('🤖 AI 正在进行 6 维度深度审核...');
       
       try {
+        console.log('开始 AI 内容审核...');
+        
         // 获取当前 Brief 信息（用于 Brief 符合度检查）
         const aiBriefAnalysis = Storage.get('aiBriefAnalysis', {});
         const briefContext = aiBriefAnalysis.rawAIResult || '';
@@ -1036,7 +1038,7 @@ ${rawText.substring(0, 5000)}
 - 轻微问题：语义不够流畅、标点不规范 → 可改可不改
 
 请严格、客观地审核内容，发现所有潜在问题。`;
-        
+
         const prompt = `请对以下内容进行六维度审核：
 
 【待审核内容】
@@ -1053,7 +1055,7 @@ ${briefContext ? `【相关 Brief 要求】\n${briefContext.substring(0, 1000)}`
 5. Brief 符合度：检查是否符合商家 Brief 要求
 6. 文案细节准确性：检查错别字、商品名、型号规格、语义通顺度
 
-输出格式（必须是有效的 JSON）：
+输出格式（必须是有效的 JSON，不要输出其他文字）：
 {
   "dimensions": [
     {
@@ -1066,11 +1068,13 @@ ${briefContext ? `【相关 Brief 要求】\n${briefContext.substring(0, 1000)}`
   ],
   "correctedContent": "修正后的内容（如有错别字等问题请修正）",
   "overallStatus": "success或warning或danger",
-  "issuesFound": 问题总数（数字）,
+  "issuesFound": 0,
   "summary": "审核总结（一句话）"
 }`;
 
+        console.log('调用通义千问 API...');
         const aiResult = await callQwenAPI(prompt, systemPrompt);
+        console.log('AI 返回结果:', aiResult);
         
         // 解析 AI 返回结果
         let parsedResult;
@@ -1078,9 +1082,13 @@ ${briefContext ? `【相关 Brief 要求】\n${briefContext.substring(0, 1000)}`
           const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             parsedResult = JSON.parse(jsonMatch[0]);
+            console.log('解析后的结果:', parsedResult);
+          } else {
+            throw new Error('未找到 JSON 格式的结果');
           }
         } catch (e) {
           console.error('AI 审核结果解析失败:', e);
+          console.error('AI 原始返回:', aiResult);
           // 如果解析失败，使用基础规则审核作为后备
           parsedResult = runFullContentAudit(currentAuditContent);
         }
@@ -1096,7 +1104,7 @@ ${briefContext ? `【相关 Brief 要求】\n${briefContext.substring(0, 1000)}`
       } catch (error) {
         console.error('AI 审核失败:', error);
         hideLoading();
-        showToast('⚠️ AI 审核失败，使用基础审核');
+        showToast('⚠️ AI 审核失败：' + error.message);
         // 使用基础规则审核作为后备
         currentAuditResult = runFullContentAudit(currentAuditContent);
         displayAuditReport(currentAuditResult);
