@@ -451,6 +451,51 @@
   </div>
 
   <script>
+    // ==================== 通义千问 AI API 配置 ====================
+    const QWEN_API_KEY = 'sk-c71e67abd1c04b57a788e7391956b227';
+    const QWEN_API_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+    const QWEN_MODEL = 'qwen-turbo'; // 免费额度充足，速度快
+
+    // 通义千问 API 调用函数
+    async function callQwenAPI(prompt, systemPrompt = '') {
+      const messages = [];
+      if (systemPrompt) {
+        messages.push({ role: 'system', content: systemPrompt });
+      }
+      messages.push({ role: 'user', content: prompt });
+
+      try {
+        const response = await fetch(QWEN_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${QWEN_API_KEY}`,
+            'X-DashScope-SSE': 'disable'
+          },
+          body: JSON.stringify({
+            model: QWEN_MODEL,
+            input: { messages: messages },
+            parameters: {
+              result_format: 'message',
+              max_tokens: 4000,
+              temperature: 0.3
+            }
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `API请求失败: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.output.choices[0].message.content;
+      } catch (error) {
+        console.error('通义千问 API 调用错误:', error);
+        throw error;
+      }
+    }
+
     // ==================== Firebase 初始化 ====================
     const firebaseConfig = {
       apiKey: "AIzaSyAcqV5k8fus0xRLzBXXCbA6_UDtd4ZkWMo",
@@ -591,7 +636,9 @@
       reader.onload = function(e) {
         mammoth.extractRawText({ arrayBuffer: e.target.result })
           .then(function(result) {
-            const parsed = parseBriefContent(result.value);
+            const rawText = result.value;
+            // 先使用基础解析填充表单
+            const parsed = parseBriefContent(rawText);
             document.getElementById('sv-brief-brand').value = parsed.brand;
             document.getElementById('sv-brief-product').value = parsed.product;
             document.getElementById('sv-brief-selling-points').value = parsed.sellingPoints;
@@ -601,11 +648,143 @@
             document.getElementById('sv-brief-content-direction').value = parsed.contentDirection;
             document.getElementById('sv-brief-parse-preview').style.display = 'block';
             document.getElementById('sv-brief-submit-btn').style.display = 'inline-block';
-            showToast('✅ Word 解析完成，请检查并修正');
+            
+            // 调用 AI 进行深度解析
+            showToast('🤖 AI 正在深度拆解 Brief...');
+            callBriefAIAnalysis(rawText, parsed);
           })
           .catch(err => { showToast('⚠️ 解析失败，请检查格式'); console.error(err); });
       };
       reader.readAsArrayBuffer(file);
+    }
+
+    // AI Brief 深度解析
+    async function callBriefAIAnalysis(rawText, basicParsed) {
+      const systemPrompt = `你是淘宝种草 Brief 拆解专家。请从商家 Brief 文档中提取关键信息，并按照指定格式输出。`;
+      
+      const prompt = `请分析以下 Brief 文档，提取关键信息：
+
+${rawText.substring(0, 5000)}
+
+请严格按照以下 JSON 格式输出（不要输出其他内容）：
+{
+  "brand": "品牌名称",
+  "product": "产品名称",
+  "sellingPoints": "核心卖点（分点列出，用换行分隔）",
+  "targetAudience": "目标人群画像",
+  "cpuvTarget": "CPUV目标值（只填数字）",
+  "shopRateTarget": "进店率目标（如0.3%）",
+  "contentDirection": "内容方向和要求",
+  "tabooList": "禁忌事项列表（数组）",
+  "keyMessages": "必须传达的关键信息（数组）",
+  "contentFormat": "推荐的内容形式",
+  "budget": "预算信息",
+  "timeline": "时间要求"
+}`;
+
+      try {
+        const aiResult = await callQwenAPI(prompt, systemPrompt);
+        
+        // 尝试解析 JSON
+        let parsedAI;
+        try {
+          // 提取 JSON 部分
+          const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            parsedAI = JSON.parse(jsonMatch[0]);
+          }
+        } catch (e) {
+          console.error('AI 返回结果解析失败:', e);
+        }
+
+        if (parsedAI) {
+          // 更新表单
+          if (parsedAI.brand) document.getElementById('sv-brief-brand').value = parsedAI.brand;
+          if (parsedAI.product) document.getElementById('sv-brief-product').value = parsedAI.product;
+          if (parsedAI.sellingPoints) document.getElementById('sv-brief-selling-points').value = parsedAI.sellingPoints;
+          if (parsedAI.targetAudience) document.getElementById('sv-brief-target-audience').value = parsedAI.targetAudience;
+          if (parsedAI.cpuvTarget) document.getElementById('sv-brief-cpuv-target').value = parsedAI.cpuvTarget;
+          if (parsedAI.shopRateTarget) document.getElementById('sv-brief-shop-rate-target').value = parsedAI.shopRateTarget;
+          if (parsedAI.contentDirection) document.getElementById('sv-brief-content-direction').value = parsedAI.contentDirection;
+          
+          // 保存 AI 解析的额外信息到 localStorage
+          Storage.set('aiBriefAnalysis', {
+            tabooList: parsedAI.tabooList || [],
+            keyMessages: parsedAI.keyMessages || [],
+            contentFormat: parsedAI.contentFormat || '',
+            budget: parsedAI.budget || '',
+            timeline: parsedAI.timeline || '',
+            rawAIResult: aiResult
+          });
+          
+          showToast('✅ AI 深度拆解完成，已优化表单内容');
+          
+          // 显示 AI 拆解报告
+          displayAIBriefReport(parsedAI);
+        }
+      } catch (error) {
+        console.error('AI Brief 解析失败:', error);
+        showToast('⚠️ AI 解析失败，请手动检查表单');
+      }
+    }
+
+    // 显示 AI Brief 拆解报告
+    function displayAIBriefReport(aiResult) {
+      const reportCard = document.getElementById('sv-brief-ai-report-card');
+      if (!reportCard) {
+        // 如果没有这个卡片，创建一个
+        const container = document.getElementById('sv-brief-parse-preview');
+        if (container) {
+          const card = document.createElement('div');
+          card.id = 'sv-brief-ai-report-card';
+          card.className = 'card';
+          card.style.display = 'block';
+          card.style.marginTop = '1rem';
+          container.parentNode.insertBefore(card, container.nextSibling);
+        }
+      }
+      
+      const card = document.getElementById('sv-brief-ai-report-card');
+      if (card) {
+        let html = `
+          <div class="card-header">
+            <h2>🤖 AI 深度拆解报告</h2>
+            <span class="badge badge-success">AI 解析</span>
+          </div>
+          <div style="font-size: 0.85rem;">
+        `;
+        
+        if (aiResult.tabooList && aiResult.tabooList.length > 0) {
+          html += `<div style="margin-bottom: 0.8rem;"><b>🚫 禁忌事项：</b><ul style="margin: 0.3rem 0; padding-left: 1.2rem;">`;
+          aiResult.tabooList.forEach(item => {
+            html += `<li style="color: #f53f3f;">${item}</li>`;
+          });
+          html += `</ul></div>`;
+        }
+        
+        if (aiResult.keyMessages && aiResult.keyMessages.length > 0) {
+          html += `<div style="margin-bottom: 0.8rem;"><b>📌 必须传达的关键信息：</b><ul style="margin: 0.3rem 0; padding-left: 1.2rem;">`;
+          aiResult.keyMessages.forEach(item => {
+            html += `<li style="color: #00b42a;">${item}</li>`;
+          });
+          html += `</ul></div>`;
+        }
+        
+        if (aiResult.contentFormat) {
+          html += `<div style="margin-bottom: 0.8rem;"><b>📝 推荐内容形式：</b>${aiResult.contentFormat}</div>`;
+        }
+        
+        if (aiResult.budget) {
+          html += `<div style="margin-bottom: 0.8rem;"><b>💰 预算信息：</b>${aiResult.budget}</div>`;
+        }
+        
+        if (aiResult.timeline) {
+          html += `<div style="margin-bottom: 0.8rem;"><b>📅 时间要求：</b>${aiResult.timeline}</div>`;
+        }
+        
+        html += `</div>`;
+        card.innerHTML = html;
+      }
     }
 
     function parseBriefContent(text) {
@@ -762,17 +941,86 @@
       reader.readAsArrayBuffer(file);
     }
 
-    function runAIAudit() {
-      showLoading('AI 正在进行 6 维度审核...');
-      setTimeout(() => {
-        currentAuditResult = runFullContentAudit(currentAuditContent);
+    // AI 内容审核 - 使用通义千问
+    async function runAIAudit() {
+      showLoading('🤖 AI 正在进行 6 维度深度审核...');
+      
+      try {
+        // 获取当前 Brief 信息（用于 Brief 符合度检查）
+        const aiBriefAnalysis = Storage.get('aiBriefAnalysis', {});
+        const briefContext = aiBriefAnalysis.rawAIResult || '';
+        
+        const systemPrompt = `你是专业的内容审核专家，负责淘宝种草 KOL 稿件的六维度审核。请严格、客观地审核内容，发现所有潜在问题。`;
+        
+        const prompt = `请对以下内容进行六维度审核：
+
+【待审核内容】
+${currentAuditContent.substring(0, 5000)}
+
+${briefContext ? `【相关 Brief 要求】\n${briefContext.substring(0, 1000)}` : ''}
+
+请按照以下六个维度进行审核，并严格按照 JSON 格式输出：
+
+1. 政治/违法/暴力：检测政治敏感、违法违规、暴力恐怖内容
+2. 色情/低俗：检测色情、低俗、不雅内容
+3. 谩骂/仇恨言论：检测辱骂、歧视、仇恨言论
+4. 广告/垃圾内容：检测过度营销、垃圾广告
+5. Brief 符合度：检查是否符合商家 Brief 要求
+6. 文案细节准确性：检查错别字、商品名、型号规格、语义通顺度
+
+输出格式（必须是有效的 JSON）：
+{
+  "dimensions": [
+    {
+      "name": "维度名称",
+      "status": "success或danger或warning",
+      "label": "✅ 通过 或 ❌ 违规 或 ⚠️ 可疑",
+      "issues": [{"type": "error或warning", "desc": "问题描述"}],
+      "desc": "维度说明"
+    }
+  ],
+  "correctedContent": "修正后的内容（如有错别字等问题请修正）",
+  "overallStatus": "success或warning或danger",
+  "issuesFound": 问题总数（数字）,
+  "summary": "审核总结（一句话）"
+}`;
+
+        const aiResult = await callQwenAPI(prompt, systemPrompt);
+        
+        // 解析 AI 返回结果
+        let parsedResult;
+        try {
+          const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            parsedResult = JSON.parse(jsonMatch[0]);
+          }
+        } catch (e) {
+          console.error('AI 审核结果解析失败:', e);
+          // 如果解析失败，使用基础规则审核作为后备
+          parsedResult = runFullContentAudit(currentAuditContent);
+        }
+        
+        currentAuditResult = parsedResult;
         displayAuditReport(currentAuditResult);
         hideLoading();
         document.getElementById('sv-audit-upload-card').style.display = 'none';
         document.getElementById('sv-audit-report-card').style.display = 'block';
-      }, 1500);
+        
+        showToast(`✅ AI 审核完成，发现 ${currentAuditResult.issuesFound || 0} 个问题`);
+        
+      } catch (error) {
+        console.error('AI 审核失败:', error);
+        hideLoading();
+        showToast('⚠️ AI 审核失败，使用基础审核');
+        // 使用基础规则审核作为后备
+        currentAuditResult = runFullContentAudit(currentAuditContent);
+        displayAuditReport(currentAuditResult);
+        document.getElementById('sv-audit-upload-card').style.display = 'none';
+        document.getElementById('sv-audit-report-card').style.display = 'block';
+      }
     }
 
+    // 保留原有的规则审核作为后备
     function runFullContentAudit(content) {
       const result = {
         dimensions: [],
