@@ -454,8 +454,8 @@
     // ==================== 通义千问 AI API 配置 ====================
     const QWEN_API_KEY = 'sk-c71e67abd1c04b57a788e7391956b227';
     const QWEN_MODEL = 'qwen-turbo';
-    // Vercel API 代理地址（部署后替换为实际地址）
-    const API_PROXY_URL = '/api/qwen-proxy';
+    // Vercel API 代理地址
+    const API_PROXY_URL = 'https://taobao-zhongcao-ai-ws1f.vercel.app/api/qwen-proxy';
 
     // 通义千问 API 调用函数（通过 Vercel API 代理）
     async function callQwenAPI(prompt, systemPrompt = '') {
