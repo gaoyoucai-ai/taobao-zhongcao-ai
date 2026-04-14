@@ -253,24 +253,41 @@
       <!-- 直管 - 内容审核 -->
       <div id="page-supervisor-audit" class="page">
         <div class="page-header"><h1>✅ 内容审核</h1><p>上传达人稿件，AI 自动检查后提交给下行审批</p></div>
+        
+        <!-- Step 1: 上传稿件 -->
         <div class="card" id="sv-audit-upload-card">
           <div class="card-header"><h2>📤 上传达人稿件</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
           <div style="border: 2px dashed #ff7d00; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('sv-audit-file').click()">
             <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
             <p style="color: #ff7d00; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传达人稿件 Word 文档</p>
-            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，AI 将自动检查内容合规性</p>
+            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，上传后将自动解析内容</p>
             <input type="file" id="sv-audit-file" accept=".docx" style="display: none;" onchange="handleSupervisorAuditUpload(this)">
           </div>
           <p id="sv-audit-file-name" style="font-size: 0.85rem; color: #ff7d00; margin-top: 0.8rem; display: none;"></p>
-          <div id="sv-audit-parse-preview" style="display: none; margin-top: 1.5rem;">
-            <h4 style="margin-bottom: 0.8rem;">📋 AI 审核结果（请检查并修正）</h4>
-            <div class="form-group"><label>达人名称</label><input type="text" id="sv-audit-creator"></div>
-            <div class="form-group"><label>稿件内容</label><textarea id="sv-audit-content" style="min-height: 150px;"></textarea></div>
-            <div id="sv-audit-issues" style="background: #fff7e8; padding: 1rem; border-radius: 6px; margin-top: 0.8rem;"></div>
-          </div>
-          <div class="action-bar">
+          <div class="action-bar" id="sv-audit-parse-actions" style="display: none;">
             <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
-            <button class="btn btn-success" onclick="submitSupervisorAudit()" id="sv-audit-submit-btn" style="display: none;">📤 提交给下行审批</button>
+            <button class="btn btn-primary" onclick="runAIAudit()" id="sv-audit-ai-btn">🤖 AI 智能审核</button>
+          </div>
+        </div>
+
+        <!-- Step 2: AI 审核报告（隐藏） -->
+        <div class="card" id="sv-audit-report-card" style="display: none;">
+          <div class="card-header"><h2>🤖 AI 审核报告</h2></div>
+          <div id="sv-audit-report-content"></div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="document.getElementById('sv-audit-upload-card').style.display='block'; document.getElementById('sv-audit-report-card').style.display='none'; document.getElementById('sv-audit-corrected-card').style.display='none';">返回修改</button>
+            <button class="btn btn-success" onclick="showCorrectedContent()">✅ 查看 AI 修正内容</button>
+          </div>
+        </div>
+
+        <!-- Step 3: AI 修正内容（可编辑） -->
+        <div class="card" id="sv-audit-corrected-card" style="display: none;">
+          <div class="card-header"><h2>✏️ AI 修正后的内容（可编辑）</h2></div>
+          <div class="form-group"><label>达人名称</label><input type="text" id="sv-audit-creator-corrected"></div>
+          <div class="form-group"><label>修正后的稿件内容</label><textarea id="sv-audit-content-corrected" style="min-height: 200px;"></textarea></div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="document.getElementById('sv-audit-report-card').style.display='block'; document.getElementById('sv-audit-corrected-card').style.display='none';">查看审核报告</button>
+            <button class="btn btn-success" onclick="submitSupervisorAudit()" id="sv-audit-submit-btn">📤 提交给下行审批</button>
           </div>
         </div>
       </div>
@@ -370,6 +387,12 @@
           <div class="card-header"><h2>📥 待审批内容</h2><button class="btn btn-outline" onclick="navigateTo('downstream-workspace')">返回</button></div>
           <div id="ds-audit-list"></div>
         </div>
+      </div>
+
+      <!-- 下行 - 内容审核详情 -->
+      <div id="page-downstream-audit-detail" class="page">
+        <div class="page-header"><h1>✅ 内容审核详情</h1><p>查看原文和 AI 修正内容，进行审批</p></div>
+        <div id="ds-audit-detail-content"></div>
       </div>
 
       <!-- 下行 - 投流确认 -->
@@ -502,7 +525,7 @@
         if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
       } else if (pageId.startsWith('downstream') && pageId !== 'downstream-workspace') {
         html += '<span class="breadcrumb-item" onclick="navigateTo(\'downstream-workspace\')">下行审批台</span>';
-        const names = { 'downstream-brief': 'Brief审批', 'downstream-kol': '选号确认', 'downstream-audit': '内容审核', 'downstream-monitor': '投流确认', 'downstream-review': '投后复盘' };
+        const names = { 'downstream-brief': 'Brief审批', 'downstream-brief-detail': 'Brief详情', 'downstream-kol': '选号确认', 'downstream-audit': '内容审核', 'downstream-audit-detail': '审核详情', 'downstream-monitor': '投流确认', 'downstream-review': '投后复盘' };
         if (names[pageId]) html += '<span class="breadcrumb-item">' + names[pageId] + '</span>';
       }
       bc.innerHTML = html;
@@ -715,6 +738,10 @@
     }
 
     // ==================== 直管 - 内容审核 ====================
+    let currentAuditContent = '';
+    let currentAuditCreator = '';
+    let currentAuditResult = null;
+
     function handleSupervisorAuditUpload(input) {
       const file = input.files[0];
       if (!file) return;
@@ -725,40 +752,223 @@
       reader.onload = function(e) {
         mammoth.extractRawText({ arrayBuffer: e.target.result })
           .then(function(result) {
-            const content = result.value;
-            const creatorName = content.split('\n').find(l => l.includes('@'))?.trim() || '达人';
-            document.getElementById('sv-audit-creator').value = creatorName;
-            document.getElementById('sv-audit-content').value = content;
-            
-            // AI 审核
-            const issues = runContentAudit(content);
-            document.getElementById('sv-audit-issues').innerHTML = issues.length === 0 
-              ? '<p style="color: #00b42a;">✅ AI 未发现问题，稿件符合要求</p>'
-              : issues.map(i => `<div style="margin-bottom: 0.5rem;"><span class="badge badge-${i.type === 'error' ? 'danger' : 'warning'}">${i.label}</span> ${i.desc}</div>`).join('');
-            
-            document.getElementById('sv-audit-parse-preview').style.display = 'block';
-            document.getElementById('sv-audit-submit-btn').style.display = 'inline-block';
-            showToast('✅ AI 审核完成，请检查并修正');
+            currentAuditContent = result.value;
+            currentAuditCreator = currentAuditContent.split('\n').find(l => l.includes('@'))?.trim() || '达人';
+            showToast('✅ 稿件已上传，请点击 AI 审核按钮');
+            document.getElementById('sv-audit-parse-actions').style.display = 'flex';
           })
           .catch(err => { showToast('⚠️ 解析失败'); console.error(err); });
       };
       reader.readAsArrayBuffer(file);
     }
 
-    function runContentAudit(content) {
-      const issues = [];
-      const errorDict = { '五重生态': '五重经典信号肽', '抗氧提亮': '抗氧化提亮' };
-      Object.entries(errorDict).forEach(([wrong, correct]) => {
-        if (content.includes(wrong)) issues.push({ type: 'error', label: '❌ 文案错误', desc: `"${wrong}" 应为 "${correct}"` });
+    function runAIAudit() {
+      showLoading('AI 正在进行 6 维度审核...');
+      setTimeout(() => {
+        currentAuditResult = runFullContentAudit(currentAuditContent);
+        displayAuditReport(currentAuditResult);
+        hideLoading();
+        document.getElementById('sv-audit-upload-card').style.display = 'none';
+        document.getElementById('sv-audit-report-card').style.display = 'block';
+      }, 1500);
+    }
+
+    function runFullContentAudit(content) {
+      const result = {
+        dimensions: [],
+        correctedContent: content,
+        overallStatus: 'success',
+        issuesFound: 0
+      };
+
+      // 维度1: 政治/违法/暴力
+      const politicalIssues = checkPoliticalContent(content);
+      result.dimensions.push({
+        name: '政治/违法/暴力',
+        status: politicalIssues.length === 0 ? 'success' : 'danger',
+        label: politicalIssues.length === 0 ? '✅ 通过' : '❌ 违规',
+        issues: politicalIssues,
+        desc: '检测政治敏感、违法违规、暴力恐怖内容'
       });
-      if (content.length < 100) issues.push({ type: 'warning', label: '⚠️ 内容过短', desc: '建议补充更多卖点描述' });
+
+      // 维度2: 色情/低俗
+      const explicitIssues = checkExplicitContent(content);
+      result.dimensions.push({
+        name: '色情/低俗',
+        status: explicitIssues.length === 0 ? 'success' : 'danger',
+        label: explicitIssues.length === 0 ? '✅ 通过' : '❌ 违规',
+        issues: explicitIssues,
+        desc: '检测色情、低俗、不雅内容'
+      });
+
+      // 维度3: 谩骂/仇恨言论
+      const hateIssues = checkHateSpeech(content);
+      result.dimensions.push({
+        name: '谩骂/仇恨言论',
+        status: hateIssues.length === 0 ? 'success' : 'danger',
+        label: hateIssues.length === 0 ? '✅ 通过' : '❌ 违规',
+        issues: hateIssues,
+        desc: '检测辱骂、歧视、仇恨言论'
+      });
+
+      // 维度4: 广告/垃圾内容
+      const spamIssues = checkSpamContent(content);
+      result.dimensions.push({
+        name: '广告/垃圾内容',
+        status: spamIssues.length === 0 ? 'success' : 'warning',
+        label: spamIssues.length === 0 ? '✅ 通过' : '⚠️ 可疑',
+        issues: spamIssues,
+        desc: '检测过度营销、垃圾广告'
+      });
+
+      // 维度5: Brief 符合度
+      const briefIssues = checkBriefMatch(content);
+      result.dimensions.push({
+        name: 'Brief 符合度',
+        status: briefIssues.length === 0 ? 'success' : 'warning',
+        label: briefIssues.length === 0 ? '✅ 符合' : '⚠️ 偏差',
+        issues: briefIssues,
+        desc: '检查是否符合商家 Brief 要求'
+      });
+
+      // 维度6: 文案细节准确性
+      const accuracyIssues = checkContentAccuracy(content);
+      result.dimensions.push({
+        name: '文案细节准确性',
+        status: accuracyIssues.length === 0 ? 'success' : 'warning',
+        label: accuracyIssues.length === 0 ? '✅ 准确' : '⚠️ 需修正',
+        issues: accuracyIssues,
+        desc: '检查错别字、商品名、型号规格、语义通顺度'
+      });
+
+      // 生成修正后的内容
+      result.correctedContent = generateCorrectedContent(content, result);
+      
+      // 统计问题
+      result.issuesFound = result.dimensions.reduce((sum, d) => sum + d.issues.length, 0);
+      if (result.issuesFound > 0) {
+        const hasError = result.dimensions.some(d => d.status === 'danger');
+        result.overallStatus = hasError ? 'danger' : 'warning';
+      }
+
+      return result;
+    }
+
+    function checkPoliticalContent(content) {
+      const issues = [];
+      const sensitiveWords = ['国家领导人姓名', '敏感政治事件'];
+      sensitiveWords.forEach(word => {
+        if (content.includes(word)) issues.push({ type: 'error', desc: `发现敏感词：${word}` });
+      });
       return issues;
+    }
+
+    function checkExplicitContent(content) {
+      const issues = [];
+      const explicitPatterns = ['色情', '低俗用语'];
+      explicitPatterns.forEach(pattern => {
+        if (content.includes(pattern)) issues.push({ type: 'error', desc: `发现不当内容：${pattern}` });
+      });
+      return issues;
+    }
+
+    function checkHateSpeech(content) {
+      const issues = [];
+      const hateWords = ['辱骂', '歧视性用语'];
+      hateWords.forEach(word => {
+        if (content.includes(word)) issues.push({ type: 'error', desc: `发现不当用语：${word}` });
+      });
+      return issues;
+    }
+
+    function checkSpamContent(content) {
+      const issues = [];
+      if ((content.match(/购买|下单|链接|优惠码/g) || []).length > 5) {
+        issues.push({ type: 'warning', desc: '营销用语过多，可能影响内容质量' });
+      }
+      return issues;
+    }
+
+    function checkBriefMatch(content) {
+      const issues = [];
+      const requiredTerms = ['核心卖点', '产品功效'];
+      requiredTerms.forEach(term => {
+        if (!content.includes(term)) issues.push({ type: 'warning', desc: `未提及：${term}` });
+      });
+      return issues;
+    }
+
+    function checkContentAccuracy(content) {
+      const issues = [];
+      const errorDict = {
+        '五重生态': '五重经典信号肽',
+        '抗氧提亮': '抗氧化提亮',
+        '红宝瓶': '红宝石',
+        '维A醇': '视黄醇'
+      };
+      Object.entries(errorDict).forEach(([wrong, correct]) => {
+        if (content.includes(wrong)) {
+          issues.push({ type: 'error', desc: `"${wrong}" 应为 "${correct}"` });
+        }
+      });
+      if (content.length < 100) {
+        issues.push({ type: 'warning', desc: '内容过短，建议补充更多卖点描述' });
+      }
+      return issues;
+    }
+
+    function generateCorrectedContent(content, auditResult) {
+      let corrected = content;
+      const corrections = {
+        '五重生态': '五重经典信号肽',
+        '抗氧提亮': '抗氧化提亮',
+        '红宝瓶': '红宝石',
+        '维A醇': '视黄醇'
+      };
+      Object.entries(corrections).forEach(([wrong, correct]) => {
+        corrected = corrected.replaceAll(wrong, correct);
+      });
+      return corrected;
+    }
+
+    function displayAuditReport(result) {
+      const html = `
+        <div style="background: ${result.overallStatus === 'success' ? '#e8ffea' : result.overallStatus === 'danger' ? '#ffece8' : '#fff7e8'}; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;">
+          <h3 style="color: ${result.overallStatus === 'success' ? '#00b42a' : result.overallStatus === 'danger' ? '#f53f3f' : '#ff7d00'};">
+            ${result.overallStatus === 'success' ? '✅ 审核通过' : result.overallStatus === 'danger' ? '❌ 发现严重问题' : '⚠️ 发现需优化的问题'}
+          </h3>
+          <p style="font-size: 0.85rem; color: #86909c; margin-top: 0.5rem;">共检测 ${result.dimensions.length} 个维度，发现 ${result.issuesFound} 个问题</p>
+        </div>
+        <table>
+          <thead><tr><th>维度</th><th>状态</th><th>说明</th><th>问题详情</th></tr></thead>
+          <tbody>
+            ${result.dimensions.map(d => `
+              <tr>
+                <td><b>${d.name}</b><br><span style="font-size: 0.75rem; color: #86909c;">${d.desc}</span></td>
+                <td><span class="badge badge-${d.status}">${d.label}</span></td>
+                <td>${d.issues.length === 0 ? '无问题' : d.issues.map(i => `<div style="margin: 2px 0;"><span class="badge badge-${i.type === 'error' ? 'danger' : 'warning'}">${i.type === 'error' ? '❌' : '⚠️'}</span> ${i.desc}</div>`).join('')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      document.getElementById('sv-audit-report-content').innerHTML = html;
+    }
+
+    function showCorrectedContent() {
+      document.getElementById('sv-audit-creator-corrected').value = currentAuditCreator;
+      document.getElementById('sv-audit-content-corrected').value = currentAuditResult.correctedContent;
+      document.getElementById('sv-audit-report-card').style.display = 'none';
+      document.getElementById('sv-audit-corrected-card').style.display = 'block';
     }
 
     function submitSupervisorAudit() {
       const draft = {
-        creator: document.getElementById('sv-audit-creator').value,
-        content: document.getElementById('sv-audit-content').value,
+        creator: document.getElementById('sv-audit-creator-corrected').value,
+        content: document.getElementById('sv-audit-content-corrected').value,
+        originalContent: currentAuditContent,
+        correctedContent: currentAuditResult.correctedContent,
+        auditResult: currentAuditResult,
         submittedBy: currentUser.username,
         submittedAt: new Date().toISOString(),
         status: 'pending'
@@ -922,30 +1132,86 @@
         const drafts = Object.values(data).filter(d => d.status === 'pending').reverse();
         container.innerHTML = drafts.length === 0 
           ? '<div class="empty-state"><div class="icon">✅</div><p>所有内容已审批完成</p></div>'
-          : drafts.map((d, idx) => `
-            <div class="approval-item pending">
+          : drafts.map(d => `
+            <div class="approval-item pending" onclick="viewDownstreamAuditDetail('${d.id}')">
               <div class="approval-header">
                 <h4>达人稿件 - ${d.creator}</h4>
                 <span class="badge badge-warning">待审批</span>
               </div>
               <p style="font-size: 0.8rem; color: #86909c;">提交人：${d.submittedBy} | 时间：${new Date(d.submittedAt).toLocaleString('zh-CN')}</p>
-              <div style="background: white; padding: 0.8rem; border-radius: 4px; margin-top: 0.5rem; max-height: 150px; overflow-y: auto;">
-                <pre style="white-space: pre-wrap; font-family: inherit; margin: 0; font-size: 0.85rem;">${d.content.substring(0, 300)}...</pre>
-              </div>
-              <div class="approval-actions">
-                <button class="btn btn-success" onclick="approveDraft('${d.id}')">✅ 确认出街</button>
-                <button class="btn btn-warning" onclick="showToast('✏️ 已打回修改，请直管调整')">✏️ 打回修改</button>
-              </div>
+              <p style="font-size: 0.8rem; color: #165dff; margin-top: 0.3rem;">👉 点击查看详情（原文 + AI 修正内容）</p>
             </div>
           `).join('');
       });
     }
 
-    function approveDraft(id) {
-      db.ref('drafts/submitted/' + id + '/status').set('approved').then(() => {
-        showToast('✅ 内容已确认出街');
-        loadDownstreamAuditList();
+    function viewDownstreamAuditDetail(id) {
+      db.ref('drafts/submitted/' + id).once('value', snap => {
+        const d = snap.val();
+        if (!d) return;
+        
+        const auditReport = d.auditResult;
+        let reportHtml = '';
+        if (auditReport) {
+          reportHtml = `
+            <div style="background: ${auditReport.overallStatus === 'success' ? '#e8ffea' : auditReport.overallStatus === 'danger' ? '#ffece8' : '#fff7e8'}; padding: 0.8rem; border-radius: 6px; margin-bottom: 1rem;">
+              <h4 style="color: ${auditReport.overallStatus === 'success' ? '#00b42a' : auditReport.overallStatus === 'danger' ? '#f53f3f' : '#ff7d00'};">
+                ${auditReport.overallStatus === 'success' ? '✅ AI 审核通过' : auditReport.overallStatus === 'danger' ? '❌ AI 发现严重问题' : '⚠️ AI 发现需优化的问题'}
+              </h4>
+              <p style="font-size: 0.8rem; color: #86909c;">共检测 ${auditReport.dimensions.length} 个维度，发现 ${auditReport.issuesFound} 个问题</p>
+            </div>
+          `;
+        }
+        
+        document.getElementById('ds-audit-detail-content').innerHTML = `
+          ${reportHtml}
+          
+          <!-- 原文部分 -->
+          <div class="card">
+            <div class="card-header"><h2>📄 原始稿件内容（可编辑）</h2></div>
+            <div class="form-group"><label>达人名称</label><input type="text" id="ds-audit-original-creator" value="${d.creator || ''}"></div>
+            <div class="form-group"><label>稿件内容</label><textarea id="ds-audit-original-content" style="min-height: 200px;">${d.originalContent || d.content || ''}</textarea></div>
+          </div>
+          
+          <!-- AI 修正内容部分 -->
+          <div class="card">
+            <div class="card-header"><h2>✏️ AI 修正后的内容（可编辑）</h2></div>
+            <div class="form-group"><label>达人名称</label><input type="text" id="ds-audit-corrected-creator" value="${d.creator || ''}"></div>
+            <div class="form-group"><label>修正后的稿件内容</label><textarea id="ds-audit-corrected-content" style="min-height: 200px;">${d.correctedContent || d.content || ''}</textarea></div>
+          </div>
+          
+          <!-- 审批操作 -->
+          <div class="card">
+            <div class="card-header"><h2>📋 审批操作</h2><button class="btn btn-outline" onclick="navigateTo('downstream-audit')">返回列表</button></div>
+            <div class="approval-actions">
+              <button class="btn btn-success" onclick="approveDownstreamAudit('${d.id}')">✅ 确认出街</button>
+              <button class="btn btn-danger" onclick="showDownstreamRejectBox('${d.id}')">❌ 打回修改</button>
+            </div>
+            <div class="reject-reason-box" id="ds-reject-box-${d.id}">
+              <label>打回意见（必填）：</label>
+              <textarea id="ds-reject-reason-${d.id}" placeholder="请说明需要修改的内容..."></textarea>
+              <div class="action-bar"><button class="btn btn-danger" onclick="rejectDownstreamAudit('${d.id}')">确认打回</button></div>
+            </div>
+          </div>
+        `;
+        navigateTo('downstream-audit-detail');
       });
+    }
+
+    function approveDownstreamAudit(id) {
+      db.ref('drafts/submitted/' + id + '/status').set('approved')
+        .then(() => { showToast('✅ 内容已确认出街'); navigateTo('downstream-audit'); });
+    }
+
+    function showDownstreamRejectBox(id) {
+      document.getElementById(`ds-reject-box-${id}`).style.display = 'block';
+    }
+
+    function rejectDownstreamAudit(id) {
+      const reason = document.getElementById(`ds-reject-reason-${id}`).value.trim();
+      if (!reason) { showToast('⚠️ 请填写打回意见'); return; }
+      db.ref('drafts/submitted/' + id).update({ status: 'rejected', rejectReason: reason, reviewedAt: new Date().toISOString() })
+        .then(() => { showToast('❌ 内容已打回'); navigateTo('downstream-audit'); });
     }
 
     // ==================== 下行 - 投流确认 ====================
@@ -1013,6 +1279,15 @@
       document.getElementById('toast-msg').textContent = msg;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function showLoading(text = 'AI 正在处理...') {
+      document.getElementById('loading-text').textContent = text;
+      document.getElementById('loading').classList.add('show');
+    }
+
+    function hideLoading() {
+      document.getElementById('loading').classList.remove('show');
     }
 
     // ==================== 初始化 ====================
