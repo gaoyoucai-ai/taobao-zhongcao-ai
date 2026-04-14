@@ -454,9 +454,11 @@
     // ==================== 通义千问 AI API 配置 ====================
     const QWEN_API_KEY = 'sk-c71e67abd1c04b57a788e7391956b227';
     const QWEN_API_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
-    const QWEN_MODEL = 'qwen-turbo'; // 免费额度充足，速度快
+    const QWEN_MODEL = 'qwen-turbo';
+    // 使用 CORS 代理解决跨域问题
+    const CORS_PROXY = 'https://corsproxy.io/?';
 
-    // 通义千问 API 调用函数
+    // 通义千问 API 调用函数（通过 CORS 代理）
     async function callQwenAPI(prompt, systemPrompt = '') {
       const messages = [];
       if (systemPrompt) {
@@ -465,7 +467,7 @@
       messages.push({ role: 'user', content: prompt });
 
       try {
-        const response = await fetch(QWEN_API_URL, {
+        const response = await fetch(CORS_PROXY + encodeURIComponent(QWEN_API_URL), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
