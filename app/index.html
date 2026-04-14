@@ -1184,13 +1184,13 @@
           <div class="card">
             <div class="card-header"><h2>📋 审批操作</h2><button class="btn btn-outline" onclick="navigateTo('downstream-audit')">返回列表</button></div>
             <div class="approval-actions">
-              <button class="btn btn-success" onclick="approveDownstreamAudit('${d.id}')">✅ 确认出街</button>
-              <button class="btn btn-danger" onclick="showDownstreamRejectBox('${d.id}')">❌ 打回修改</button>
+              <button class="btn btn-success" onclick="approveDownstreamAudit('${id}')">✅ 确认出街</button>
+              <button class="btn btn-danger" onclick="showDownstreamRejectBox('${id}')">❌ 打回修改</button>
             </div>
-            <div class="reject-reason-box" id="ds-reject-box-${d.id}">
+            <div class="reject-reason-box" id="ds-reject-box-${id}">
               <label>打回意见（必填）：</label>
-              <textarea id="ds-reject-reason-${d.id}" placeholder="请说明需要修改的内容..."></textarea>
-              <div class="action-bar"><button class="btn btn-danger" onclick="rejectDownstreamAudit('${d.id}')">确认打回</button></div>
+              <textarea id="ds-reject-reason-${id}" placeholder="请说明需要修改的内容..."></textarea>
+              <div class="action-bar"><button class="btn btn-danger" onclick="rejectDownstreamAudit('${id}')">确认打回</button></div>
             </div>
           </div>
         `;
