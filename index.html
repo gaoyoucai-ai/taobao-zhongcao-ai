@@ -665,6 +665,11 @@
       const file = input.files[0];
       if (!file) return;
       
+      // 隐藏后续步骤，确保流程清晰
+      document.getElementById('sv-brief-step2').style.display = 'none';
+      document.getElementById('sv-brief-step3').style.display = 'none';
+      document.getElementById('sv-brief-step4').style.display = 'none';
+      
       document.getElementById('sv-brief-file-name').style.display = 'block';
       document.getElementById('sv-brief-file-name').textContent = `📎 已选择：${file.name}`;
       showToast('📄 正在解析文档...');
@@ -676,7 +681,10 @@
             .then(function(result) {
               currentBriefRawText = result.value;
               showToast('✅ 文档解析完成，请点击"开始 AI 审核"按钮');
+              // 显示步骤2：AI审核按钮
               document.getElementById('sv-brief-step2').style.display = 'block';
+              // 滚动到步骤2
+              document.getElementById('sv-brief-step2').scrollIntoView({ behavior: 'smooth', block: 'center' });
             })
             .catch(err => { showToast('⚠️ 解析失败，请检查格式'); console.error(err); });
         } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
