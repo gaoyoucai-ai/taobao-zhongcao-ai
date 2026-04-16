@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>淘宝种草 AI 协作平台</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -677,22 +678,86 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         if (file.name.endsWith('.docx')) {
+          // Word 文档解析
           mammoth.extractRawText({ arrayBuffer: e.target.result })
             .then(function(result) {
               currentBriefRawText = result.value;
+              console.log('Word 解析成功，内容长度:', currentBriefRawText.length);
+              console.log('内容预览:', currentBriefRawText.substring(0, 200));
+              
+              if (!currentBriefRawText || currentBriefRawText.trim().length === 0) {
+                showToast('⚠️ 文档内容为空，请检查文档格式');
+                return;
+              }
+              
               showToast('✅ 文档解析完成，请点击"开始 AI 审核"按钮');
               // 显示步骤2：AI审核按钮
               document.getElementById('sv-brief-step2').style.display = 'block';
               // 滚动到步骤2
               document.getElementById('sv-brief-step2').scrollIntoView({ behavior: 'smooth', block: 'center' });
             })
-            .catch(err => { showToast('⚠️ 解析失败，请检查格式'); console.error(err); });
+            .catch(err => { 
+              console.error('Word 解析错误:', err);
+              showToast('⚠️ Word 解析失败：' + (err.message || '请检查文档是否损坏或格式不正确')); 
+            });
         } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
-          // Excel 文件解析（简化版，实际应使用 SheetJS）
-          showToast('⚠️ Excel 解析功能开发中，请先使用 Word 文档');
+          // Excel 文件解析
+          parseExcelFile(e.target.result, file.name);
+        } else {
+          showToast('⚠️ 不支持的文件格式，请使用 .docx 或 .xlsx 文件');
         }
       };
+      reader.onerror = function(err) {
+        console.error('文件读取错误:', err);
+        showToast('⚠️ 文件读取失败，请重试');
+      };
       reader.readAsArrayBuffer(file);
+    }
+
+    // Excel 文件解析函数
+    function parseExcelFile(arrayBuffer, fileName) {
+      showToast('📄 正在解析 Excel 文档...');
+      
+      try {
+        // 检查 SheetJS 是否加载
+        if (typeof XLSX === 'undefined') {
+          showToast('⚠️ Excel 解析库未加载，请刷新页面重试');
+          return;
+        }
+        
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        let allText = [];
+        
+        // 遍历所有工作表
+        workbook.SheetNames.forEach(sheetName => {
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          
+          // 将表格数据转换为文本
+          jsonData.forEach(row => {
+            if (row && row.length > 0) {
+              allText.push(row.filter(cell => cell !== null && cell !== undefined).join(' | '));
+            }
+          });
+        });
+        
+        currentBriefRawText = allText.join('\n');
+        console.log('Excel 解析成功，内容长度:', currentBriefRawText.length);
+        console.log('内容预览:', currentBriefRawText.substring(0, 200));
+        
+        if (!currentBriefRawText || currentBriefRawText.trim().length === 0) {
+          showToast('⚠️ Excel 内容为空，请检查文件');
+          return;
+        }
+        
+        showToast('✅ Excel 解析完成，请点击"开始 AI 审核"按钮');
+        document.getElementById('sv-brief-step2').style.display = 'block';
+        document.getElementById('sv-brief-step2').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+      } catch (err) {
+        console.error('Excel 解析错误:', err);
+        showToast('⚠️ Excel 解析失败：' + (err.message || '请检查文件格式'));
+      }
     }
 
     // AI Brief 审核（黑盒+白盒标准）
