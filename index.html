@@ -841,46 +841,6 @@
         showToast('⚠️ 提交失败：' + err.message);
       });
     }
-        let html = `
-          <div class="card-header">
-            <h2>🤖 AI 深度拆解报告</h2>
-            <span class="badge badge-success">AI 解析</span>
-          </div>
-          <div style="font-size: 0.85rem;">
-        `;
-        
-        if (aiResult.tabooList && aiResult.tabooList.length > 0) {
-          html += `<div style="margin-bottom: 0.8rem;"><b>🚫 禁忌事项：</b><ul style="margin: 0.3rem 0; padding-left: 1.2rem;">`;
-          aiResult.tabooList.forEach(item => {
-            html += `<li style="color: #f53f3f;">${item}</li>`;
-          });
-          html += `</ul></div>`;
-        }
-        
-        if (aiResult.keyMessages && aiResult.keyMessages.length > 0) {
-          html += `<div style="margin-bottom: 0.8rem;"><b>📌 必须传达的关键信息：</b><ul style="margin: 0.3rem 0; padding-left: 1.2rem;">`;
-          aiResult.keyMessages.forEach(item => {
-            html += `<li style="color: #00b42a;">${item}</li>`;
-          });
-          html += `</ul></div>`;
-        }
-        
-        if (aiResult.contentFormat) {
-          html += `<div style="margin-bottom: 0.8rem;"><b>📝 推荐内容形式：</b>${aiResult.contentFormat}</div>`;
-        }
-        
-        if (aiResult.budget) {
-          html += `<div style="margin-bottom: 0.8rem;"><b>💰 预算信息：</b>${aiResult.budget}</div>`;
-        }
-        
-        if (aiResult.timeline) {
-          html += `<div style="margin-bottom: 0.8rem;"><b>📅 时间要求：</b>${aiResult.timeline}</div>`;
-        }
-        
-        html += `</div>`;
-        card.innerHTML = html;
-      }
-    }
 
     function parseBriefContent(text) {
       const result = { brand: '', product: '', sellingPoints: '', targetAudience: '', cpuvTarget: '', shopRateTarget: '', contentDirection: '' };
