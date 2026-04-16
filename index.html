@@ -189,39 +189,76 @@
       </div>
 
       <!-- 直管 - Brief 评估 -->
+      <!-- 直管 - Brief 评估与上传 -->
       <div id="page-supervisor-brief" class="page">
-        <div class="page-header"><h1>📋 Brief 评估与上传</h1><p>上传 Word Brief，AI 自动解析后提交给下行审批</p></div>
-        <div class="card" id="supervisor-brief-upload-card">
-          <div class="card-header"><h2>📤 上传 Brief</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
+        <div class="page-header"><h1>📋 Brief 评估与上传</h1><p>上传 Brief 文档，AI 自动拆解审核后可编辑，确认后提交给下行审批</p></div>
+        
+        <!-- 步骤1：上传 Brief -->
+        <div class="card" id="sv-brief-step1">
+          <div class="card-header"><h2>📤 第一步：上传 Brief 文档</h2></div>
           <div style="border: 2px dashed #00b42a; border-radius: 8px; padding: 2.5rem; text-align: center; cursor: pointer; background: #f7f8fa;" onclick="document.getElementById('sv-brief-file').click()">
             <p style="font-size: 2.5rem; margin-bottom: 0.8rem;">📄</p>
-            <p style="color: #00b42a; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传 Word Brief 文档</p>
-            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx 格式，AI 将自动解析品牌、产品、卖点等信息</p>
-            <input type="file" id="sv-brief-file" accept=".docx" style="display: none;" onchange="handleSupervisorBriefUpload(this)">
+            <p style="color: #00b42a; font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem;">点击上传 Brief 文档</p>
+            <p style="font-size: 0.8rem; color: #86909c;">支持 .docx / .xlsx / .xls 格式，AI 将自动拆解并审核</p>
+            <input type="file" id="sv-brief-file" accept=".docx,.xlsx,.xls" style="display: none;" onchange="handleSupervisorBriefUpload(this)">
           </div>
           <p id="sv-brief-file-name" style="font-size: 0.85rem; color: #00b42a; margin-top: 0.8rem; display: none;"></p>
-          <div id="sv-brief-parse-preview" style="display: none; margin-top: 1.5rem; background: #e8ffea; padding: 1rem; border-radius: 6px; border: 1px solid #b7f5c8;">
-            <h4 style="margin-bottom: 0.8rem; color: #00b42a;">📋 AI 解析结果（请检查并修正）</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group"><label>品牌名称</label><input type="text" id="sv-brief-brand"></div>
-              <div class="form-group"><label>产品名称</label><input type="text" id="sv-brief-product"></div>
-            </div>
-            <div class="form-group"><label>核心卖点</label><textarea id="sv-brief-selling-points"></textarea></div>
-            <div class="form-group"><label>目标人群</label><textarea id="sv-brief-target-audience"></textarea></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-              <div class="form-group"><label>CPUV 目标（元）</label><input type="number" id="sv-brief-cpuv-target"></div>
-              <div class="form-group"><label>进店率目标（%）</label><input type="number" id="sv-brief-shop-rate-target" step="0.01"></div>
-            </div>
-            <div class="form-group"><label>内容方向要求</label><textarea id="sv-brief-content-direction"></textarea></div>
-          </div>
-          <div class="action-bar">
-            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button>
-            <button class="btn btn-success" onclick="submitSupervisorBrief()" id="sv-brief-submit-btn" style="display: none;">📤 提交给下行审批</button>
+        </div>
+
+        <!-- 步骤2：AI 审核 -->
+        <div class="card" id="sv-brief-step2" style="display: none;">
+          <div class="card-header"><h2>🤖 第二步：AI 审核</h2></div>
+          <p style="margin-bottom: 1rem; color: #86909c;">AI 将对 Brief 进行黑盒/白盒标准拆解审核，包括完整性、合规性、周期风险等</p>
+          <button class="btn btn-primary" onclick="runBriefAIReview()" id="sv-brief-ai-review-btn">🔍 开始 AI 审核</button>
+          <div id="sv-brief-ai-review-loading" style="display: none; text-align: center; padding: 2rem;">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem; color: #86909c;">AI 正在审核中，请稍候...</p>
           </div>
         </div>
-        <div class="card" id="supervisor-brief-submitted-card" style="display: none;">
-          <div class="card-header"><h2>📊 Brief 审批状态</h2><button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">返回</button></div>
-          <div id="sv-brief-status-content"></div>
+
+        <!-- 步骤3：AI 审核结果展示 -->
+        <div class="card" id="sv-brief-step3" style="display: none;">
+          <div class="card-header"><h2>📊 第三步：AI 审核结果</h2></div>
+          <div id="sv-brief-ai-review-result"></div>
+        </div>
+
+        <!-- 步骤4：人工编辑 -->
+        <div class="card" id="sv-brief-step4" style="display: none;">
+          <div class="card-header"><h2>✏️ 第四步：人工确认与编辑</h2><p style="font-size: 0.8rem; color: #86909c;">请根据 AI 审核结果修改 Brief 内容</p></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div class="form-group"><label>投放品牌</label><input type="text" id="sv-brief-brand" placeholder="请输入品牌名称"></div>
+            <div class="form-group"><label>品牌店铺全称</label><input type="text" id="sv-brief-shop-name" placeholder="请输入店铺全称"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div class="form-group"><label>推广商品名称</label><input type="text" id="sv-brief-product" placeholder="请输入商品名称"></div>
+            <div class="form-group"><label>推广商品ID</label><input type="text" id="sv-brief-product-id" placeholder="请输入商品ID"></div>
+          </div>
+          <div class="form-group"><label>推广商品链接</label><input type="text" id="sv-brief-product-link" placeholder="请输入商品链接"></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem;">
+            <div class="form-group"><label>投放整体周期</label><input type="text" id="sv-brief-cycle-overall" placeholder="如：2025.01.01-2025.03.01"></div>
+            <div class="form-group"><label>内容投放周期</label><input type="text" id="sv-brief-cycle-content" placeholder="如：2025.01.05-2025.02.05"></div>
+            <div class="form-group"><label>投流投放周期</label><input type="text" id="sv-brief-cycle-ad" placeholder="如：2025.01.01-2025.02.15"></div>
+          </div>
+          <div class="form-group"><label>投放渠道</label><select id="sv-brief-channel"><option value="">请选择</option><option value="小红书">小红书</option><option value="B站">B站</option></select></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+            <div class="form-group"><label>商家出资整体金额（元）</label><input type="number" id="sv-brief-budget-total" placeholder="请输入整体预算"></div>
+            <div class="form-group"><label>商家出资内容金额（元）</label><input type="number" id="sv-brief-budget-content" placeholder="请输入内容预算"></div>
+          </div>
+          <div class="form-group"><label>品牌种草目的（第一优先级）</label><select id="sv-brief-purpose1"><option value="">请选择</option><option value="品牌建设">品牌建设</option><option value="种草引流">种草引流</option><option value="直接转化">直接转化</option><option value="新品推广">新品推广</option><option value="人群破圈">人群破圈</option></select></div>
+          <div class="form-group"><label>品牌种草目的（兼顾第二方向）</label><select id="sv-brief-purpose2"><option value="">请选择</option><option value="品牌建设">品牌建设</option><option value="种草引流">种草引流</option><option value="直接转化">直接转化</option><option value="新品推广">新品推广</option><option value="人群破圈">人群破圈</option></select></div>
+          <div class="form-group"><label>竞品及其品线</label><textarea id="sv-brief-competitor" placeholder="请列出竞品名称及对标的品线"></textarea></div>
+          <div class="form-group"><label>种草商品亮点简述</label><textarea id="sv-brief-highlights" placeholder="新品还是爆品？有什么独特卖点？"></textarea></div>
+          <div class="form-group"><label>希望植入的核心信息点</label><textarea id="sv-brief-key-messages" placeholder="达人内容中必须露出的卖点信息"></textarea></div>
+          <div class="form-group"><label>目标人群画像</label><textarea id="sv-brief-target-audience" placeholder="如：精致妈妈、一线/二线、18-35岁、女性"></textarea></div>
+          <div class="form-group"><label>达人标签</label><input type="text" id="sv-brief-kol-tags" placeholder="如：美食/亲子/家庭生活/vlog/剧情"></div>
+          <div class="form-group"><label>内容形式占比偏好</label><input type="text" id="sv-brief-content-format" placeholder="如：图文60%：视频40%"></div>
+          <div class="form-group"><label>内容方向/类型占比偏好</label><textarea id="sv-brief-content-type" placeholder="如：产品深度评测50%、好物分享30%、生活vlog20%"></textarea></div>
+          <div class="form-group"><label>品牌话题</label><input type="text" id="sv-brief-topic" placeholder="达人内容发布时必带的品牌话题"></div>
+          <div class="form-group"><label>投放优化指标（CPM/CPE/CPUV）</label><input type="text" id="sv-brief-kpi" placeholder="如：CPUV≤15 或 CPM保底50冲刺40"></div>
+          <div class="action-bar">
+            <button class="btn btn-outline" onclick="navigateTo('supervisor-dashboard')">取消</button>
+            <button class="btn btn-success" onclick="submitBriefToDownstream()">📤 确认并提交给下行审批</button>
+          </div>
         </div>
       </div>
 
@@ -620,188 +657,190 @@
       if (moduleBadge) { moduleBadge.textContent = total; moduleBadge.style.display = total > 0 ? 'block' : 'none'; }
     }
 
-    // ==================== 直管 - Brief 上传 ====================
+    // ==================== 直管 - Brief 上传与 AI 审核 ====================
+    let currentBriefRawText = '';
+    let currentBriefAIResult = null;
+
     function handleSupervisorBriefUpload(input) {
       const file = input.files[0];
       if (!file) return;
+      
       document.getElementById('sv-brief-file-name').style.display = 'block';
       document.getElementById('sv-brief-file-name').textContent = `📎 已选择：${file.name}`;
-      showToast('📄 正在解析 Word 文档...');
+      showToast('📄 正在解析文档...');
       
       const reader = new FileReader();
       reader.onload = function(e) {
-        mammoth.extractRawText({ arrayBuffer: e.target.result })
-          .then(function(result) {
-            const rawText = result.value;
-            // 先使用基础解析填充表单
-            const parsed = parseBriefContent(rawText);
-            document.getElementById('sv-brief-brand').value = parsed.brand;
-            document.getElementById('sv-brief-product').value = parsed.product;
-            document.getElementById('sv-brief-selling-points').value = parsed.sellingPoints;
-            document.getElementById('sv-brief-target-audience').value = parsed.targetAudience;
-            document.getElementById('sv-brief-cpuv-target').value = parsed.cpuvTarget;
-            document.getElementById('sv-brief-shop-rate-target').value = parsed.shopRateTarget;
-            document.getElementById('sv-brief-content-direction').value = parsed.contentDirection;
-            document.getElementById('sv-brief-parse-preview').style.display = 'block';
-            document.getElementById('sv-brief-submit-btn').style.display = 'inline-block';
-            
-            // 调用 AI 进行深度解析
-            showToast('🤖 AI 正在深度拆解 Brief...');
-            callBriefAIAnalysis(rawText, parsed);
-          })
-          .catch(err => { showToast('⚠️ 解析失败，请检查格式'); console.error(err); });
+        if (file.name.endsWith('.docx')) {
+          mammoth.extractRawText({ arrayBuffer: e.target.result })
+            .then(function(result) {
+              currentBriefRawText = result.value;
+              showToast('✅ 文档解析完成，请点击"开始 AI 审核"按钮');
+              document.getElementById('sv-brief-step2').style.display = 'block';
+            })
+            .catch(err => { showToast('⚠️ 解析失败，请检查格式'); console.error(err); });
+        } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+          // Excel 文件解析（简化版，实际应使用 SheetJS）
+          showToast('⚠️ Excel 解析功能开发中，请先使用 Word 文档');
+        }
       };
       reader.readAsArrayBuffer(file);
     }
 
-    // AI Brief 深度解析
-    async function callBriefAIAnalysis(rawText, basicParsed) {
-      const systemPrompt = `你是淘宝种草 Brief 拆解专家，拥有完整的黑盒BF和白盒BF拆解技能。
+    // AI Brief 审核（黑盒+白盒标准）
+    async function runBriefAIReview() {
+      showLoading('🤖 AI 正在进行黑盒/白盒标准拆解审核...');
+      document.getElementById('sv-brief-ai-review-btn').style.display = 'none';
+      document.getElementById('sv-brief-ai-review-loading').style.display = 'block';
+      
+      try {
+        const systemPrompt = `你是淘宝种草 Brief 拆解专家，拥有完整的黑盒BF和白盒BF拆解技能。请严格审核以下 Brief 内容。
 
 【黑盒BF拆解标准（种草保效/品效包）】
-
-一、完整性校验（A1:G36所有空白底色单元格）
-- 投放品牌、品牌店铺全称、店铺member ID（一个项目仅绑定1个店铺）
-- 推广商品名称、商品ID、商品链接（商单发布前需完成上架）
-- 投放整体周期/内容投放周期/投流投放周期（格式：xx.xx.xx-xx.xx.xx）
-- 投放渠道（小红书/B站/视频号/抖音，当前仅支持小红书、B站）
-- 商家出资整体金额/内容金额/投流金额
-- 品牌种草目的（需提供2个方向：第一优先级+兼顾目的，从5种选择）
-- 竞品及其品线、种草商品亮点、商品详细Brief
-- 寄样/送拍选择、核心信息点、目标人群画像
-- 达人标签、达人黑白名单、内容形式占比、内容方向占比、品牌话题
-- 人群偏好、排竞需求、CPM/CPE/CPUV三选一
-- 小红书渠道必填：客户主体、蒲公英账户名称、专业号昵称、专业号ID
-
-二、合规性校验
-1. 投放周期必须：整体≥30天、内容≥7天、投流≥15天
-2. 品牌种草目的从5种选择：品牌建设、种草引流、直接转化、新品推广、人群破圈
-3. 投放优化指标：必须且只能从CPM/CPE/CPUV中选一个（黑盒强保指标）
-4. 预算分配：内容与投流占比合理
-5. 植入信息点不宜过多（避免营销感打压）
-
-三、投放周期风险校验
-- 整体周期<30天 → 有风险
-- 内容周期<7天 → 有风险
-- 投流周期<15天 → 有风险
-
-四、内容篇数底线提醒
-- 小红书：10万起投，最低25篇内容笔记
-- B站：30万起投，最低5~7条视频内容
+一、完整性校验：投放品牌、店铺信息、商品信息、投放周期、渠道、预算、种草目的、竞品、亮点、核心信息点、人群画像、达人标签、内容形式、品牌话题、投放优化指标等
+二、合规性校验：
+  - 投放周期：整体≥30天、内容≥7天、投流≥15天
+  - 品牌种草目的：需提供2个方向（第一优先级+兼顾目的）
+  - 投放优化指标：必须且只能从CPM/CPE/CPUV中选一个
+三、投放周期风险：整体<30天/内容<7天/投流<15天 → 有风险
+四、内容篇数底线：小红书10万起投最低25篇、B站30万起投最低5-7条
 
 【白盒BF拆解标准（种草智推官方）】
+一、内容预估篇数必填
+二、预算分配：小红书内容占比≥50%、B站内容占比≥50%
+三、投放优化指标可多选但需标注优先级
 
-一、完整性校验（与黑盒类似，但有以下差异）
-- 投放优化指标：可选择多个指标并标记优先级（非强保）
-- 商家出资内容金额需提供内容预估篇数
-- 预算分配要求：小红书内容占比≥50%、B站内容占比≥50%
-
-二、合规性校验
-1. 内容预估篇数必填
-2. 小红书内容占比≥50%、B站内容占比≥50%
-3. 投放优化指标可多选但需标注优先级
-4. 支持多种KPI填写格式：数学符号/文字描述/保底冲刺形式
-
-三、投放周期风险校验（与黑盒相同）
-- 整体周期≥30天、内容周期≥7天、投流周期≥15天
-
-四、内容篇数校验
-- 小红书：10万起投对应最低25篇，按比例核算
-- B站：30万起投对应最低5~7条，按比例核算
-
-【市场逻辑自洽判断】
-- 种草目的与投放渠道、人群画像是否匹配
-- 预算分配比例是否符合渠道要求
-- 目标人群画像与达人标签、内容方向是否一致
-- 植入卖点数量是否合理
-- 投放优化指标选择是否合理
-
-请严格、细致地审核BF内容，不要放过任何潜在问题。请给出详细的审核意见和具体的修改建议。`;
-      
-      const prompt = `请分析以下 Brief 文档，提取关键信息：
-
-${rawText.substring(0, 5000)}
-
-请严格按照以下 JSON 格式输出（不要输出其他内容）：
+请以 JSON 格式输出审核结果：
 {
-  "brand": "品牌名称",
-  "product": "产品名称",
-  "sellingPoints": "核心卖点（分点列出，用换行分隔）",
-  "targetAudience": "目标人群画像",
-  "cpuvTarget": "CPUV目标值（只填数字）",
-  "shopRateTarget": "进店率目标（如0.3%）",
-  "contentDirection": "内容方向和要求",
-  "tabooList": "禁忌事项列表（数组）",
-  "keyMessages": "必须传达的关键信息（数组）",
-  "contentFormat": "推荐的内容形式",
-  "budget": "预算信息",
-  "timeline": "时间要求"
+  "overallStatus": "success或warning或danger",
+  "issues": [{"type": "error或warning或info", "module": "模块名", "desc": "问题描述"}],
+  "suggestions": ["建议1", "建议2"],
+  "summary": "审核总结"
 }`;
 
-      try {
+        const prompt = `请审核以下 Brief 内容：\n\n${currentBriefRawText.substring(0, 5000)}`;
+        
         const aiResult = await callQwenAPI(prompt, systemPrompt);
         
-        // 尝试解析 JSON
-        let parsedAI;
+        let parsedResult;
         try {
-          // 提取 JSON 部分
           const jsonMatch = aiResult.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
-            parsedAI = JSON.parse(jsonMatch[0]);
+            parsedResult = JSON.parse(jsonMatch[0]);
           }
         } catch (e) {
-          console.error('AI 返回结果解析失败:', e);
+          console.error('AI 审核结果解析失败:', e);
+          parsedResult = {
+            overallStatus: 'warning',
+            issues: [{ type: 'info', module: 'AI解析', desc: 'AI 返回格式异常，请人工检查' }],
+            suggestions: ['请手动检查 Brief 内容是否完整'],
+            summary: 'AI 审核异常，请人工检查'
+          };
         }
-
-        if (parsedAI) {
-          // 更新表单
-          if (parsedAI.brand) document.getElementById('sv-brief-brand').value = parsedAI.brand;
-          if (parsedAI.product) document.getElementById('sv-brief-product').value = parsedAI.product;
-          if (parsedAI.sellingPoints) document.getElementById('sv-brief-selling-points').value = parsedAI.sellingPoints;
-          if (parsedAI.targetAudience) document.getElementById('sv-brief-target-audience').value = parsedAI.targetAudience;
-          if (parsedAI.cpuvTarget) document.getElementById('sv-brief-cpuv-target').value = parsedAI.cpuvTarget;
-          if (parsedAI.shopRateTarget) document.getElementById('sv-brief-shop-rate-target').value = parsedAI.shopRateTarget;
-          if (parsedAI.contentDirection) document.getElementById('sv-brief-content-direction').value = parsedAI.contentDirection;
-          
-          // 保存 AI 解析的额外信息到 localStorage
-          Storage.set('aiBriefAnalysis', {
-            tabooList: parsedAI.tabooList || [],
-            keyMessages: parsedAI.keyMessages || [],
-            contentFormat: parsedAI.contentFormat || '',
-            budget: parsedAI.budget || '',
-            timeline: parsedAI.timeline || '',
-            rawAIResult: aiResult
-          });
-          
-          showToast('✅ AI 深度拆解完成，已优化表单内容');
-          
-          // 显示 AI 拆解报告
-          displayAIBriefReport(parsedAI);
-        }
+        
+        currentBriefAIResult = parsedResult;
+        displayBriefAIReviewResult(parsedResult);
+        
+        hideLoading();
+        document.getElementById('sv-brief-step2').style.display = 'none';
+        document.getElementById('sv-brief-step3').style.display = 'block';
+        document.getElementById('sv-brief-step4').style.display = 'block';
+        
+        showToast(`✅ AI 审核完成`);
+        
       } catch (error) {
-        console.error('AI Brief 解析失败:', error);
-        showToast('⚠️ AI 解析失败，请手动检查表单');
+        console.error('AI Brief 审核失败:', error);
+        hideLoading();
+        showToast('⚠️ AI 审核失败，请手动填写 Brief');
+        document.getElementById('sv-brief-step2').style.display = 'none';
+        document.getElementById('sv-brief-step4').style.display = 'block';
       }
     }
 
-    // 显示 AI Brief 拆解报告
-    function displayAIBriefReport(aiResult) {
-      const reportCard = document.getElementById('sv-brief-ai-report-card');
-      if (!reportCard) {
-        // 如果没有这个卡片，创建一个
-        const container = document.getElementById('sv-brief-parse-preview');
-        if (container) {
-          const card = document.createElement('div');
-          card.id = 'sv-brief-ai-report-card';
-          card.className = 'card';
-          card.style.display = 'block';
-          card.style.marginTop = '1rem';
-          container.parentNode.insertBefore(card, container.nextSibling);
-        }
+    // 显示 AI 审核结果
+    function displayBriefAIReviewResult(result) {
+      const container = document.getElementById('sv-brief-ai-review-result');
+      const statusColor = result.overallStatus === 'success' ? '#00b42a' : result.overallStatus === 'danger' ? '#f53f3f' : '#ff7d00';
+      const statusText = result.overallStatus === 'success' ? '✅ 审核通过' : result.overallStatus === 'danger' ? '❌ 存在严重问题' : '⚠️ 存在需优化的问题';
+      
+      let html = `
+        <div style="background: ${statusColor}15; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid ${statusColor};">
+          <h3 style="color: ${statusColor}; margin-bottom: 0.5rem;">${statusText}</h3>
+          <p style="font-size: 0.85rem; color: #86909c;">${result.summary || ''}</p>
+        </div>
+      `;
+      
+      if (result.issues && result.issues.length > 0) {
+        html += `<div style="margin-bottom: 1rem;"><h4 style="margin-bottom: 0.5rem;">📋 审核问题列表</h4><ul style="padding-left: 1.2rem;">`;
+        result.issues.forEach(issue => {
+          const icon = issue.type === 'error' ? '❌' : issue.type === 'warning' ? '⚠️' : 'ℹ️';
+          const color = issue.type === 'error' ? '#f53f3f' : issue.type === 'warning' ? '#ff7d00' : '#165dff';
+          html += `<li style="color: ${color}; margin-bottom: 0.3rem;"><b>[${issue.module}]</b> ${icon} ${issue.desc}</li>`;
+        });
+        html += `</ul></div>`;
       }
       
-      const card = document.getElementById('sv-brief-ai-report-card');
-      if (card) {
+      if (result.suggestions && result.suggestions.length > 0) {
+        html += `<div><h4 style="margin-bottom: 0.5rem;">💡 优化建议</h4><ul style="padding-left: 1.2rem;">`;
+        result.suggestions.forEach(s => {
+          html += `<li style="margin-bottom: 0.3rem; color: #00b42a;">${s}</li>`;
+        });
+        html += `</ul></div>`;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    // 提交 Brief 给下行审批
+    function submitBriefToDownstream() {
+      const brief = {
+        brand: document.getElementById('sv-brief-brand').value.trim(),
+        shopName: document.getElementById('sv-brief-shop-name').value.trim(),
+        product: document.getElementById('sv-brief-product').value.trim(),
+        productId: document.getElementById('sv-brief-product-id').value.trim(),
+        productLink: document.getElementById('sv-brief-product-link').value.trim(),
+        cycleOverall: document.getElementById('sv-brief-cycle-overall').value.trim(),
+        cycleContent: document.getElementById('sv-brief-cycle-content').value.trim(),
+        cycleAd: document.getElementById('sv-brief-cycle-ad').value.trim(),
+        channel: document.getElementById('sv-brief-channel').value,
+        budgetTotal: document.getElementById('sv-brief-budget-total').value,
+        budgetContent: document.getElementById('sv-brief-budget-content').value,
+        purpose1: document.getElementById('sv-brief-purpose1').value,
+        purpose2: document.getElementById('sv-brief-purpose2').value,
+        competitor: document.getElementById('sv-brief-competitor').value.trim(),
+        highlights: document.getElementById('sv-brief-highlights').value.trim(),
+        keyMessages: document.getElementById('sv-brief-key-messages').value.trim(),
+        targetAudience: document.getElementById('sv-brief-target-audience').value.trim(),
+        kolTags: document.getElementById('sv-brief-kol-tags').value.trim(),
+        contentFormat: document.getElementById('sv-brief-content-format').value.trim(),
+        contentType: document.getElementById('sv-brief-content-type').value.trim(),
+        topic: document.getElementById('sv-brief-topic').value.trim(),
+        kpi: document.getElementById('sv-brief-kpi').value.trim(),
+        aiReviewResult: currentBriefAIResult,
+        submittedBy: currentUser.username,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
+      };
+
+      if (!brief.brand || !brief.product) {
+        showToast('⚠️ 请至少填写品牌和产品名称');
+        return;
+      }
+      
+      const briefId = db.ref('briefs/submitted').push().key;
+      db.ref('briefs/submitted/' + briefId).set({
+        id: briefId,
+        brief: brief,
+        status: 'pending',
+        submittedBy: currentUser.username,
+        submittedAt: brief.submittedAt
+      }).then(() => {
+        showToast('📤 Brief 已提交给下行审批');
+        navigateTo('supervisor-dashboard');
+      }).catch(err => {
+        showToast('⚠️ 提交失败：' + err.message);
+      });
+    }
         let html = `
           <div class="card-header">
             <h2>🤖 AI 深度拆解报告</h2>
